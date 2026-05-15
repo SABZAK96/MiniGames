@@ -1,0 +1,26 @@
+{
+  "name": "assignment3-sabzak96",
+  "version": "1.0.0",
+  "description": "The objective of this assignment is to design and develop a memory card game using CSS and JS.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/comp2537-s26/assignment3-SABZAK96.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/comp2537-s26/assignment3-SABZAK96/issues"
+  },
+  "homepage": "https://github.com/comp2537-s26/assignment3-SABZAK96#readme",
+  "dependencies": {
+    "axios": "^1.16.1",
+    "express": "^5.2.1"
+  }
+}

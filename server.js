@@ -1,0 +1,56 @@
+const express = require("express");
+const app = express();
+const axios = require("axios");
+port = 5000;
+app.listen(port, () => {
+  console.log("server's up!");
+});
+
+// app.get("/count", async (req, res) => {
+//   try {
+//     const result = await axios.get("https://pokeapi.co/api/v2/pokemon");
+//     const pokeMax = result.data.count;
+//     res.json(pokeMax);
+//   } catch (error) {
+//     res.json({ message: error });
+//   }
+// });
+
+// app.use(express.json());
+app.get("/easy", async (req, res) => {
+  try {
+    const Response = await axios.get("https://pokeapi.co/api/v2/pokemon");
+    //easy mode should give us 3 unique pokes, we use set
+    const pokeIDs = new Set();
+    let number = 0;
+    while (pokeIDs.size < 4) {
+      //generate random numbers between 1 and length of the poke response
+      // axios parses json automatically (unlike fetch) and store the usable result in data property
+      number = Math.floor(Math.random() * Response.data.count) + 1;
+      pokeIDs.add(number);
+    }
+    const pokeIds = [...pokeIDs];
+    const PokeData = await Promise.all(
+      pokeIds.map(async (number) => {
+        const poke = await axios.get(
+          `https://pokeapi.co/api/v2/pokemon/${number}`,
+        );
+        return poke.data;
+      }),
+    );
+    const imgs = PokeData.map((data) => {
+      return data.sprites.front_shiny;
+    });
+    res.json(imgs);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/medium", async (req, res) => {
+  const result = await axios.get("");
+});
+
+app.post("/hard", async (req, res) => {
+  const result = await axios.get("");
+});
