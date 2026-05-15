@@ -47,10 +47,62 @@ app.get("/easy", async (req, res) => {
   }
 });
 
-app.post("/medium", async (req, res) => {
-  const result = await axios.get("");
+app.get("/medium", async (req, res) => {
+  try {
+    const Response = await axios.get("https://pokeapi.co/api/v2/pokemon");
+    //medium mode should give us 6 unique pokes, we use set
+    const pokeIDs = new Set();
+    let number = 0;
+    while (pokeIDs.size < 6) {
+      //generate random numbers between 1 and length of the poke response
+      // axios parses json automatically (unlike fetch) and store the usable result in data property
+      number = Math.floor(Math.random() * Response.data.count) + 1;
+      pokeIDs.add(number);
+    }
+    const pokeIds = [...pokeIDs];
+    const PokeData = await Promise.all(
+      pokeIds.map(async (number) => {
+        const poke = await axios.get(
+          `https://pokeapi.co/api/v2/pokemon/${number}`,
+        );
+        return poke.data;
+      }),
+    );
+    const imgs = PokeData.map((data) => {
+      return data.sprites.front_shiny;
+    });
+    res.json(imgs);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
-app.post("/hard", async (req, res) => {
-  const result = await axios.get("");
+app.get("/hard", async (req, res) => {
+  try {
+    const Response = await axios.get("https://pokeapi.co/api/v2/pokemon");
+    //hard mode should give us 12 unique pokes, we use set
+    const pokeIDs = new Set();
+    let number = 0;
+    while (pokeIDs.size < 12) {
+      //generate random numbers between 1 and length of the poke response
+      // axios parses json automatically (unlike fetch) and store the usable result in data property
+      number = Math.floor(Math.random() * Response.data.count) + 1;
+      pokeIDs.add(number);
+    }
+    const pokeIds = [...pokeIDs];
+    const PokeData = await Promise.all(
+      pokeIds.map(async (number) => {
+        const poke = await axios.get(
+          `https://pokeapi.co/api/v2/pokemon/${number}`,
+        );
+        return poke.data;
+      }),
+    );
+    const imgs = PokeData.map((data) => {
+      return data.sprites.front_shiny;
+    });
+    res.json(imgs);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
