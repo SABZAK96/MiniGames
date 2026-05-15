@@ -17,16 +17,16 @@ app.listen(port, () => {
 // });
 
 // app.use(express.json());
+app.use(express.static(__dirname));
 app.get("/easy", async (req, res) => {
   try {
-    const Response = await axios.get("https://pokeapi.co/api/v2/pokemon");
     //easy mode should give us 3 unique pokes, we use set
     const pokeIDs = new Set();
     let number = 0;
     while (pokeIDs.size < 4) {
       //generate random numbers between 1 and length of the poke response
       // axios parses json automatically (unlike fetch) and store the usable result in data property
-      number = Math.floor(Math.random() * Response.data.count) + 1;
+      number = Math.floor(Math.random() * 1000) + 1;
       pokeIDs.add(number);
     }
     const pokeIds = [...pokeIDs];
@@ -39,7 +39,7 @@ app.get("/easy", async (req, res) => {
       }),
     );
     const imgs = PokeData.map((data) => {
-      return data.sprites.front_shiny;
+      return data.sprites.other["official-artwork"].front_default;
     });
     res.json(imgs);
   } catch (error) {
@@ -49,14 +49,13 @@ app.get("/easy", async (req, res) => {
 
 app.get("/medium", async (req, res) => {
   try {
-    const Response = await axios.get("https://pokeapi.co/api/v2/pokemon");
     //medium mode should give us 6 unique pokes, we use set
     const pokeIDs = new Set();
     let number = 0;
     while (pokeIDs.size < 6) {
       //generate random numbers between 1 and length of the poke response
       // axios parses json automatically (unlike fetch) and store the usable result in data property
-      number = Math.floor(Math.random() * Response.data.count) + 1;
+      number = Math.floor(Math.random() * 1000) + 1;
       pokeIDs.add(number);
     }
     const pokeIds = [...pokeIDs];
@@ -69,7 +68,7 @@ app.get("/medium", async (req, res) => {
       }),
     );
     const imgs = PokeData.map((data) => {
-      return data.sprites.front_shiny;
+      return data.sprites.other["official-artwork"].front_default;
     });
     res.json(imgs);
   } catch (error) {
@@ -79,14 +78,13 @@ app.get("/medium", async (req, res) => {
 
 app.get("/hard", async (req, res) => {
   try {
-    const Response = await axios.get("https://pokeapi.co/api/v2/pokemon");
     //hard mode should give us 12 unique pokes, we use set
     const pokeIDs = new Set();
     let number = 0;
     while (pokeIDs.size < 12) {
       //generate random numbers between 1 and length of the poke response
       // axios parses json automatically (unlike fetch) and store the usable result in data property
-      number = Math.floor(Math.random() * Response.data.count) + 1;
+      number = Math.floor(Math.random() * 1000) + 1;
       pokeIDs.add(number);
     }
     const pokeIds = [...pokeIDs];
@@ -99,7 +97,7 @@ app.get("/hard", async (req, res) => {
       }),
     );
     const imgs = PokeData.map((data) => {
-      return data.sprites.front_shiny;
+      return data.sprites.other["official-artwork"].front_default;
     });
     res.json(imgs);
   } catch (error) {
