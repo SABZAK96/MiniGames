@@ -1,5 +1,4 @@
 
-
 // easy mode button
 const easyMode = document.getElementById("easy");
 easyMode.addEventListener("click", async () => {
@@ -21,11 +20,18 @@ container.innerHTML = '';
 newResponse.sort(()=> Math.random() - 0.5 );
 newResponse.forEach(img => {
     const element = document.createElement("div");
-    element.className = "relative w-60 h-60"
-    element.innerHTML = `<img src="${img}" class="w-full h-full object-contain" />
-    <img src="/pokeball-seeklogo.png" class="absolute inset-0 w-full h-full object-contain" />`;
+    element.className = "card relative w-60 h-60"
+    element.dataset.id = img; // data-id='${img}' assigning our own attribute
+    element.innerHTML = `<img src="${img}" class="back w-full h-full object-contain" />
+    <img src="/pokeball-seeklogo.png" class="front absolute inset-0 w-full h-full object-contain" />`;
     container.appendChild(element)
 });
+// clicking the front face
+const cards = document.querySelectorAll(".card")
+cards.forEach((card)=>{card.addEventListener("click", function(e){ // e stands for event
+    this.classList.toggle("flip"); // this means we want the parent element, since the front image is overlaying, it would be the "target"
+})
+})
 });
 
 // medium mode button
@@ -41,11 +47,19 @@ container.className = "grid grid-cols-4 gap-2 mx-auto justify-items-center max-w
 container.innerHTML = '';
 newResponse.forEach(img => {
     const element = document.createElement("div");
-    element.className = "relative w-48 h-48"
-    element.innerHTML = `<img src="${img}" class="w-full h-full object-contain" />
-    <img src="/pokeball-seeklogo.png" class="absolute inset-0 w-full h-full object-contain" />`;
+    element.className = "card relative w-48 h-48"
+    element.dataset.id = img;
+    element.innerHTML = `<img src="${img}" class="back w-full h-full object-contain" />
+    <img src="/pokeball-seeklogo.png" class="front absolute inset-0 w-full h-full object-contain" />`;
     container.appendChild(element)
 });
+// clicking the front face
+const cards = document.querySelectorAll(".card")
+cards.forEach((card)=>{card.addEventListener("click", function(e){ // e stands for event
+    // also toggle means if flip is inside the class list of not remove it
+    this.classList.toggle("flip"); // this means we want the parent element, since the front image is overlaying, it would be the "target"
+})
+})
 });
 
 // hard mode button
@@ -61,9 +75,17 @@ container.className = "grid grid-cols-6 gap-2 mx-auto justify-items-center max-w
 container.innerHTML = '';
 newResponse.forEach(img => {
     const element = document.createElement("div");
-    element.className = "relative w-40 h-40"
-    element.innerHTML = `<img src="${img}" class="w-full h-full object-contain" />
-    <img src="/pokeball-seeklogo.png" class="absolute inset-0 w-full h-full object-contain" />`;
-    container.appendChild(element)
+    element.className = "card relative w-40 h-40"
+    element.dataset.id = img;
+    element.innerHTML = `<img src="${img}" class="back w-full h-full object-contain" />
+    <img src="/pokeball-seeklogo.png" class="front absolute inset-0 w-full h-full object-contain" />`;
+    container.appendChild(element);
 });
+// clicking the front face
+const cards = document.querySelectorAll(".card")
+cards.forEach((card)=>{card.addEventListener("click", function(e){ // e stands for event
+    this.classList.toggle("flip"); // this means we want the parent element, since the front image is overlaying, it would be the "target"
+})
+})
 });
+

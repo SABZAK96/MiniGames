@@ -1,25 +1,46 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Poke Game</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-       <link
+    <link
       href="https://cdn.jsdelivr.net/npm/daisyui@5"
       rel="stylesheet"
       type="text/css"
     />
-</head>
-<body>
+    <style>
+        .card{
+            transition-property: transform;
+            transition-duration: 1s ;
+            transform-style: preserve-3d;
+        }
+      .flip {
+        /* flips the whole card containing front and back */
+        transform: rotateY(180deg);
+      }
+      .back{
+        /* when card is flipped, this should be rotated as well to come into front and be visible */
+        transform: rotateY(180deg);
+        /* backface should be hidden because we dont wanna see it behing the logo */
+        backface-visibility: hidden; 
+      }
+      .front{
+        /* visible unti flipped by rotation */
+        backface-visibility: hidden; 
+      }
+    </style>
+  </head>
+  <body>
     <!-- container of difficulties -->
-     <div class="flex flex-row gap-1 items-center justify-center pt-10 mb-30">
-        <button id="easy" class="btn btn-info">Easy</button>
-        <button id="medium" class="btn btn-info">Medium</button>
-        <button id="hard" class="btn btn-info">Hard</button>
-     </div>
+    <div class="flex flex-row gap-1 items-center justify-center pt-10 mb-30">
+      <button id="easy" class="btn btn-info">Easy</button>
+      <button id="medium" class="btn btn-info">Medium</button>
+      <button id="hard" class="btn btn-info">Hard</button>
+    </div>
     <!-- container of pokes -->
-     <div id="pokeContainer"></div>
+    <div id="pokeContainer"></div>
     <script src="code.js"></script>
-</body>
+  </body>
 </html>
