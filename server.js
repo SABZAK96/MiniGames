@@ -23,7 +23,7 @@ app.get("/easy", async (req, res) => {
     //easy mode should give us 3 unique pokes, we use set
     const pokeIDs = new Set();
     let number = 0;
-    while (pokeIDs.size < 4) {
+    while (pokeIDs.size < 3) {
       //generate random numbers between 1 and length of the poke response
       // axios parses json automatically (unlike fetch) and store the usable result in data property
       number = Math.floor(Math.random() * 1000) + 1;
