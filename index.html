@@ -34,13 +34,48 @@
   </head>
   <body>
     <!-- container of difficulties -->
-    <div class="flex flex-row gap-1 items-center justify-center pt-10 mb-30">
+    <div class="flex flex-row gap-1 items-center justify-center pt-10 ">
       <button id="easy" class="btn btn-info">Easy</button>
       <button id="medium" class="btn btn-info">Medium</button>
       <button id="hard" class="btn btn-info">Hard</button>
     </div>
+<!-- container of start and reset -->
+ <div id="options" class="flex flex-row gap-1 items-center justify-center pt-2 mb-10 hidden">
+    <button id="start" class="btn btn-accent">Start</button>
+    <button id="reset" class="btn btn-accent">Reset</button>
+ </div>
+    <!-- container of info -->
+         <div class="mx-auto overflow-x-auto mb-30 ">
+  <table class="table text-center mx-auto">
+    <!-- head -->
+
+    <tbody>
+      <!-- row 1 -->
+      <tr>
+        <td class="font-bold text-3xl">Total Number of Pairs: <span id="total"></span></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="font-bold text-3xl">Number of Matches: <span id="matched"></span></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="font-bold text-3xl">Number of pair left: <span id="unmatched"></span></td>
+      </tr>
+       <!-- row 4 -->
+      <tr>
+        <td class="font-bold text-3xl">Number of Clicks: <span id="clicks"></span></td>
+      </tr>
+             <!-- row 5 -->
+      <tr>
+        <td class="font-bold text-3xl">You got 100 seconds.<span >Remaining Time: <span id="easyTime"></span></span>
+</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
     <!-- container of pokes -->
-    <div id="pokeContainer"></div>
+    <div id="pokeContainer" class="mb-15"></div>
     <script src="code.js"></script>
   </body>
 </html>
