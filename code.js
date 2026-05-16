@@ -1,10 +1,17 @@
 // easy mode button
 const easyMode = document.getElementById("easy");
 easyMode.addEventListener("click", () => {
+    // clear button container and build them
+    const buttonContainer = document.getElementById("options")
+    buttonContainer.innerHTML = '';
+    buttonContainer.innerHTML = `<button id="start" class="btn btn-accent">Start</button>
+    <button id="reset" class="btn btn-accent">Reset</button>`
   document.getElementById("options").classList.remove("hidden");
   document.getElementById("start").addEventListener(
     "click",
     async () => {
+        document.getElementById("start").classList.add("hidden");
+      document.getElementById("info").classList.remove("hidden");
       let win = false;
       let matchedCards = [];
       let easyTime = 45;
@@ -22,6 +29,9 @@ easyMode.addEventListener("click", () => {
       document.getElementById("reset").addEventListener(
         "click",
         () => {
+            document.getElementById("start").classList.remove("hidden");
+            document.getElementById("info").classList.add("hidden");
+            document.getElementById("pokeContainer").classList.add("hidden");
           clearInterval(timer);
           clearInterval(popup);
         },
@@ -53,39 +63,47 @@ easyMode.addEventListener("click", () => {
         container.appendChild(element);
       });
 
-
-
-
       let firstCard = undefined;
       let secondCard = undefined;
       let matched = 0;
 
-            let popup = setInterval(() => {
+      let popup = setInterval(() => {
+        window.alert("Power Up!");
         document.querySelectorAll(".card").forEach((element) => {
-          if (!matchedCards.includes(element.dataset.id) && element !== firstCard && element !== secondCard) {
-              element.classList.add("flip");
+          if (
+            !matchedCards.includes(element.dataset.id) &&
+            element !== firstCard &&
+            element !== secondCard
+          ) {
+            element.classList.add("flip");
             setTimeout(() => {
               element.classList.remove("flip");
-            }, 2000)
+            }, 1000);
           }
         });
       }, 10000);
 
       document.getElementById("matched").innerHTML = matched;
+
       let unmatched = 3;
       document.getElementById("unmatched").innerHTML = unmatched;
       document.getElementById("total").innerHTML = unmatched;
 
       let clicks = 0;
       document.getElementById("clicks").innerHTML = clicks;
+      //locking the cards to avoid clicking when w unmatched cards are shown
+      let locked = false;
       // clicking the front face
       const cards = document.querySelectorAll(".card");
       cards.forEach((card) => {
         card.addEventListener("click", function (e) {
-          clicks++;
           document.getElementById("clicks").innerHTML = clicks;
           // ignore same card clicked twice
-          if (card === firstCard) return;
+          if (card === firstCard) return; // not allowing clicking the same card to count as matched
+          if (matchedCards.includes(card.dataset.id)) return; // same as removing the matched cards from the game
+          if (locked) return; //in locked phase avoid clicking
+
+          clicks++; // claculate the clicks for permitted cards, not the ones that should be skipped
 
           card.classList.add("flip");
 
@@ -104,9 +122,9 @@ easyMode.addEventListener("click", () => {
                 win = true;
                 clearInterval(timer);
                 clearInterval(popup);
-                setTimeout(()=>{
-                    window.alert("you won!");
-                },1002)
+                setTimeout(() => {
+                  window.alert("you won!");
+                }, 802);
               }
               unmatched--;
               document.getElementById("unmatched").innerHTML = unmatched;
@@ -115,6 +133,7 @@ easyMode.addEventListener("click", () => {
             } else {
               // no match — flip both back after 1 second
               // we should save a reference for the firstcard and second card before setting them to undefined because of set time out
+              locked = true; // locking cards for clicking
               const first = firstCard;
               const second = secondCard;
               firstCard = undefined;
@@ -122,19 +141,22 @@ easyMode.addEventListener("click", () => {
               setTimeout(() => {
                 first.classList.remove("flip");
                 second.classList.remove("flip");
-              }, 1000);
+                locked = false;
+              }, 800);
             }
           }
         });
       });
-    },
-    { once: true },
-  ); // prevent stacking listeners everytime easy is clicked
+    }
+  );
 });
 
 // medium mode button
 const mediumMode = document.getElementById("medium");
 mediumMode.addEventListener("click", async () => {
+    // clear button container and build them
+    const buttonContainer = document.getElementById("options")
+    buttonContainer.innerHTML = '';
   const Response = await (await fetch("/medium")).json();
   // concat is a method that duplicate an array
   const newResponse = Response.concat(Response);
