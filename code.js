@@ -59,7 +59,7 @@ easyMode.addEventListener("click", () => {
     const newResponse = Response.concat(Response);
 
     container.className =
-      "grid grid-cols-3 gap-2 mx-auto justify-items-center max-w-3xl";
+      "grid grid-cols-3 gap-2 mx-auto justify-items-center max-w-3xl mb-20";
     container.innerHTML = "";
 
     // Fisher-Yates shuffle for shuffling the array
@@ -235,7 +235,7 @@ mediumMode.addEventListener("click", () => {
     const newResponse = Response.concat(Response);
 
     container.className =
-      "grid md:grid-cols-4 grid-cols-3 gap-2 mx-auto justify-items-center max-w-3xl ";
+      "grid md:grid-cols-4 grid-cols-3  gap-2 mx-auto justify-items-center md:max-w-4xl max-w-3xl mb-20 ";
     container.innerHTML = "";
 
     // Shuffle the array randomly before rendering so cards appear in a different order each game.
@@ -424,7 +424,7 @@ hardMode.addEventListener("click", () => {
     const newResponse = Response.concat(Response);
 
     container.className =
-      "grid md:grid-cols-6 grid-cols-4 gap-2 mx-auto justify-items-center max-w-7xl";
+      "grid md:grid-cols-6 grid-cols-4 gap-2 mx-auto justify-items-center max-w-7xl mb-20";
     container.innerHTML = "";
 
     // Shuffle the array randomly before rendering so cards appear in a different order each game.
