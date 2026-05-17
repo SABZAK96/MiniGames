@@ -1,3 +1,31 @@
+// toggle daiseyUI theme component and add it to localstorage
+const theme = document.querySelector(".theme-controller");
+const element = document.getElementById("page");
+
+// get preferences from local storage, if there's nothing there, use light
+const savePreference = localStorage.getItem("themePreference") || "light";
+element.setAttribute("data-theme", savePreference);
+
+// save visual toggle upon reload as well
+if (savePreference === "dark") {
+  theme.checked = true;
+} else {
+  theme.checked = false;
+}
+
+// change the preference on toggle
+theme.addEventListener("change", () => {
+  if (theme.checked) {
+    const newPreference = "dark";
+    element.setAttribute("data-theme", newPreference);
+    localStorage.setItem("themePreference", newPreference);
+  } else {
+    const newPreference = "light";
+    element.setAttribute("data-theme", newPreference);
+    localStorage.setItem("themePreference", newPreference);
+  }
+});
+
 // define all timers here so that they wont stack up when changib difficulties
 let timer = undefined;
 let popup = undefined;
@@ -5,7 +33,6 @@ let popup = undefined;
 // easy mode button
 const easyMode = document.getElementById("easy");
 easyMode.addEventListener("click", () => {
-
   clearInterval(timer); //clear timers
   clearInterval(popup);
 
@@ -21,7 +48,6 @@ easyMode.addEventListener("click", () => {
   document.getElementById("options").classList.remove("hidden");
 
   document.getElementById("start").addEventListener("click", async () => {
-
     document.getElementById("start").classList.add("hidden");
     document.getElementById("info").classList.remove("hidden");
 
@@ -118,7 +144,6 @@ easyMode.addEventListener("click", () => {
     const cards = document.querySelectorAll(".card");
     cards.forEach((card) => {
       card.addEventListener("click", function (e) {
-
         document.getElementById("clicks").innerHTML = clicks;
 
         // ignore same card clicked twice
@@ -156,7 +181,6 @@ easyMode.addEventListener("click", () => {
             document.getElementById("unmatched").innerHTML = unmatched;
             firstCard = undefined;
             secondCard = undefined;
-
           } else {
             // no match — flip both back after 1 second
             // we should save a reference for the firstcard and second card before setting them to undefined because of set time out
@@ -181,7 +205,6 @@ easyMode.addEventListener("click", () => {
 // medium mode button
 const mediumMode = document.getElementById("medium");
 mediumMode.addEventListener("click", () => {
-
   clearInterval(timer);
   clearInterval(popup);
 
@@ -197,7 +220,6 @@ mediumMode.addEventListener("click", () => {
   document.getElementById("options").classList.remove("hidden");
 
   document.getElementById("start").addEventListener("click", async () => {
-
     document.getElementById("start").classList.add("hidden");
     document.getElementById("info").classList.remove("hidden");
 
@@ -292,7 +314,6 @@ mediumMode.addEventListener("click", () => {
     const cards = document.querySelectorAll(".card");
     cards.forEach((card) => {
       card.addEventListener("click", function (e) {
-
         document.getElementById("clicks").innerHTML = clicks;
 
         if (card === firstCard) return;
@@ -327,7 +348,6 @@ mediumMode.addEventListener("click", () => {
             document.getElementById("unmatched").innerHTML = unmatched;
             firstCard = undefined;
             secondCard = undefined;
-
           } else {
             locked = true;
             const first = firstCard;
@@ -350,7 +370,6 @@ mediumMode.addEventListener("click", () => {
 // hard mode button
 const hardMode = document.getElementById("hard");
 hardMode.addEventListener("click", () => {
-
   clearInterval(timer);
   clearInterval(popup);
 
@@ -366,7 +385,6 @@ hardMode.addEventListener("click", () => {
   document.getElementById("options").classList.remove("hidden");
 
   document.getElementById("start").addEventListener("click", async () => {
-
     document.getElementById("start").classList.add("hidden");
     document.getElementById("info").classList.remove("hidden");
 
@@ -461,7 +479,6 @@ hardMode.addEventListener("click", () => {
     const cards = document.querySelectorAll(".card");
     cards.forEach((card) => {
       card.addEventListener("click", function (e) {
-
         document.getElementById("clicks").innerHTML = clicks;
 
         if (card === firstCard) return;
@@ -496,7 +513,6 @@ hardMode.addEventListener("click", () => {
             document.getElementById("unmatched").innerHTML = unmatched;
             firstCard = undefined;
             secondCard = undefined;
-
           } else {
             locked = true;
             const first = firstCard;
