@@ -126,7 +126,7 @@ easyMode.addEventListener("click", () => {
           }, 1000);
         }
       });
-    }, 10000);
+    }, 20000);
 
     document.getElementById("matched").innerHTML = matched;
 
