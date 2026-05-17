@@ -11,71 +11,83 @@
       type="text/css"
     />
     <style>
-        .card{
-            transition-property: transform;
-            transition-duration: 0.5s ;
-            transform-style: preserve-3d;
-            perspective: 1000px; 
-        }
+      .card {
+        transition-property: transform;
+        transition-duration: 0.5s;
+        transform-style: preserve-3d;
+        perspective: 1000px;
+      }
       .flip {
         /* flips the whole card containing front and back */
         transform: rotateY(180deg);
       }
-      .back{
+      .back {
         /* when card is flipped, this should be rotated as well to come into front and be visible */
         transform: rotateY(180deg);
         /* backface should be hidden because we dont wanna see it behing the logo */
-        backface-visibility: hidden; 
+        backface-visibility: hidden;
       }
-      .front{
+      .front {
         /* visible unti flipped by rotation */
-        backface-visibility: hidden; 
+        backface-visibility: hidden;
       }
     </style>
   </head>
   <body>
     <!-- container of difficulties -->
-    <div  class="flex flex-row gap-1 items-center justify-center pt-10 ">
+    <div class="flex flex-row gap-1 items-center justify-center pt-10">
       <button id="easy" class="btn btn-info">Easy</button>
       <button id="medium" class="btn btn-info">Medium</button>
       <button id="hard" class="btn btn-info">Hard</button>
     </div>
-<!-- container of start and reset -->
- <div id="options" class="flex flex-row gap-1 items-center justify-center pt-2 mb-10 hidden">
-    
- </div>
+    <!-- container of start and reset -->
+    <div
+      id="options"
+      class="flex flex-row gap-1 items-center justify-center pt-2 mb-10 hidden"
+    ></div>
     <!-- container of info -->
-         <div id="info" class="mx-auto overflow-x-auto mb-30 hidden">
-  <table class="table text-center mx-auto">
-    <!-- head -->
+    <div id="info" class="mx-auto overflow-x-auto mb-30 hidden">
+      <table class="table text-center mx-auto">
+        <!-- head -->
 
-    <tbody>
-      <!-- row 1 -->
-      <tr>
-        <td class="font-bold text-3xl">Total Number of Matched Pairs to win: <span id="total"></span></td>
-      </tr>
-      <!-- row 2 -->
-      <tr>
-        <td class="font-bold text-3xl">Number of Matches: <span id="matched"></span></td>
-      </tr>
-      <!-- row 3 -->
-      <tr>
-        <td class="font-bold text-3xl">Number of pair left: <span id="unmatched"></span></td>
-      </tr>
-       <!-- row 4 -->
-      <tr>
-        <td class="font-bold text-3xl">Number of Clicks: <span id="clicks"></span></td>
-      </tr>
-             <!-- row 5 -->
-      <tr>
-        <td class="font-bold text-3xl">You got 100 seconds.<span >Remaining Time: <span id="easyTime"></span></span>
-</span></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+        <tbody>
+          <!-- row 1 -->
+          <tr>
+            <td class="font-bold text-3xl">
+              Total Number of Matched Pairs to win: <span id="total"></span>
+            </td>
+          </tr>
+          <!-- row 2 -->
+          <tr>
+            <td class="font-bold text-3xl">
+              Number of Matches: <span id="matched"></span>
+            </td>
+          </tr>
+          <!-- row 3 -->
+          <tr>
+            <td class="font-bold text-3xl">
+              Number of pair left: <span id="unmatched"></span>
+            </td>
+          </tr>
+          <!-- row 4 -->
+          <tr>
+            <td class="font-bold text-3xl">
+              Number of Clicks: <span id="clicks"></span>
+            </td>
+          </tr>
+          <!-- row 5 -->
+          <tr>
+            <td class="font-bold text-3xl">
+              You got 100 seconds.<span
+                >Remaining Time: <span id="easyTime"></span
+              ></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <!-- container of pokes -->
-    <div id="pokeContainer" ></div>
+    <div id="pokeContainer"></div>
     <script src="code.js"></script>
   </body>
 </html>
