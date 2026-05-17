@@ -54,7 +54,7 @@ easyMode.addEventListener("click", () => {
     let win = false;
     let matchedCards = [];
     let gameTime = 45;
-
+    document.getElementById("timeLimit").innerHTML = gameTime;
     document.getElementById("easyTime").innerHTML = gameTime;
 
     timer = setInterval(() => {
@@ -226,7 +226,7 @@ mediumMode.addEventListener("click", () => {
     let win = false;
     let matchedCards = [];
     let mediumTime = 100;
-
+    document.getElementById("timeLimit").innerHTML = mediumTime;
     document.getElementById("easyTime").innerHTML = mediumTime;
 
     timer = setInterval(() => {
@@ -391,6 +391,7 @@ hardMode.addEventListener("click", () => {
     let win = false;
     let matchedCards = [];
     let hardTime = 200;
+    document.getElementById("timeLimit").innerHTML = hardTime;
 
     document.getElementById("easyTime").innerHTML = hardTime;
 
@@ -442,7 +443,7 @@ hardMode.addEventListener("click", () => {
     const newResponse = Response.concat(Response);
 
     container.className =
-      "grid md:grid-cols-6 grid-cols-4 gap-2 mx-auto justify-items-center max-w-7xl mb-20";
+      "grid md:grid-cols-6 grid-cols-4 gap-2 mx-auto justify-items-center max-w-6xl mb-20";
     container.innerHTML = "";
 
     // Shuffle the array randomly before rendering so cards appear in a different order each game.
@@ -457,7 +458,7 @@ hardMode.addEventListener("click", () => {
 
     newResponse.forEach((img) => {
       const element = document.createElement("div");
-      element.className = "card relative md:w-40 md:h-40 w-35 h-35";
+      element.className = "card relative w-35 h-35";
       element.dataset.id = img; // data-id assigned as our own attribute for pair matching
       element.innerHTML = `<img src="${img}" class="back w-full h-full object-contain" />
     <img src="/pokeball-seeklogo.png" class="front absolute inset-0 w-full h-full object-contain" />`;
