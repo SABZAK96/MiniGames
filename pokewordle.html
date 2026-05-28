@@ -10,6 +10,7 @@
       type="text/css"
     />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
       .cell {
         transition: background-color 0.3s ease;
@@ -79,57 +80,27 @@
         <div id="grid" class="flex flex-col gap-2">
 
           <!-- row 0 -->
-          <div class="flex gap-2" data-row="0">
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="0" data-col="0"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="0" data-col="1"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="0" data-col="2"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="0" data-col="3"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="0" data-col="4"></div>
+          <div class="flex gap-2 guess" data-row="0">
           </div>
 
           <!-- row 1 -->
           <div class="flex gap-2 guess" data-row="1">
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="1" data-col="0"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="1" data-col="1"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="1" data-col="2"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="1" data-col="3"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="1" data-col="4"></div>
           </div>
 
           <!-- row 2 -->
-          <div class="flex gap-2" data-row="2">
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="2" data-col="0"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="2" data-col="1"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="2" data-col="2"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="2" data-col="3"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="2" data-col="4"></div>
+          <div class="flex gap-2 guess" data-row="2">
           </div>
 
           <!-- row 3 -->
-          <div class="flex gap-2" data-row="3">
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="3" data-col="0"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="3" data-col="1"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="3" data-col="2"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="3" data-col="3"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="3" data-col="4"></div>
+          <div class="flex gap-2 guess" data-row="3">
           </div>
 
           <!-- row 4 -->
-          <div class="flex gap-2" data-row="4">
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="4" data-col="0"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="4" data-col="1"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="4" data-col="2"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="4" data-col="3"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="4" data-col="4"></div>
+          <div class="flex gap-2 guess" data-row="4">
           </div>
 
           <!-- row 5 -->
-          <div class="flex gap-2" data-row="5">
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="5" data-col="0"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="5" data-col="1"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="5" data-col="2"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="5" data-col="3"></div>
-            <div class="cell w-14 h-14 border-2 border-base-300 rounded-lg flex items-center justify-center text-2xl font-bold uppercase" data-row="5" data-col="4"></div>
+          <div class="flex gap-2 guess" data-row="5">
           </div>
 
         </div>
