@@ -55,6 +55,7 @@ async function init() {
   displayFields();
   pokeImage();
   pokeSplit = pokeName.split("");
+  remainingTarget = [...pokeSplit];
 }
 init();
 
@@ -63,43 +64,66 @@ let currentRow = 0;
 let currentCol = 0;
 let answer = [];
 let pokeSplit = [];
+let remainingTarget = [];
 document.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     let index = 0;
-if(currentRow < 6){
-        while (index < pokeName.length) {
-      if (
-        pokeSplit.includes(answer[index]) &&
-        pokeSplit[index] === answer[index]
-      ) {
-        document
-          .querySelector(`[data-col="${index}"][data-row="${currentRow}"]`)
-          .classList.add("bg-success");
-        index++;
-      } else if (
-        pokeSplit.includes(answer[index]) &&
-        pokeSplit[index] !== answer[index]
-      ) {
-        document
-          .querySelector(`[data-col="${index}"][data-row="${currentRow}"]`)
-          .classList.add("bg-warning");
-        index++;
+    if (currentRow < 6) {
+
+      if(answer.length === pokeSplit.length){
+      while (index < pokeName.length) {
+        if (
+          pokeSplit.includes(answer[index]) &&
+          pokeSplit[index] === answer[index]
+        ) {
+          document
+            .querySelector(`[data-col="${index}"][data-row="${currentRow}"]`)
+            .classList.add("bg-success");
+          remainingTarget = remainingTarget.filter((u) => u !== answer[index]);
+
+          index++;
+        } else if (
+          pokeSplit.includes(answer[index]) &&
+          pokeSplit[index] !== answer[index] &&
+          remainingTarget.includes(answer[index])
+        ) {
+          document
+            .querySelector(`[data-col="${index}"][data-row="${currentRow}"]`)
+            .classList.add("bg-warning");
+
+          index++;
+        } else {
+          document
+            .querySelector(`[data-col="${index}"][data-row="${currentRow}"]`)
+            .classList.add("bg-base-300");
+          index++;
+        }
+      }
+
+      //win condition
+      if (remainingTarget.length === 0) {
+        document.getElementById("pokeSilhouette").removeAttribute("style");
+        document.getElementById("messageTitle").innerHTML = "You Won!";
+        document.getElementById("message").innerHTML =
+          "You Guessed it Right! 🎉";
+
+        // set time out shows the modal after current loop is finished
+        setTimeout(() => document.getElementById("my_modal_2").showModal(), 0);
       } else {
-        document
-          .querySelector(`[data-col="${index}"][data-row="${currentRow}"]`)
-          .classList.add("bg-base-300");
-        index++;
+        currentCol = 0;
+        answer = [];
+        currentRow++;
       }
     }
-    currentCol = 0;
-    answer = [];
-    currentRow++;
-}
-else {
-    window.alert("no more tries!")
-}
+    if (currentRow === 6 && remainingTarget.length !== 0) {
+      document.getElementById("pokeSilhouette").removeAttribute("style");
+      document.getElementById("messageTitle").innerHTML = "You Lost!";
+      document.getElementById("message").innerHTML = "Maybe next time?";
 
-  } else if (e.key === "Backspace") {
+      // set time out shows the modal after current loop is finished
+      setTimeout(() => document.getElementById("my_modal_2").showModal(), 0);
+    }
+  }} else if (e.key === "Backspace") {
     if (currentCol > 0) {
       currentCol--;
       document.querySelector(
