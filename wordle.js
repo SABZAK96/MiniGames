@@ -52,6 +52,56 @@ function pokeImage() {
   document.getElementById("pokeSilhouette").src = pokeImage;
 }
 
+// hint generator
+let hintsRevealed = 0;
+async function revealHints() {
+  const hintContainer = document.getElementById("hintsList");
+  const noHintMessage = document.getElementById("noHintsMsg");
+
+  if (hintsRevealed === 0) {
+    let pokeTypes = [];
+    const element = document.createElement("p");
+    element.classList.add("italic", "text-xs");
+    const type = poke.types.forEach((type) => {
+      pokeTypes.push(type.type.name);
+    });
+    noHintMessage.classList.add("hidden");
+    element.innerHTML = `<strong>Poke Types:</strong> ${pokeTypes}`;
+    hintContainer.appendChild(element);
+    hintsRevealed++;
+    return;
+  }
+
+  if (hintsRevealed === 1) {
+    const species = await axios.get(poke.species.url);
+    const color = species.data.color.name;
+    const element = document.createElement("p");
+    element.classList.add("italic", "text-xs");
+    element.innerHTML += `<strong>Poke Color:</strong> ${color}`;
+    hintContainer.appendChild(element);
+    hintsRevealed++;
+    return;
+  }
+  if (hintsRevealed === 2) {
+    const abilities = poke.abilities.map((u) => u.ability.name); // returns an array containing name of abilities
+    const element = document.createElement("p");
+    element.classList.add("italic", "text-xs");
+    element.innerHTML += `<strong>Poke Abilities:</strong> ${abilities}`;
+    hintContainer.appendChild(element);
+    hintsRevealed++;
+    return;
+  }
+  if (hintsRevealed === 3) {
+    const element = document.createElement("p");
+    element.classList.add("italic", "text-xs");
+    element.innerHTML += `<strong>You've used up all your hints!</strong>`;
+    hintContainer.appendChild(element);
+    hintsRevealed++;
+    return;
+  }
+  if(hintsRevealed === 4) return;
+}
+
 async function init() {
   await getRandomPokemon();
   displayFields();
@@ -172,3 +222,6 @@ document.addEventListener("keydown", (e) => {
     }
   }
 });
+
+// reveal hints
+document.getElementById("revealHint").addEventListener("click", revealHints);
