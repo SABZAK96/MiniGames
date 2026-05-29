@@ -1,3 +1,5 @@
+const jsConfetti = new JSConfetti();
+
 let poke = undefined;
 let pokeName = undefined;
 // fetch a random poke from the api
@@ -65,65 +67,94 @@ let currentCol = 0;
 let answer = [];
 let pokeSplit = [];
 let remainingTarget = [];
+let gameOver = false;
 document.addEventListener("keydown", (e) => {
+  // if the game is finished exit the loop after each keypress
+  if (gameOver) return;
   if (e.key === "Enter") {
     let index = 0;
     if (currentRow < 6) {
+      if (answer.length === pokeSplit.length) {
+        while (index < pokeName.length) {
+          if (
+            pokeSplit.includes(answer[index]) &&
+            pokeSplit[index] === answer[index]
+          ) {
+            document
+              .querySelector(`[data-col="${index}"][data-row="${currentRow}"]`)
+              .classList.add("bg-success");
+            remainingTarget = remainingTarget.filter(
+              (u) => u !== answer[index],
+            );
 
-      if(answer.length === pokeSplit.length){
-      while (index < pokeName.length) {
-        if (
-          pokeSplit.includes(answer[index]) &&
-          pokeSplit[index] === answer[index]
-        ) {
-          document
-            .querySelector(`[data-col="${index}"][data-row="${currentRow}"]`)
-            .classList.add("bg-success");
-          remainingTarget = remainingTarget.filter((u) => u !== answer[index]);
+            index++;
+          } else if (
+            pokeSplit.includes(answer[index]) &&
+            pokeSplit[index] !== answer[index] &&
+            remainingTarget.includes(answer[index])
+          ) {
+            document
+              .querySelector(`[data-col="${index}"][data-row="${currentRow}"]`)
+              .classList.add("bg-warning");
 
-          index++;
-        } else if (
-          pokeSplit.includes(answer[index]) &&
-          pokeSplit[index] !== answer[index] &&
-          remainingTarget.includes(answer[index])
-        ) {
-          document
-            .querySelector(`[data-col="${index}"][data-row="${currentRow}"]`)
-            .classList.add("bg-warning");
-
-          index++;
-        } else {
-          document
-            .querySelector(`[data-col="${index}"][data-row="${currentRow}"]`)
-            .classList.add("bg-base-300");
-          index++;
+            index++;
+          } else {
+            document
+              .querySelector(`[data-col="${index}"][data-row="${currentRow}"]`)
+              .classList.add("bg-base-300");
+            index++;
+          }
         }
-      }
 
-      //win condition
-      if (remainingTarget.length === 0) {
+        //win condition
+        if (remainingTarget.length === 0) {
+          gameOver = true;
+          document.getElementById("pokeSilhouette").removeAttribute("style");
+          jsConfetti.addConfetti();
+
+          jsConfetti.addConfetti({
+            emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
+          });
+          document.getElementById("messageTitle").innerHTML = "You Won!";
+          document.getElementById("message").innerHTML =
+            "You Guessed it Right! 🎉";
+
+          // set time out shows the modal after current loop is finished
+          setTimeout(
+            () => document.getElementById("my_modal_2").showModal(),
+            0,
+          );
+        } else {
+          currentCol = 0;
+          answer = [];
+          currentRow++;
+        }
+      } else {
+        document
+          .querySelector(`[data-row="${currentRow}"]`)
+          .classList.add("shakeDiv");
+
+        // remove the class from the div after the animation is finished for the next tries
+        setTimeout(
+          () =>
+            document
+              .querySelector(`[data-row="${currentRow}"]`)
+              .classList.remove("shakeDiv"),
+          500,
+        );
+      }
+      //lose condition
+      if (currentRow === 6 && remainingTarget.length !== 0) {
+        gameOver = true;
         document.getElementById("pokeSilhouette").removeAttribute("style");
-        document.getElementById("messageTitle").innerHTML = "You Won!";
-        document.getElementById("message").innerHTML =
-          "You Guessed it Right! 🎉";
+        document.getElementById("messageTitle").innerHTML = "You Lost!";
+        document.getElementById("message").innerHTML = "Maybe next time?";
 
         // set time out shows the modal after current loop is finished
         setTimeout(() => document.getElementById("my_modal_2").showModal(), 0);
-      } else {
-        currentCol = 0;
-        answer = [];
-        currentRow++;
       }
     }
-    if (currentRow === 6 && remainingTarget.length !== 0) {
-      document.getElementById("pokeSilhouette").removeAttribute("style");
-      document.getElementById("messageTitle").innerHTML = "You Lost!";
-      document.getElementById("message").innerHTML = "Maybe next time?";
-
-      // set time out shows the modal after current loop is finished
-      setTimeout(() => document.getElementById("my_modal_2").showModal(), 0);
-    }
-  }} else if (e.key === "Backspace") {
+  } else if (e.key === "Backspace") {
     if (currentCol > 0) {
       currentCol--;
       document.querySelector(
