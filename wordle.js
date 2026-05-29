@@ -1,3 +1,31 @@
+// toggle daiseyUI theme component and add it to localstorage
+const theme = document.querySelector(".theme-controller");
+const element = document.getElementById("page");
+
+// get preferences from local storage, if there's nothing there, use light
+const savePreference = localStorage.getItem("themePreference") || "light";
+element.setAttribute("data-theme", savePreference);
+
+// save visual toggle upon reload as well
+if (savePreference === "dark") {
+  theme.checked = true;
+} else {
+  theme.checked = false;
+}
+
+// change the preference on toggle
+theme.addEventListener("change", () => {
+  if (theme.checked) {
+    const newPreference = "dark";
+    element.setAttribute("data-theme", newPreference);
+    localStorage.setItem("themePreference", newPreference);
+  } else {
+    const newPreference = "light";
+    element.setAttribute("data-theme", newPreference);
+    localStorage.setItem("themePreference", newPreference);
+  }
+});
+
 const jsConfetti = new JSConfetti();
 
 let poke = undefined;
