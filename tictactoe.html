@@ -62,20 +62,45 @@
     <div class="flex flex-col items-center gap-4 px-6 py-8">
       <!-- let user find their own poke -->
       <!-- You can open the modal using ID.showModal() method -->
-      <button class="btn" onclick="my_modal_4.showModal()">open modal</button>
       <dialog id="my_modal_4" class="modal">
         <div class="modal-box w-11/12 max-w-5xl">
           <h3 class="text-lg font-bold">Pick Your Poke Marker!</h3>
           <form method="dialog" class="flex flex-col gap-3 mt-4">
-            <input id="search" type="text" placeholder="Search for your poke..." class="input w-full" />
+            <input
+              id="search"
+              type="text"
+              placeholder="Search for your poke..."
+              class="input w-full"
+            />
             <div id="pokePreview"></div>
             <!-- modal action is for placing buttons on the bottom right so i brought the form out of it to have a full width search bar -->
             <div class="modal-action mt-0">
-              <button class="btn btn-primary">Confirm</button>
+              <button id="select" class="btn btn-primary">Confirm</button>
             </div>
           </form>
         </div>
       </dialog>
+      <!-- another modal for selection confirmation -->
+      <dialog id="my_modal_5" class="modal">
+        <div class="modal-box w-11/12 max-w-5xl">
+          <form
+            method="dialog"
+            class="flex flex-col justify-center items-center gap-3 mt-4"
+          >
+            <div class="font-bold text-xl">You selected</div>
+            <div
+              id="pokeName"
+              class="italic text-primary text-3xl font-bold"
+            ></div>
+            <div><img id="pokePic" src="" class="w-75 h-75" /></div>
+            <!-- modal action is for placing buttons on the bottom right so i brought the form out of it to have a full width search bar -->
+            <div class="modal-action mt-0">
+              <button id="startGame" class="btn btn-primary">Let's Play!</button>
+            </div>
+          </form>
+        </div>
+      </dialog>
+
       <!-- controls above grid: same width as grid -->
       <div class="w-96 md:w-200 flex flex-col gap-3">
         <!-- turn indicator -->
@@ -103,7 +128,7 @@
       </div>
 
       <!-- tictactoe grid -->
-      <div class="w-96 h-96 md:w-200 md:h-200 flex flex-row">
+      <div id="gameGrid" class="w-96 h-96 md:w-200 md:h-200 flex flex-row hover:cursor-pointer">
         <!-- first col -->
         <div class="flex flex-col w-1/3 h-full">
           <div
