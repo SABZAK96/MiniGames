@@ -11,6 +11,7 @@
       type="text/css"
     />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </head>
   <body>
     <!-- navbar -->
@@ -66,8 +67,9 @@
         <div class="modal-box w-11/12 max-w-5xl">
           <h3 class="text-lg font-bold">Pick Your Poke Marker!</h3>
           <form method="dialog" class="flex flex-col gap-3 mt-4">
-            <input type="text" placeholder="Search for your poke..." class="input w-full" />
+            <input id="search" type="text" placeholder="Search for your poke..." class="input w-full" />
             <div id="pokePreview"></div>
+            <!-- modal action is for placing buttons on the bottom right so i brought the form out of it to have a full width search bar -->
             <div class="modal-action mt-0">
               <button class="btn btn-primary">Confirm</button>
             </div>
@@ -154,5 +156,7 @@
         </div>
       </div>
     </div>
+
+    <script src="tictactoe.js"></script>
   </body>
 </html>
