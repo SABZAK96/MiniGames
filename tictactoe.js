@@ -10,11 +10,16 @@ async function getPokes() {
   return pokeObjects;
 }
 
-let playerMarker = undefined;
+let playerOneMarker = undefined;
+let playerTwoMarker = undefined;
 let selectedPoke = { name: undefined, image: undefined };
 
 async function searchPoke() {
   const allPokes = await getPokes();
+  // reset values because selectedPokes, search, pokePreview should be used for both players
+  selectedPoke = { name: undefined, image: undefined };
+  document.getElementById("search").value = "";
+  document.getElementById("pokePreview").innerHTML = "";
   document.getElementById("my_modal_4").showModal();
 
   // add an event listener for instant suggestions
@@ -69,30 +74,53 @@ async function searchPoke() {
   });
 
   // select listener registered once, outside forEach
-  document.getElementById("select").addEventListener("click", () => {
-    if (!selectedPoke.name) return;
+  document.getElementById("select").addEventListener(
+    "click",
+    () => {
+      if (!selectedPoke.name) return;
 
-    document.getElementById("pokeName").innerHTML = `${selectedPoke.name}!`;
-    document.getElementById("pokePic").src = selectedPoke.image;
-    document.getElementById("my_modal_5").showModal();
-  });
+      document.getElementById("pokeName").innerHTML = `${selectedPoke.name}!`;
+      document.getElementById("pokePic").src = selectedPoke.image;
+      document.getElementById("my_modal_5").showModal();
+    },
+    { once: true },
+  );
 
   // start game after player confirms their marker
-  document.getElementById("my_modal_5").addEventListener("close", () => {
-    playerMarker = `<img src="${selectedPoke.image}" class="w-full h-full object-contain">`;
-    startGame();
-  });
+  document.getElementById("my_modal_5").addEventListener(
+    "close",
+    () => {
+      if (!playerOneMarker) {
+        playerOneMarker = `<img src="${selectedPoke.image}" class="w-full h-full object-contain">`;
+        // call search poke again for the next opponent
+        searchPoke();
+      } else {
+        playerTwoMarker = `<img src="${selectedPoke.image}" class="w-full h-full object-contain">`;
+        //start the game after player 2 chooses their marker
+        startGame();
+      }
+    },
+    { once: true },
+  );
 }
 searchPoke();
 
 //let the game begins!
+let playerPlaying = undefined;
 function startGame() {
   const allCells = document.querySelectorAll("[data-row][data-col]");
   allCells.forEach((cell) => {
     cell.addEventListener("click", () => {
-      // to avoid overwriting a cell if it has a players marker on it
+      // the following line should be moved to top so that the second player can't overwrite
+      // the first player marker
       if (cell.innerHTML !== "") return;
-      cell.innerHTML = playerMarker;
+      if (!playerPlaying || playerPlaying === playerOneMarker) {
+        cell.innerHTML = playerOneMarker;
+        playerPlaying = playerTwoMarker;
+      } else if (playerPlaying === playerTwoMarker) {
+        cell.innerHTML = playerTwoMarker;
+        playerPlaying = playerOneMarker;
+      }
     });
   });
 }
