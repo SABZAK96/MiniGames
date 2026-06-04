@@ -13,17 +13,20 @@ async function getPokes() {
 let playerOneMarker = undefined;
 let playerTwoMarker = undefined;
 let selectedPoke = { name: undefined, image: undefined };
+let playerName = undefined;
 
 async function searchPoke() {
   const allPokes = await getPokes();
   // reset values because selectedPokes, search, pokePreview should be used for both players
   selectedPoke = { name: undefined, image: undefined };
+  document.getElementById("name").value = "";
   document.getElementById("search").value = "";
   document.getElementById("pokePreview").innerHTML = "";
   document.getElementById("my_modal_4").showModal();
 
   // add an event listener for instant suggestions
   const input = document.getElementById("search");
+  playerName = document.getElementById("name");
 
   input.addEventListener("input", () => {
     const query = input.value.trim().toLowerCase();
@@ -92,10 +95,12 @@ async function searchPoke() {
     () => {
       if (!playerOneMarker) {
         playerOneMarker = `<img src="${selectedPoke.image}" class="w-full h-full object-contain">`;
+        document.getElementById("p1Name").textContent = playerName.value;
         // call search poke again for the next opponent
         searchPoke();
       } else {
         playerTwoMarker = `<img src="${selectedPoke.image}" class="w-full h-full object-contain">`;
+        document.getElementById("p2Name").textContent = playerName.value;
         //start the game after player 2 chooses their marker
         startGame();
       }
@@ -108,6 +113,8 @@ searchPoke();
 //let the game begins!
 let playerPlaying = undefined;
 function startGame() {
+  document.getElementById("currentTurn").innerHTML =
+    document.getElementById("p1Name").textContent;
   const allCells = document.querySelectorAll("[data-row][data-col]");
   allCells.forEach((cell) => {
     cell.addEventListener("click", () => {
@@ -115,9 +122,13 @@ function startGame() {
       // the first player marker
       if (cell.innerHTML !== "") return;
       if (!playerPlaying || playerPlaying === playerOneMarker) {
+        document.getElementById("currentTurn").innerHTML =
+          document.getElementById("p2Name").textContent;
         cell.innerHTML = playerOneMarker;
         playerPlaying = playerTwoMarker;
       } else if (playerPlaying === playerTwoMarker) {
+        document.getElementById("currentTurn").innerHTML =
+          document.getElementById("p1Name").textContent;
         cell.innerHTML = playerTwoMarker;
         playerPlaying = playerOneMarker;
       }
