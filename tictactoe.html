@@ -12,6 +12,7 @@
     />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
   </head>
   <body>
     <!-- navbar -->
@@ -112,7 +113,7 @@
         <!-- turn indicator -->
         <div class="bg-base-200 rounded-xl p-4 w-full text-center">
           <p class="text-sm text-base-content/60 mb-1">Current Turn</p>
-          <p id="currentTurn" class="text-xl font-bold">Player 1</p>
+          <p id="currentTurn" class="text-xl font-bold"></p>
         </div>
 
         <!-- win stats -->
@@ -194,6 +195,16 @@
         </div>
       </div>
     </div>
+
+    <!-- win modal -->
+    <dialog id="my_modal_win" class="modal">
+      <div class="modal-box flex flex-col justify-center items-center">
+        <h3 id="messageTitle" class="text-lg font-bold"></h3>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
 
     <script src="tictactoe.js"></script>
   </body>

@@ -1,11 +1,10 @@
 // get full poke objects from the api
-
+const jsConfetti = new JSConfetti();
 let pokeObjects = undefined;
 async function getPokes() {
   const pokes = await axios.get(
     "https://pokeapi.co/api/v2/pokemon/?limit=1000",
   );
-  console.log(pokes.data.results);
   pokeObjects = pokes.data.results;
   return pokeObjects;
 }
@@ -37,9 +36,9 @@ async function searchPoke() {
     const suggestionConatiner = document.getElementById("pokePreview");
     suggestionConatiner.innerHTML = "";
     if (query) {
-      const matches = allPokes.filter((item) =>
-        item.name.trim().toLowerCase().includes(query),
-      );
+      const matches = allPokes
+        .filter((item) => item.name.trim().toLowerCase().startsWith(query))
+        .slice(0, 8);
       if (matches.length !== 0) {
         matches.forEach(async (match) => {
           // find poke image for each match
@@ -58,7 +57,12 @@ async function searchPoke() {
             "rounded-lg",
           );
           element.innerHTML = `<img id="${match.name}img" src="${pokeImage}" class="rounded-full w-6 h-6">${match.name}`;
-          suggestionConatiner.appendChild(element);
+          //do HTML string checking using includes method to see if that image already exists
+          if (
+            !suggestionConatiner.innerHTML.includes(`id="${match.name}img"`)
+          ) {
+            suggestionConatiner.appendChild(element);
+          }
 
           // store selected poke when clicked, no listener on select here
           document
@@ -103,12 +107,14 @@ async function searchPoke() {
     () => {
       if (!playerOneMarker) {
         p1Name = playerName.value;
+        document.getElementById("p1Name").textContent = p1Name;
         playerOneMarker = `<img id="${p1Name}Marker" src="${selectedPoke.image}" class="w-full h-full object-contain">`;
 
         // call search poke again for the next opponent
         searchPoke();
       } else {
         p2Name = playerName.value;
+        document.getElementById("p2Name").textContent = p2Name;
         playerTwoMarker = `<img id="${p2Name}Marker" src="${selectedPoke.image}" class="w-full h-full object-contain">`;
 
         //start the game after player 2 chooses their marker
@@ -128,6 +134,7 @@ let board = [
   [null, null, null],
 ];
 let winner = false;
+let draw = false;
 function startGame() {
   document.getElementById("currentTurn").innerHTML = p1Name;
 
@@ -137,6 +144,7 @@ function startGame() {
       // the following line should be moved to top so that the second player can't overwrite
       // the first player marker
       if (winner) return;
+      if (draw) return;
       if (cell.innerHTML !== "") return;
       if (!playerPlaying || playerPlaying === playerOneMarker) {
         document.getElementById("currentTurn").innerHTML = p2Name;
@@ -153,7 +161,6 @@ function startGame() {
         const r = cell.dataset.row;
         const c = cell.dataset.col;
         board[r][c] = cell.innerHTML || null;
-        console.log(board);
       });
 
       // win conditions
@@ -166,10 +173,27 @@ function startGame() {
           if (row[0].includes(`id="${p1Name}Marker"`)) {
             winner = true;
             p1Wins++;
+            document.getElementById("my_modal_win").showModal();
+            jsConfetti.addConfetti();
+
+            jsConfetti.addConfetti({
+              emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
+            });
+            document.getElementById("messageTitle").innerHTML =
+              `${p1Name} Won! 🎉`;
+
             // change the html
             document.getElementById("p1wins").textContent = p1Wins;
           } else {
             winner = true;
+            document.getElementById("my_modal_win").showModal();
+            jsConfetti.addConfetti();
+
+            jsConfetti.addConfetti({
+              emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
+            });
+            document.getElementById("messageTitle").innerHTML =
+              `${p2Name} Won! 🎉`;
             p2Wins++;
             document.getElementById("p2wins").textContent = p2Wins;
           }
@@ -182,11 +206,27 @@ function startGame() {
       if (isFirstColumnEqual) {
         if (FirstColumn[0].includes(`id="${p1Name}Marker"`)) {
           winner = true;
+          document.getElementById("my_modal_win").showModal();
+          jsConfetti.addConfetti();
+
+          jsConfetti.addConfetti({
+            emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
+          });
+          document.getElementById("messageTitle").innerHTML =
+            `${p1Name} Won! 🎉`;
           p1Wins++;
           // change the html
           document.getElementById("p1wins").textContent = p1Wins;
         } else {
           winner = true;
+          document.getElementById("my_modal_win").showModal();
+          jsConfetti.addConfetti();
+
+          jsConfetti.addConfetti({
+            emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
+          });
+          document.getElementById("messageTitle").innerHTML =
+            `${p2Name} Won! 🎉`;
           p2Wins++;
           document.getElementById("p2wins").textContent = p2Wins;
         }
@@ -199,11 +239,27 @@ function startGame() {
       if (isThirdColumnEqual) {
         if (thirdColumn[0].includes(`id="${p1Name}Marker"`)) {
           winner = true;
+          document.getElementById("my_modal_win").showModal();
+          jsConfetti.addConfetti();
+
+          jsConfetti.addConfetti({
+            emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
+          });
+          document.getElementById("messageTitle").innerHTML =
+            `${p1Name} Won! 🎉`;
           p1Wins++;
           // change the html
           document.getElementById("p1wins").textContent = p1Wins;
         } else {
           winner = true;
+          document.getElementById("my_modal_win").showModal();
+          jsConfetti.addConfetti();
+
+          jsConfetti.addConfetti({
+            emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
+          });
+          document.getElementById("messageTitle").innerHTML =
+            `${p2Name} Won! 🎉`;
           p2Wins++;
           document.getElementById("p2wins").textContent = p2Wins;
         }
@@ -216,11 +272,27 @@ function startGame() {
       if (isSecondColumnEqual) {
         if (secondColumn[0].includes(`id="${p1Name}Marker"`)) {
           winner = true;
+          document.getElementById("my_modal_win").showModal();
+          jsConfetti.addConfetti();
+
+          jsConfetti.addConfetti({
+            emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
+          });
+          document.getElementById("messageTitle").innerHTML =
+            `${p1Name} Won! 🎉`;
           p1Wins++;
           // change the html
           document.getElementById("p1wins").textContent = p1Wins;
         } else {
           winner = true;
+          document.getElementById("my_modal_win").showModal();
+          jsConfetti.addConfetti();
+
+          jsConfetti.addConfetti({
+            emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
+          });
+          document.getElementById("messageTitle").innerHTML =
+            `${p2Name} Won! 🎉`;
           p2Wins++;
           document.getElementById("p2wins").textContent = p2Wins;
         }
@@ -234,11 +306,28 @@ function startGame() {
       ) {
         if (board[0][0].includes(`id="${p1Name}Marker"`)) {
           winner = true;
+          document.getElementById("my_modal_win").showModal();
+          jsConfetti.addConfetti();
+
+          jsConfetti.addConfetti({
+            emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
+          });
+          document.getElementById("messageTitle").innerHTML =
+            `${p1Name} Won! 🎉`;
+          p1Wins++;
           p1Wins++;
           // change the html
           document.getElementById("p1wins").textContent = p1Wins;
         } else {
           winner = true;
+          document.getElementById("my_modal_win").showModal();
+          jsConfetti.addConfetti();
+
+          jsConfetti.addConfetti({
+            emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
+          });
+          document.getElementById("messageTitle").innerHTML =
+            `${p2Name} Won! 🎉`;
           p2Wins++;
           document.getElementById("p2wins").textContent = p2Wins;
         }
@@ -258,6 +347,17 @@ function startGame() {
           p2Wins++;
           document.getElementById("p2wins").textContent = p2Wins;
         }
+      }
+      // check draw
+      //.every() is an array method that returns true if
+      //all elements pass the condition, and false the moment any one fails
+      const boardFull = board.every((row) =>
+        row.every((cell) => cell !== null),
+      );
+      if (boardFull && !winner) {
+        document.getElementById("my_modal_win").showModal();
+        document.getElementById("messageTitle").innerHTML = "Draw!";
+        draw = true;
       }
     });
   });
