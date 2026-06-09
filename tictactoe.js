@@ -12,6 +12,10 @@ async function getPokes() {
 
 let playerOneMarker = undefined;
 let playerTwoMarker = undefined;
+let p1Name = undefined;
+let p2Name = undefined;
+let p1Wins = Number(document.getElementById("p1wins").textContent);
+let p2Wins = Number(document.getElementById("p2wins").textContent);
 let selectedPoke = { name: undefined, image: undefined };
 let playerName = undefined;
 
@@ -69,7 +73,11 @@ async function searchPoke() {
               document
                 .getElementById(`${match.name}`)
                 .classList.add("bg-primary", "rounded-xl", "text-white");
-              selectedPoke = { name: match.name, image: pokeImage };
+              selectedPoke = {
+                id: match.name,
+                name: match.name,
+                image: pokeImage,
+              };
             });
         });
       }
@@ -94,13 +102,15 @@ async function searchPoke() {
     "close",
     () => {
       if (!playerOneMarker) {
-        playerOneMarker = `<img src="${selectedPoke.image}" class="w-full h-full object-contain">`;
-        document.getElementById("p1Name").textContent = playerName.value;
+        p1Name = playerName.value;
+        playerOneMarker = `<img id="${p1Name}Marker" src="${selectedPoke.image}" class="w-full h-full object-contain">`;
+
         // call search poke again for the next opponent
         searchPoke();
       } else {
-        playerTwoMarker = `<img src="${selectedPoke.image}" class="w-full h-full object-contain">`;
-        document.getElementById("p2Name").textContent = playerName.value;
+        p2Name = playerName.value;
+        playerTwoMarker = `<img id="${p2Name}Marker" src="${selectedPoke.image}" class="w-full h-full object-contain">`;
+
         //start the game after player 2 chooses their marker
         startGame();
       }
@@ -112,26 +122,60 @@ searchPoke();
 
 //let the game begins!
 let playerPlaying = undefined;
+let board = [
+  [null, null, null],
+  [null, null, null],
+  [null, null, null],
+];
+let winner = false;
 function startGame() {
-  document.getElementById("currentTurn").innerHTML =
-    document.getElementById("p1Name").textContent;
+  document.getElementById("currentTurn").innerHTML = p1Name;
+
   const allCells = document.querySelectorAll("[data-row][data-col]");
   allCells.forEach((cell) => {
     cell.addEventListener("click", () => {
       // the following line should be moved to top so that the second player can't overwrite
       // the first player marker
+      if (winner) return;
       if (cell.innerHTML !== "") return;
       if (!playerPlaying || playerPlaying === playerOneMarker) {
-        document.getElementById("currentTurn").innerHTML =
-          document.getElementById("p2Name").textContent;
+        document.getElementById("currentTurn").innerHTML = p2Name;
         cell.innerHTML = playerOneMarker;
         playerPlaying = playerTwoMarker;
       } else if (playerPlaying === playerTwoMarker) {
-        document.getElementById("currentTurn").innerHTML =
-          document.getElementById("p1Name").textContent;
+        document.getElementById("currentTurn").innerHTML = p1Name;
         cell.innerHTML = playerTwoMarker;
         playerPlaying = playerOneMarker;
       }
+
+      // winning detection- diagonal, row, columns, soonest placement should be announced as the winner
+      document.querySelectorAll("[data-row][data-col]").forEach((cell) => {
+        const r = cell.dataset.row;
+        const c = cell.dataset.col;
+        board[r][c] = cell.innerHTML || null;
+        console.log(board);
+      });
+
+      // check matching rows
+      board.forEach((row) => {
+        const isRowEqual = new Set(row).size === 1 && row[0] != null;
+
+        if (isRowEqual) {
+          // the contents of board are strings and need to be parsed
+          console.log("p1Name is:", p1Name);
+          console.log("row[0] is:", row[0]);
+          if (row[0].includes(`id="${p1Name}Marker"`)) {
+            winner = true;
+            p1Wins++;
+            // change the html
+            document.getElementById("p1wins").textContent = p1Wins;
+          } else {
+            winner = true;
+            p2Wins++;
+            document.getElementById("p2wins").textContent = p2Wins;
+          }
+        }
+      });
     });
   });
 }
