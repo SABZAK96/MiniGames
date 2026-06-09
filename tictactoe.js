@@ -140,6 +140,7 @@ function startGame() {
 
   const allCells = document.querySelectorAll("[data-row][data-col]");
   allCells.forEach((cell) => {
+    cell.innerHTML = "";
     cell.addEventListener("click", () => {
       // the following line should be moved to top so that the second player can't overwrite
       // the first player marker
@@ -173,27 +174,13 @@ function startGame() {
           if (row[0].includes(`id="${p1Name}Marker"`)) {
             winner = true;
             p1Wins++;
-            document.getElementById("my_modal_win").showModal();
-            jsConfetti.addConfetti();
-
-            jsConfetti.addConfetti({
-              emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
-            });
-            document.getElementById("messageTitle").innerHTML =
-              `${p1Name} Won! 🎉`;
+            celebrate(p1Name);
 
             // change the html
             document.getElementById("p1wins").textContent = p1Wins;
           } else {
             winner = true;
-            document.getElementById("my_modal_win").showModal();
-            jsConfetti.addConfetti();
-
-            jsConfetti.addConfetti({
-              emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
-            });
-            document.getElementById("messageTitle").innerHTML =
-              `${p2Name} Won! 🎉`;
+            celebrate(p2Name);
             p2Wins++;
             document.getElementById("p2wins").textContent = p2Wins;
           }
@@ -206,27 +193,13 @@ function startGame() {
       if (isFirstColumnEqual) {
         if (FirstColumn[0].includes(`id="${p1Name}Marker"`)) {
           winner = true;
-          document.getElementById("my_modal_win").showModal();
-          jsConfetti.addConfetti();
-
-          jsConfetti.addConfetti({
-            emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
-          });
-          document.getElementById("messageTitle").innerHTML =
-            `${p1Name} Won! 🎉`;
+          celebrate(p1Name);
           p1Wins++;
           // change the html
           document.getElementById("p1wins").textContent = p1Wins;
         } else {
           winner = true;
-          document.getElementById("my_modal_win").showModal();
-          jsConfetti.addConfetti();
-
-          jsConfetti.addConfetti({
-            emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
-          });
-          document.getElementById("messageTitle").innerHTML =
-            `${p2Name} Won! 🎉`;
+          celebrate(p2Name);
           p2Wins++;
           document.getElementById("p2wins").textContent = p2Wins;
         }
@@ -239,27 +212,13 @@ function startGame() {
       if (isThirdColumnEqual) {
         if (thirdColumn[0].includes(`id="${p1Name}Marker"`)) {
           winner = true;
-          document.getElementById("my_modal_win").showModal();
-          jsConfetti.addConfetti();
-
-          jsConfetti.addConfetti({
-            emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
-          });
-          document.getElementById("messageTitle").innerHTML =
-            `${p1Name} Won! 🎉`;
+          celebrate(p1Name);
           p1Wins++;
           // change the html
           document.getElementById("p1wins").textContent = p1Wins;
         } else {
           winner = true;
-          document.getElementById("my_modal_win").showModal();
-          jsConfetti.addConfetti();
-
-          jsConfetti.addConfetti({
-            emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
-          });
-          document.getElementById("messageTitle").innerHTML =
-            `${p2Name} Won! 🎉`;
+          celebrate(p2Name);
           p2Wins++;
           document.getElementById("p2wins").textContent = p2Wins;
         }
@@ -272,27 +231,13 @@ function startGame() {
       if (isSecondColumnEqual) {
         if (secondColumn[0].includes(`id="${p1Name}Marker"`)) {
           winner = true;
-          document.getElementById("my_modal_win").showModal();
-          jsConfetti.addConfetti();
-
-          jsConfetti.addConfetti({
-            emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
-          });
-          document.getElementById("messageTitle").innerHTML =
-            `${p1Name} Won! 🎉`;
+          celebrate(p1Name);
           p1Wins++;
           // change the html
           document.getElementById("p1wins").textContent = p1Wins;
         } else {
           winner = true;
-          document.getElementById("my_modal_win").showModal();
-          jsConfetti.addConfetti();
-
-          jsConfetti.addConfetti({
-            emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
-          });
-          document.getElementById("messageTitle").innerHTML =
-            `${p2Name} Won! 🎉`;
+          celebrate(p2Name);
           p2Wins++;
           document.getElementById("p2wins").textContent = p2Wins;
         }
@@ -306,28 +251,15 @@ function startGame() {
       ) {
         if (board[0][0].includes(`id="${p1Name}Marker"`)) {
           winner = true;
-          document.getElementById("my_modal_win").showModal();
-          jsConfetti.addConfetti();
-
-          jsConfetti.addConfetti({
-            emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
-          });
-          document.getElementById("messageTitle").innerHTML =
-            `${p1Name} Won! 🎉`;
-          p1Wins++;
+          celebrate(p1Name);
           p1Wins++;
           // change the html
           document.getElementById("p1wins").textContent = p1Wins;
         } else {
           winner = true;
+          celebrate(p2Name);
           document.getElementById("my_modal_win").showModal();
-          jsConfetti.addConfetti();
 
-          jsConfetti.addConfetti({
-            emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
-          });
-          document.getElementById("messageTitle").innerHTML =
-            `${p2Name} Won! 🎉`;
           p2Wins++;
           document.getElementById("p2wins").textContent = p2Wins;
         }
@@ -339,11 +271,13 @@ function startGame() {
       ) {
         if (board[0][2].includes(`id="${p1Name}Marker"`)) {
           winner = true;
+          celebrate(p1Name);
           p1Wins++;
           // change the html
           document.getElementById("p1wins").textContent = p1Wins;
         } else {
           winner = true;
+          celebrate(p2Name);
           p2Wins++;
           document.getElementById("p2wins").textContent = p2Wins;
         }
@@ -361,4 +295,25 @@ function startGame() {
       }
     });
   });
+}
+
+// add a new listener for new game
+document.getElementById("newGame").addEventListener("click", () => {
+  playerPlaying = undefined;
+  board = [
+    [null, null, null],
+    [null, null, null],
+    [null, null, null],
+  ];
+  winner = false;
+  draw = false;
+  startGame();
+});
+
+function celebrate(name) {
+  jsConfetti.addConfetti({
+    emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
+  });
+  document.getElementById("my_modal_win").showModal();
+  document.getElementById("messageTitle").innerHTML = `${name} Won! 🎉`;
 }
