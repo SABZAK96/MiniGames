@@ -1,3 +1,31 @@
+// toggle daiseyUI theme component and add it to localstorage
+const theme = document.querySelector(".theme-controller");
+const element = document.getElementById("page");
+
+// get preferences from local storage, if there's nothing there, use light
+const savePreference = localStorage.getItem("themePreference") || "light";
+element.setAttribute("data-theme", savePreference);
+
+// save visual toggle upon reload as well
+if (savePreference === "dark") {
+  theme.checked = true;
+} else {
+  theme.checked = false;
+}
+
+// change the preference on toggle
+theme.addEventListener("change", () => {
+  if (theme.checked) {
+    const newPreference = "dark";
+    element.setAttribute("data-theme", newPreference);
+    localStorage.setItem("themePreference", newPreference);
+  } else {
+    const newPreference = "light";
+    element.setAttribute("data-theme", newPreference);
+    localStorage.setItem("themePreference", newPreference);
+  }
+});
+
 // get full poke objects from the api
 const jsConfetti = new JSConfetti();
 let pokeObjects = undefined;
@@ -311,9 +339,13 @@ document.getElementById("newGame").addEventListener("click", () => {
 });
 
 function celebrate(name) {
-  jsConfetti.addConfetti({
-    emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
-  });
   document.getElementById("my_modal_win").showModal();
+  setTimeout(
+    jsConfetti.addConfetti({
+      emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
+      confettiNumber: 50,
+    }),
+    300,
+  );
   document.getElementById("messageTitle").innerHTML = `${name} Won! 🎉`;
 }
