@@ -156,14 +156,13 @@ function startGame() {
         console.log(board);
       });
 
-      // check matching rows
+      // win conditions
       board.forEach((row) => {
+        // check matching rows
         const isRowEqual = new Set(row).size === 1 && row[0] != null;
 
         if (isRowEqual) {
           // the contents of board are strings and need to be parsed
-          console.log("p1Name is:", p1Name);
-          console.log("row[0] is:", row[0]);
           if (row[0].includes(`id="${p1Name}Marker"`)) {
             winner = true;
             p1Wins++;
@@ -176,6 +175,90 @@ function startGame() {
           }
         }
       });
+      // check matching columns - extracting first elements of rows using map
+      const FirstColumn = board.map((row) => row[0]);
+      const isFirstColumnEqual =
+        new Set(FirstColumn).size === 1 && FirstColumn[0] != null;
+      if (isFirstColumnEqual) {
+        if (FirstColumn[0].includes(`id="${p1Name}Marker"`)) {
+          winner = true;
+          p1Wins++;
+          // change the html
+          document.getElementById("p1wins").textContent = p1Wins;
+        } else {
+          winner = true;
+          p2Wins++;
+          document.getElementById("p2wins").textContent = p2Wins;
+        }
+      }
+
+      // check matching columns - extracting third elements of rows using map
+      const thirdColumn = board.map((row) => row[2]);
+      const isThirdColumnEqual =
+        new Set(thirdColumn).size === 1 && thirdColumn[0] != null;
+      if (isThirdColumnEqual) {
+        if (thirdColumn[0].includes(`id="${p1Name}Marker"`)) {
+          winner = true;
+          p1Wins++;
+          // change the html
+          document.getElementById("p1wins").textContent = p1Wins;
+        } else {
+          winner = true;
+          p2Wins++;
+          document.getElementById("p2wins").textContent = p2Wins;
+        }
+      }
+
+      // check matching columns - extracting second elements of rows using map
+      const secondColumn = board.map((row) => row[1]);
+      const isSecondColumnEqual =
+        new Set(secondColumn).size === 1 && secondColumn[0] != null;
+      if (isSecondColumnEqual) {
+        if (secondColumn[0].includes(`id="${p1Name}Marker"`)) {
+          winner = true;
+          p1Wins++;
+          // change the html
+          document.getElementById("p1wins").textContent = p1Wins;
+        } else {
+          winner = true;
+          p2Wins++;
+          document.getElementById("p2wins").textContent = p2Wins;
+        }
+      }
+
+      // check diagonal condition
+      if (
+        board[0][0] === board[1][1] &&
+        board[1][1] === board[2][2] &&
+        board[0][0] != null
+      ) {
+        if (board[0][0].includes(`id="${p1Name}Marker"`)) {
+          winner = true;
+          p1Wins++;
+          // change the html
+          document.getElementById("p1wins").textContent = p1Wins;
+        } else {
+          winner = true;
+          p2Wins++;
+          document.getElementById("p2wins").textContent = p2Wins;
+        }
+      }
+      if (
+        board[0][2] === board[1][1] &&
+        board[0][2] === board[2][0] &&
+        board[0][2] != null
+      ) {
+        if (board[0][2].includes(`id="${p1Name}Marker"`)) {
+          winner = true;
+          p1Wins++;
+          // change the html
+          document.getElementById("p1wins").textContent = p1Wins;
+        } else {
+          winner = true;
+          p2Wins++;
+          document.getElementById("p2wins").textContent = p2Wins;
+        }
+      }
     });
   });
 }
