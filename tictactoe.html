@@ -142,6 +142,27 @@
         </div>
       </dialog>
 
+            <!-- another modal for selection confirmation with ai -->
+      <dialog id="my_modal_ai" class="modal">
+        <div class="modal-box w-11/12 max-w-5xl">
+          <form
+            method="dialog"
+            class="flex flex-col justify-center items-center gap-3 mt-4"
+          >
+            <div class="font-bold text-xl">You selected</div>
+            <div
+              id="pokeNameAi"
+              class="italic text-primary text-3xl font-bold"
+            ></div>
+            <div><img id="pokePicAi" src="" class="w-75 h-75" /></div>
+            <!-- modal action is for placing buttons on the bottom right so i brought the form out of it to have a full width search bar -->
+            <div class="modal-action mt-0">
+              <button id="startGameAi" class="btn btn-primary">Let's Go!</button>
+            </div>
+          </form>
+        </div>
+      </dialog>
+
       <!-- controls above grid: same width as grid -->
       <div class="w-96 md:w-200 flex flex-col gap-3">
         <!-- turn indicator -->

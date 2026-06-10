@@ -20,7 +20,9 @@
   },
   "homepage": "https://github.com/comp2537-s26/assignment3-SABZAK96#readme",
   "dependencies": {
+    "@google/genai": "^2.8.0",
     "axios": "^1.16.1",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1"
   }
 }

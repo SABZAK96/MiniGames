@@ -72,7 +72,7 @@ async function searchPoke() {
   });
 
   // select listener registered once, outside forEach
-  document.getElementById("select").addEventListener("click", () => {
+  document.getElementById("select").addEventListener("click", async () => {
     if (!selectedMode) {
       document.getElementById("chooseMode").classList.add("text-red-500");
       return;
@@ -108,7 +108,22 @@ async function searchPoke() {
       p1Name = playerName.value;
       document.getElementById("p1Name").textContent = p1Name;
       pokeTaken = selectedPoke.name;
+      document.getElementById("my_modal_ai").showModal();
+      document.getElementById("pokeNameAi").textContent = pokeTaken;
+      document.getElementById("pokePicAi").src = selectedPoke.image;
+      p2Name = "AI";
+      document.getElementById("p2Name").textContent = p2Name;
       playerOneMarker = `<img id="${p1Name}Marker" src="${selectedPoke.image}" class="w-full h-full object-contain">`;
+      const aiPokeOptions = pokeObjects.filter(
+        (poke) => poke.name !== selectedPoke.name,
+      );
+      const randOption = Math.floor(Math.random() * 200 + 1);
+      const aiPoke = (await axios.get(aiPokeOptions[randOption].url)).data
+        .sprites.other["official-artwork"].front_default;
+      playerTwoMarker = `<img id="${p2Name}Marker" src="${aiPoke}" class="w-full h-full object-contain">`;
+      console.log(playerTwoMarker);
+      console.log(aiPoke);
+      startGame();
     }
   });
 
@@ -208,160 +223,32 @@ function startGame() {
   const allCells = document.querySelectorAll("[data-row][data-col]");
   allCells.forEach((cell) => {
     cell.innerHTML = "";
-    cell.addEventListener("click", () => {
+    cell.addEventListener("click", async () => {
       // the following line should be moved to top so that the second player can't overwrite
       // the first player marker
       if (winner) return;
       if (draw) return;
       if (cell.innerHTML !== "") return;
       if (!playerPlaying || playerPlaying === playerOneMarker) {
-        document.getElementById("currentTurn").innerHTML = p2Name;
         cell.innerHTML = playerOneMarker;
         playerPlaying = playerTwoMarker;
+        if (selectedMode === "ai") {
+          document.getElementById("currentTurn").innerHTML = "AI thinking...";
+          syncBoard();
+          if (checkWin()) return;
+          await AiPlay();
+          document.getElementById("currentTurn").innerHTML = p1Name;
+        } else {
+          document.getElementById("currentTurn").innerHTML = p2Name;
+        }
       } else if (playerPlaying === playerTwoMarker) {
         document.getElementById("currentTurn").innerHTML = p1Name;
         cell.innerHTML = playerTwoMarker;
         playerPlaying = playerOneMarker;
       }
 
-      // winning detection- diagonal, row, columns, soonest placement should be announced as the winner
-      document.querySelectorAll("[data-row][data-col]").forEach((cell) => {
-        const r = cell.dataset.row;
-        const c = cell.dataset.col;
-        board[r][c] = cell.innerHTML || null;
-      });
-
-      // win conditions
-      board.forEach((row) => {
-        if (winner) return;
-        // check matching rows
-        const isRowEqual = new Set(row).size === 1 && row[0] != null;
-
-        if (isRowEqual) {
-          // the contents of board are strings and need to be parsed
-          if (row[0].includes(`id="${p1Name}Marker"`)) {
-            winner = true;
-            p1Wins++;
-            celebrate(p1Name);
-
-            // change the html
-            document.getElementById("p1wins").textContent = p1Wins;
-          } else {
-            winner = true;
-            celebrate(p2Name);
-            p2Wins++;
-            document.getElementById("p2wins").textContent = p2Wins;
-          }
-        }
-      });
-      if (winner) return;
-      // check matching columns - extracting first elements of rows using map
-      const FirstColumn = board.map((row) => row[0]);
-      const isFirstColumnEqual =
-        new Set(FirstColumn).size === 1 && FirstColumn[0] != null;
-      if (isFirstColumnEqual) {
-        if (FirstColumn[0].includes(`id="${p1Name}Marker"`)) {
-          winner = true;
-          celebrate(p1Name);
-          p1Wins++;
-          // change the html
-          document.getElementById("p1wins").textContent = p1Wins;
-        } else {
-          winner = true;
-          celebrate(p2Name);
-          p2Wins++;
-          document.getElementById("p2wins").textContent = p2Wins;
-        }
-      }
-
-      // check matching columns - extracting third elements of rows using map
-      const thirdColumn = board.map((row) => row[2]);
-      const isThirdColumnEqual =
-        new Set(thirdColumn).size === 1 && thirdColumn[0] != null;
-      if (isThirdColumnEqual) {
-        if (thirdColumn[0].includes(`id="${p1Name}Marker"`)) {
-          winner = true;
-          celebrate(p1Name);
-          p1Wins++;
-          // change the html
-          document.getElementById("p1wins").textContent = p1Wins;
-        } else {
-          winner = true;
-          celebrate(p2Name);
-          p2Wins++;
-          document.getElementById("p2wins").textContent = p2Wins;
-        }
-      }
-
-      // check matching columns - extracting second elements of rows using map
-      const secondColumn = board.map((row) => row[1]);
-      const isSecondColumnEqual =
-        new Set(secondColumn).size === 1 && secondColumn[0] != null;
-      if (isSecondColumnEqual) {
-        if (secondColumn[0].includes(`id="${p1Name}Marker"`)) {
-          winner = true;
-          celebrate(p1Name);
-          p1Wins++;
-          // change the html
-          document.getElementById("p1wins").textContent = p1Wins;
-        } else {
-          winner = true;
-          celebrate(p2Name);
-          p2Wins++;
-          document.getElementById("p2wins").textContent = p2Wins;
-        }
-      }
-
-      // check diagonal condition
-      if (
-        board[0][0] === board[1][1] &&
-        board[1][1] === board[2][2] &&
-        board[0][0] != null
-      ) {
-        if (board[0][0].includes(`id="${p1Name}Marker"`)) {
-          winner = true;
-          celebrate(p1Name);
-          p1Wins++;
-          // change the html
-          document.getElementById("p1wins").textContent = p1Wins;
-        } else {
-          winner = true;
-          celebrate(p2Name);
-          document.getElementById("my_modal_win").showModal();
-
-          p2Wins++;
-          document.getElementById("p2wins").textContent = p2Wins;
-        }
-      }
-      if (
-        board[0][2] === board[1][1] &&
-        board[0][2] === board[2][0] &&
-        board[0][2] != null
-      ) {
-        if (board[0][2].includes(`id="${p1Name}Marker"`)) {
-          winner = true;
-          celebrate(p1Name);
-          p1Wins++;
-          // change the html
-          document.getElementById("p1wins").textContent = p1Wins;
-        } else {
-          winner = true;
-          celebrate(p2Name);
-          p2Wins++;
-          document.getElementById("p2wins").textContent = p2Wins;
-        }
-      }
-      // check draw
-      //.every() is an array method that returns true if
-      //all elements pass the condition, and false the moment any one fails
-      const boardFull = board.every((row) =>
-        row.every((cell) => cell !== null),
-      );
-      if (boardFull && !winner) {
-        document.getElementById("my_modal_win").showModal();
-        document.getElementById("messageTitle").innerHTML = "Draw!";
-        draw = true;
-      }
+      syncBoard();
+      checkWin();
     });
   });
 }
@@ -388,4 +275,163 @@ function celebrate(name) {
     });
   }, 300);
   document.getElementById("messageTitle").innerHTML = `${name} Won! 🎉`;
+}
+
+async function AiPlay() {
+  const response = await fetch("http://localhost:5000/api/generate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ board: board }),
+  });
+  if (!response.ok) {
+    throw new Error("Server error");
+  }
+
+  const { row, col } = await response.json();
+  console.log({ row, col });
+  const aiCell = document.querySelector(
+    `[data-row="${row}"][data-col="${col}"]`,
+  );
+  aiCell.innerHTML = playerTwoMarker;
+  playerPlaying = playerOneMarker;
+}
+
+function syncBoard() {
+  document.querySelectorAll("[data-row][data-col]").forEach((cell) => {
+    const r = cell.dataset.row;
+    const c = cell.dataset.col;
+    board[r][c] = cell.innerHTML || null;
+  });
+}
+function checkWin() {
+  board.forEach((row) => {
+    if (winner) return;
+    // check matching rows
+    const isRowEqual = new Set(row).size === 1 && row[0] != null;
+
+    if (isRowEqual) {
+      // the contents of board are strings and need to be parsed
+      if (row[0].includes(`id="${p1Name}Marker"`)) {
+        winner = true;
+        p1Wins++;
+        celebrate(p1Name);
+
+        // change the html
+        document.getElementById("p1wins").textContent = p1Wins;
+      } else {
+        winner = true;
+        celebrate(p2Name);
+        p2Wins++;
+        document.getElementById("p2wins").textContent = p2Wins;
+      }
+    }
+  });
+  if (winner) return;
+  // check matching columns - extracting first elements of rows using map
+  const FirstColumn = board.map((row) => row[0]);
+  const isFirstColumnEqual =
+    new Set(FirstColumn).size === 1 && FirstColumn[0] != null;
+  if (isFirstColumnEqual) {
+    if (FirstColumn[0].includes(`id="${p1Name}Marker"`)) {
+      winner = true;
+      celebrate(p1Name);
+      p1Wins++;
+      // change the html
+      document.getElementById("p1wins").textContent = p1Wins;
+    } else {
+      winner = true;
+      celebrate(p2Name);
+      p2Wins++;
+      document.getElementById("p2wins").textContent = p2Wins;
+    }
+  }
+
+  // check matching columns - extracting third elements of rows using map
+  const thirdColumn = board.map((row) => row[2]);
+  const isThirdColumnEqual =
+    new Set(thirdColumn).size === 1 && thirdColumn[0] != null;
+  if (isThirdColumnEqual) {
+    if (thirdColumn[0].includes(`id="${p1Name}Marker"`)) {
+      winner = true;
+      celebrate(p1Name);
+      p1Wins++;
+      // change the html
+      document.getElementById("p1wins").textContent = p1Wins;
+    } else {
+      winner = true;
+      celebrate(p2Name);
+      p2Wins++;
+      document.getElementById("p2wins").textContent = p2Wins;
+    }
+  }
+
+  // check matching columns - extracting second elements of rows using map
+  const secondColumn = board.map((row) => row[1]);
+  const isSecondColumnEqual =
+    new Set(secondColumn).size === 1 && secondColumn[0] != null;
+  if (isSecondColumnEqual) {
+    if (secondColumn[0].includes(`id="${p1Name}Marker"`)) {
+      winner = true;
+      celebrate(p1Name);
+      p1Wins++;
+      // change the html
+      document.getElementById("p1wins").textContent = p1Wins;
+    } else {
+      winner = true;
+      celebrate(p2Name);
+      p2Wins++;
+      document.getElementById("p2wins").textContent = p2Wins;
+    }
+  }
+
+  // check diagonal condition
+  if (
+    board[0][0] === board[1][1] &&
+    board[1][1] === board[2][2] &&
+    board[0][0] != null
+  ) {
+    if (board[0][0].includes(`id="${p1Name}Marker"`)) {
+      winner = true;
+      celebrate(p1Name);
+      p1Wins++;
+      // change the html
+      document.getElementById("p1wins").textContent = p1Wins;
+    } else {
+      winner = true;
+      celebrate(p2Name);
+      document.getElementById("my_modal_win").showModal();
+
+      p2Wins++;
+      document.getElementById("p2wins").textContent = p2Wins;
+    }
+  }
+  if (
+    board[0][2] === board[1][1] &&
+    board[0][2] === board[2][0] &&
+    board[0][2] != null
+  ) {
+    if (board[0][2].includes(`id="${p1Name}Marker"`)) {
+      winner = true;
+      celebrate(p1Name);
+      p1Wins++;
+      document.getElementById("p1wins").textContent = p1Wins;
+    } else {
+      winner = true;
+      celebrate(p2Name);
+      p2Wins++;
+      document.getElementById("p2wins").textContent = p2Wins;
+    }
+  }
+
+  if (winner) return true;
+
+  const boardFull = board.every((row) => row.every((cell) => cell !== null));
+  if (boardFull) {
+    document.getElementById("my_modal_win").showModal();
+    document.getElementById("messageTitle").innerHTML = "Draw!";
+    draw = true;
+    return true;
+  }
+
+  return false;
 }

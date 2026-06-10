@@ -1,10 +1,10 @@
 const express = require("express");
-import { GoogleGenAI } from "@google/genai";
-import "dotenv/config"; // Automatically loads environment variables
+const { GoogleGenAI } = require("@google/genai");
+require("dotenv/config"); // Automatically loads environment variables
 const app = express();
 const axios = require("axios");
-const ai = new GoogleGenAI();
-port = 5000;
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
+const port = 5000;
 app.listen(port, () => {
   console.log("server's up!");
 });
@@ -106,10 +106,10 @@ app.post("/api/generate", async (req, res) => {
 - Each turn you receive the full board as a 3x3 JSON array.
 - null = empty cell.
 - A non-null cell contains an HTML <img> string showing whose marker is there:
-  - If the string contains id="aiMarker", that cell is YOURS.
+  - If the string contains id="AIMarker", that cell is YOURS.
   - Any other <img> string is the USER's marker.
 ***HOW TO PLAY***
-- Pick one cell that is null. Never pick an occupied cell.
+- Pick one cell that is null. NEVER pick an occupied cell.
 - Play to win: take a winning move if you have one, otherwise block the user's winning move, otherwise prefer center, then corners.
 ***RESPONSE FORMAT***
 - Respond with ONLY this JSON and nothing else (no markdown, no explanation):
@@ -121,15 +121,15 @@ app.post("/api/generate", async (req, res) => {
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: board,
+      model:"gemini-3.1-flash-lite",
+      contents: [{ role: "user", parts: [{ text: JSON.stringify(board) }] }],
       config: {
         systemInstruction: systemRules,
       },
     });
-
-    // Send the text response back to the client
-    res.json({ text: response.text });
+// converts that string into a real JavaScript object
+    const { row, col } = JSON.parse(response.text);
+    res.json({ row, col });
   } catch (error) {
     console.error("Gemini API Error:", error);
     res.status(500).json({ error: "Failed to respond" });
