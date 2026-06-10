@@ -3,7 +3,7 @@ const { GoogleGenAI } = require("@google/genai");
 require("dotenv/config"); // Automatically loads environment variables
 const app = express();
 const axios = require("axios");
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const port = 5000;
 app.listen(port, () => {
   console.log("server's up!");
@@ -105,9 +105,9 @@ app.post("/api/generate", async (req, res) => {
 ***BOARD FORMAT***
 - Each turn you receive the full board as a 3x3 JSON array.
 - null = empty cell.
-- A non-null cell contains an HTML <img> string showing whose marker is there:
-  - If the string contains id="AIMarker", that cell is YOURS.
-  - Any other <img> string is the USER's marker.
+- A non-null cell contains a string showing whose marker is there:
+  - If the string is equal to "AI" that is YOURS.
+  - If it's "P1" that is your opponent's marker.
 ***HOW TO PLAY***
 - Pick one cell that is null. NEVER pick an occupied cell.
 - Play to win: take a winning move if you have one, otherwise block the user's winning move, otherwise prefer center, then corners.
@@ -121,13 +121,13 @@ app.post("/api/generate", async (req, res) => {
 
   try {
     const response = await ai.models.generateContent({
-      model:"gemini-3.1-flash-lite",
+      model: "gemini-3.1-flash-lite",
       contents: [{ role: "user", parts: [{ text: JSON.stringify(board) }] }],
       config: {
         systemInstruction: systemRules,
       },
     });
-// converts that string into a real JavaScript object
+    // converts that string into a real JavaScript object
     const { row, col } = JSON.parse(response.text);
     res.json({ row, col });
   } catch (error) {

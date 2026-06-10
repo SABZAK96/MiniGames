@@ -217,6 +217,7 @@ let board = [
 ];
 let winner = false;
 let draw = false;
+let locked = false;
 function startGame() {
   document.getElementById("currentTurn").innerHTML = p1Name;
 
@@ -224,6 +225,7 @@ function startGame() {
   allCells.forEach((cell) => {
     cell.innerHTML = "";
     cell.addEventListener("click", async () => {
+      if (locked) return;
       // the following line should be moved to top so that the second player can't overwrite
       // the first player marker
       if (winner) return;
@@ -233,9 +235,10 @@ function startGame() {
         cell.innerHTML = playerOneMarker;
         playerPlaying = playerTwoMarker;
         if (selectedMode === "ai") {
-          document.getElementById("currentTurn").innerHTML = "AI thinking...";
+          locked = true;
           syncBoard();
           if (checkWin()) return;
+          document.getElementById("currentTurn").innerHTML = "AI thinking...";
           await AiPlay();
           document.getElementById("currentTurn").innerHTML = p1Name;
         } else {
@@ -263,6 +266,7 @@ document.getElementById("newGame").addEventListener("click", () => {
   ];
   winner = false;
   draw = false;
+  locked = false;
   startGame();
 });
 
@@ -278,22 +282,30 @@ function celebrate(name) {
 }
 
 async function AiPlay() {
+  // send the simplified board to gemini since its still overwrites the cells
+  const simplifiedBoard = board.map((row) =>
+    row.map((cell) => {
+      if (cell === null) return null;
+      if (cell.includes('id="AIMarker"')) return "AI";
+      return "P1";
+    }),
+  );
   const response = await fetch("http://localhost:5000/api/generate", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ board: board }),
+    body: JSON.stringify({ board: simplifiedBoard }),
   });
   if (!response.ok) {
     throw new Error("Server error");
   }
 
   const { row, col } = await response.json();
-  console.log({ row, col });
   const aiCell = document.querySelector(
     `[data-row="${row}"][data-col="${col}"]`,
   );
   aiCell.innerHTML = playerTwoMarker;
   playerPlaying = playerOneMarker;
+  locked = false;
 }
 
 function syncBoard() {
