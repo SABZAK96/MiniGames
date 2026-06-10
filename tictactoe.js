@@ -98,9 +98,18 @@ async function searchPoke() {
       document.getElementById("name").classList.remove("border-red-500");
     document.getElementById("search").classList.contains("border-red-500") &&
       document.getElementById("search").classList.remove("border-red-500");
-      document.getElementById("chooseMode").classList.contains("text-red-500") &&
+    document.getElementById("chooseMode").classList.contains("text-red-500") &&
       document.getElementById("chooseMode").classList.remove("text-red-500");
-    document.getElementById("my_modal_5").showModal();
+    if (selectedMode === "local") {
+      document.getElementById("my_modal_5").showModal();
+      document.getElementById("modeBox").classList.add("hidden");
+    }
+    if (selectedMode === "ai") {
+      p1Name = playerName.value;
+      document.getElementById("p1Name").textContent = p1Name;
+      pokeTaken = selectedPoke.name;
+      playerOneMarker = `<img id="${p1Name}Marker" src="${selectedPoke.image}" class="w-full h-full object-contain">`;
+    }
   });
 
   // start game after player confirms their marker

@@ -1,22 +1,15 @@
 const express = require("express");
+import { GoogleGenAI } from "@google/genai";
+import "dotenv/config"; // Automatically loads environment variables
 const app = express();
 const axios = require("axios");
+const ai = new GoogleGenAI();
 port = 5000;
 app.listen(port, () => {
   console.log("server's up!");
 });
 
-// app.get("/count", async (req, res) => {
-//   try {
-//     const result = await axios.get("https://pokeapi.co/api/v2/pokemon");
-//     const pokeMax = result.data.count;
-//     res.json(pokeMax);
-//   } catch (error) {
-//     res.json({ message: error });
-//   }
-// });
-
-// app.use(express.json());
+app.use(express.json());
 app.use(express.static(__dirname));
 app.get("/easy", async (req, res) => {
   try {
@@ -102,5 +95,43 @@ app.get("/hard", async (req, res) => {
     res.json(imgs);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/api/generate", async (req, res) => {
+  const { board } = req.body;
+
+  const systemRules = `You are playing tic-tac-toe against a user.
+***BOARD FORMAT***
+- Each turn you receive the full board as a 3x3 JSON array.
+- null = empty cell.
+- A non-null cell contains an HTML <img> string showing whose marker is there:
+  - If the string contains id="aiMarker", that cell is YOURS.
+  - Any other <img> string is the USER's marker.
+***HOW TO PLAY***
+- Pick one cell that is null. Never pick an occupied cell.
+- Play to win: take a winning move if you have one, otherwise block the user's winning move, otherwise prefer center, then corners.
+***RESPONSE FORMAT***
+- Respond with ONLY this JSON and nothing else (no markdown, no explanation):
+{"row": <0-2>, "col": <0-2>}`;
+
+  if (!board) {
+    return res.status(400).json({ error: "No Prompt" });
+  }
+
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: board,
+      config: {
+        systemInstruction: systemRules,
+      },
+    });
+
+    // Send the text response back to the client
+    res.json({ text: response.text });
+  } catch (error) {
+    console.error("Gemini API Error:", error);
+    res.status(500).json({ error: "Failed to respond" });
   }
 });
