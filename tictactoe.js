@@ -41,93 +41,67 @@ let playerOneMarker = undefined;
 let playerTwoMarker = undefined;
 let p1Name = undefined;
 let p2Name = undefined;
+let pokeTaken = undefined;
 let p1Wins = Number(document.getElementById("p1wins").textContent);
 let p2Wins = Number(document.getElementById("p2wins").textContent);
 let selectedPoke = { name: undefined, image: undefined };
 let playerName = undefined;
+let selectedMode = undefined;
 
 async function searchPoke() {
-  const allPokes = await getPokes();
+  await getPokes();
   // reset values because selectedPokes, search, pokePreview should be used for both players
   selectedPoke = { name: undefined, image: undefined };
   document.getElementById("name").value = "";
   document.getElementById("search").value = "";
   document.getElementById("pokePreview").innerHTML = "";
   document.getElementById("my_modal_4").showModal();
-
-  // add an event listener for instant suggestions
-  const input = document.getElementById("search");
   playerName = document.getElementById("name");
+  const modes = document.querySelectorAll(".mode");
+  modes.forEach((mode) => {
+    mode.addEventListener("click", () => {
+      modes.forEach((mode) => {
+        mode.classList.contains("bg-primary", "text-white") &&
+          mode.classList.remove("bg-primary", "text-white");
+      });
+      mode.classList.add("bg-primary", "text-white");
 
-  input.addEventListener("input", () => {
-    const query = input.value.trim().toLowerCase();
-    const suggestionConatiner = document.getElementById("pokePreview");
-    suggestionConatiner.innerHTML = "";
-    if (query) {
-      const matches = allPokes
-        .filter((item) => item.name.trim().toLowerCase().startsWith(query))
-        .slice(0, 8);
-      if (matches.length !== 0) {
-        matches.forEach(async (match) => {
-          // find poke image for each match
-          const pokeImage = (await axios.get(match.url)).data.sprites.other[
-            "official-artwork"
-          ].front_default;
-          const element = document.createElement("p");
-          element.id = `${match.name}`;
-          element.classList.add(
-            "flex",
-            "flex-row",
-            "gap-2",
-            "items-center",
-            "cursor-pointer",
-            "p-2",
-            "rounded-lg",
-          );
-          element.innerHTML = `<img id="${match.name}img" src="${pokeImage}" class="rounded-full w-6 h-6">${match.name}`;
-          //do HTML string checking using includes method to see if that image already exists
-          if (
-            !suggestionConatiner.innerHTML.includes(`id="${match.name}img"`)
-          ) {
-            suggestionConatiner.appendChild(element);
-          }
-
-          // store selected poke when clicked, no listener on select here
-          document
-            .getElementById(`${match.name}`)
-            .addEventListener("click", () => {
-              // clear all highlights to ensure only one poke highlights at a time
-              document
-                .querySelectorAll("#pokePreview p")
-                .forEach((el) =>
-                  el.classList.remove("bg-primary", "rounded-xl", "text-white"),
-                );
-              document
-                .getElementById(`${match.name}`)
-                .classList.add("bg-primary", "rounded-xl", "text-white");
-              selectedPoke = {
-                id: match.name,
-                name: match.name,
-                image: pokeImage,
-              };
-            });
-        });
-      }
-    }
+      selectedMode = mode.id;
+      console.log(selectedMode);
+    });
   });
 
   // select listener registered once, outside forEach
-  document.getElementById("select").addEventListener(
-    "click",
-    () => {
-      if (!selectedPoke.name) return;
+  document.getElementById("select").addEventListener("click", () => {
+    if (!selectedMode) {
+      document.getElementById("chooseMode").classList.add("text-red-500");
+      return;
+    }
+    if (!selectedPoke.name) {
+      document
+        .getElementById("search")
+        .classList.add("border-1", "border-red-500");
+      return;
+    }
+    if (!playerName.value.trim()) {
+      document
+        .getElementById("name")
+        .classList.add("border-1", "border-red-500");
+      return;
+    }
 
-      document.getElementById("pokeName").innerHTML = `${selectedPoke.name}!`;
-      document.getElementById("pokePic").src = selectedPoke.image;
-      document.getElementById("my_modal_5").showModal();
-    },
-    { once: true },
-  );
+    document.getElementById("pokeName").innerHTML = `${selectedPoke.name}!`;
+    document.getElementById("pokePic").src = selectedPoke.image;
+    document.getElementById("my_modal_4").close();
+    // using && for short circuiting cause turnary needs an else block
+    document.getElementById("name").classList.contains("border-red-500") &&
+      document.getElementById("name").classList.remove("border-red-500");
+    document.getElementById("search").classList.contains("border-red-500") &&
+      document.getElementById("search").classList.remove("border-red-500");
+      document.getElementById("chooseMode").classList.contains("text-red-500") &&
+      document.getElementById("chooseMode").classList.remove("text-red-500");
+    document.getElementById("my_modal_5").showModal();
+  });
 
   // start game after player confirms their marker
   document.getElementById("my_modal_5").addEventListener(
@@ -136,6 +110,7 @@ async function searchPoke() {
       if (!playerOneMarker) {
         p1Name = playerName.value;
         document.getElementById("p1Name").textContent = p1Name;
+        pokeTaken = selectedPoke.name;
         playerOneMarker = `<img id="${p1Name}Marker" src="${selectedPoke.image}" class="w-full h-full object-contain">`;
 
         // call search poke again for the next opponent
@@ -152,6 +127,61 @@ async function searchPoke() {
     { once: true },
   );
 }
+
+const searchInput = document.getElementById("search");
+searchInput.addEventListener("input", () => {
+  const query = searchInput.value.trim().toLowerCase();
+  const suggestionConatiner = document.getElementById("pokePreview");
+  suggestionConatiner.innerHTML = "";
+  if (query && pokeObjects) {
+    const matches = pokeObjects
+      .filter(
+        (item) =>
+          item.name !== pokeTaken && // not display the taken name to player 2
+          item.name.trim().toLowerCase().startsWith(query),
+      )
+      .slice(0, 8);
+    if (matches.length !== 0) {
+      matches.forEach(async (match) => {
+        const pokeImage = (await axios.get(match.url)).data.sprites.other[
+          "official-artwork"
+        ].front_default;
+        const element = document.createElement("p");
+        element.id = `${match.name}`;
+        element.classList.add(
+          "flex",
+          "flex-row",
+          "gap-2",
+          "items-center",
+          "cursor-pointer",
+          "p-2",
+          "rounded-lg",
+        );
+        element.innerHTML = `<img id="${match.name}img" src="${pokeImage}" class="rounded-full w-6 h-6">${match.name}`;
+        if (!suggestionConatiner.innerHTML.includes(`id="${match.name}img"`)) {
+          suggestionConatiner.appendChild(element);
+        }
+        document
+          .getElementById(`${match.name}`)
+          .addEventListener("click", () => {
+            document
+              .querySelectorAll("#pokePreview p")
+              .forEach((el) =>
+                el.classList.remove("bg-primary", "rounded-xl", "text-white"),
+              );
+            document
+              .getElementById(`${match.name}`)
+              .classList.add("bg-primary", "rounded-xl", "text-white");
+            selectedPoke = {
+              id: match.name,
+              name: match.name,
+              image: pokeImage,
+            };
+          });
+      });
+    }
+  }
+});
 searchPoke();
 
 //let the game begins!
@@ -194,6 +224,7 @@ function startGame() {
 
       // win conditions
       board.forEach((row) => {
+        if (winner) return;
         // check matching rows
         const isRowEqual = new Set(row).size === 1 && row[0] != null;
 
@@ -214,6 +245,7 @@ function startGame() {
           }
         }
       });
+      if (winner) return;
       // check matching columns - extracting first elements of rows using map
       const FirstColumn = board.map((row) => row[0]);
       const isFirstColumnEqual =
@@ -340,12 +372,11 @@ document.getElementById("newGame").addEventListener("click", () => {
 
 function celebrate(name) {
   document.getElementById("my_modal_win").showModal();
-  setTimeout(
+  setTimeout(() => {
     jsConfetti.addConfetti({
       emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
       confettiNumber: 50,
-    }),
-    300,
-  );
+    });
+  }, 300);
   document.getElementById("messageTitle").innerHTML = `${name} Won! 🎉`;
 }

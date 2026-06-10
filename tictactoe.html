@@ -65,7 +65,37 @@
       <!-- You can open the modal using ID.showModal() method -->
       <dialog id="my_modal_4" class="modal">
         <div class="modal-box w-11/12 max-w-5xl">
-          <h3 class="text-lg font-bold">Pick Your Poke Marker!</h3>
+          <h3 id="chooseMode" class="text-lg font-bold">Choose who you want to play with!</h3>
+          <div class="flex flex-row gap-1 mt-4">
+            <div
+              id="ai"
+              class="mode card bg-base-100 flex-1 justify-center items-center shadow-sm"
+            >
+              <div class="card-body">
+                <h2 class="card-title">AI</h2>
+              </div>
+            </div>
+
+            <div
+              id="local"
+              class="mode card bg-base-100 flex-1 justify-center items-center shadow-sm"
+            >
+              <div class="card-body">
+                <h2 class="card-title">Local</h2>
+              </div>
+            </div>
+
+            <div
+              id="online"
+              class="mode card bg-base-100 flex-1 justify-center items-center shadow-sm"
+            >
+              <div class="card-body">
+                <h2 class="card-title">Online</h2>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="text-lg font-bold mt-4">Pick Your Poke Marker!</h3>
           <form method="dialog" class="flex flex-col gap-3 mt-4">
             <input
               type="text"
@@ -82,7 +112,9 @@
             <div id="pokePreview"></div>
             <!-- modal action is for placing buttons on the bottom right so i brought the form out of it to have a full width search bar -->
             <div class="modal-action mt-0">
-              <button id="select" class="btn btn-primary">Confirm</button>
+              <button id="select" type="button" class="btn btn-primary">
+                Confirm
+              </button>
             </div>
           </form>
         </div>
