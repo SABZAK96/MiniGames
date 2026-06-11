@@ -257,7 +257,7 @@ function startGame() {
 }
 
 // add a new listener for new game
-document.getElementById("newGame").addEventListener("click", () => {
+document.getElementById("newRound").addEventListener("click", () => {
   playerPlaying = undefined;
   board = [
     [null, null, null],
@@ -273,6 +273,40 @@ document.getElementById("newGame").addEventListener("click", () => {
       cell.classList.remove("bg-green-100");
   });
   startGame();
+});
+
+// listener for new game
+// add a new listener for new game - should reset everything and go back to poke selection
+document.getElementById("newGame").addEventListener("click", () => {
+  playerPlaying = undefined;
+  board = [
+    [null, null, null],
+    [null, null, null],
+    [null, null, null],
+  ];
+  winner = false;
+  draw = false;
+  locked = false;
+  document.querySelectorAll("[data-row][data-col]").forEach((cell) => {
+    const cellColored =
+      cell.classList.contains("bg-green-100") &&
+      cell.classList.remove("bg-green-100");
+  });
+  playerOneMarker = undefined;
+  playerTwoMarker = undefined;
+  p1Name = undefined;
+  p2Name = undefined;
+  pokeTaken = undefined;
+  selectedMode = undefined;
+  p1Wins = 0;
+  p2Wins = 0;
+  document.getElementById("p1wins").textContent = 0;
+  document.getElementById("p2wins").textContent = 0;
+  document.getElementById("p1Name").textContent = "";
+  document.getElementById("p2Name").textContent = "";
+  document.getElementById("currentTurn").innerHTML = "";
+document.getElementById("modeBox").classList.remove("hidden");
+  searchPoke();
 });
 
 function celebrate(name) {
