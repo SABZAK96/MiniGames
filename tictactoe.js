@@ -121,8 +121,8 @@ async function searchPoke() {
       const aiPoke = (await axios.get(aiPokeOptions[randOption].url)).data
         .sprites.other["official-artwork"].front_default;
       playerTwoMarker = `<img id="${p2Name}Marker" src="${aiPoke}" class="w-full h-full object-contain">`;
-      console.log(playerTwoMarker);
-      console.log(aiPoke);
+      firstPlayer = playerOneMarker;
+      playerPlaying = playerOneMarker;
       startGame();
     }
   });
@@ -145,6 +145,8 @@ async function searchPoke() {
         playerTwoMarker = `<img id="${p2Name}Marker" src="${selectedPoke.image}" class="w-full h-full object-contain">`;
 
         //start the game after player 2 chooses their marker
+        firstPlayer = playerOneMarker;
+        playerPlaying = playerOneMarker;
         startGame();
       }
     },
@@ -218,8 +220,10 @@ let board = [
 let winner = false;
 let draw = false;
 let locked = false;
+let firstPlayer = undefined;
 function startGame() {
-  document.getElementById("currentTurn").innerHTML = p1Name;
+  document.getElementById("currentTurn").innerHTML =
+    firstPlayer === playerOneMarker ? p1Name : p2Name;
 
   const allCells = document.querySelectorAll("[data-row][data-col]");
   allCells.forEach((cell) => {
@@ -258,7 +262,10 @@ function startGame() {
 
 // add a new listener for new game
 document.getElementById("newRound").addEventListener("click", () => {
-  playerPlaying = undefined;
+  playerPlaying =
+    firstPlayer === playerOneMarker ? playerTwoMarker : playerOneMarker;
+  firstPlayer =
+    firstPlayer === playerOneMarker ? playerTwoMarker : playerOneMarker;
   board = [
     [null, null, null],
     [null, null, null],
@@ -305,7 +312,7 @@ document.getElementById("newGame").addEventListener("click", () => {
   document.getElementById("p1Name").textContent = "";
   document.getElementById("p2Name").textContent = "";
   document.getElementById("currentTurn").innerHTML = "";
-document.getElementById("modeBox").classList.remove("hidden");
+  document.getElementById("modeBox").classList.remove("hidden");
   searchPoke();
 });
 
@@ -479,7 +486,6 @@ function checkWin() {
     } else {
       winner = true;
       celebrate(p2Name);
-      document.getElementById("my_modal_win").showModal();
 
       p2Wins++;
       document.getElementById("p2wins").textContent = p2Wins;
