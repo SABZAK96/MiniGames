@@ -62,6 +62,22 @@ A two-player Tic-Tac-Toe game where each player picks a Pokémon as their marker
 
 ---
 
+### Pokémon Wordle (`pokewordle.html`)
+
+A Wordle-style game where the hidden word is always a Pokémon name.
+
+**Features:**
+- Random Pokémon fetched from the PokéAPI — word length matches the Pokémon's name
+- 6 attempts to guess the name, with colour-coded feedback per letter (green = correct position, yellow = wrong position, grey = not in name)
+- 3 progressive hints: Pokémon type → colour → abilities
+- Pokémon silhouette shown as a shadow, revealed on win or loss
+- Shake animation on invalid (incomplete) guess submission
+- Confetti celebration on win
+- Keyboard input + Submit button support
+- Dark/light theme toggle that persists via `localStorage`
+
+---
+
 ## Tech Stack
 
 - **Frontend:** HTML, Tailwind CSS v4, DaisyUI v5
