@@ -109,7 +109,7 @@ async function searchPoke() {
       document.getElementById("p1Name").textContent = p1Name;
       pokeTaken = selectedPoke.name;
       document.getElementById("my_modal_ai").showModal();
-      document.getElementById("pokeNameAi").textContent = pokeTaken;
+      document.getElementById("pokeNameAi").textContent = pokeTaken + "!";
       document.getElementById("pokePicAi").src = selectedPoke.image;
       p2Name = "AI";
       document.getElementById("p2Name").textContent = p2Name;
@@ -267,6 +267,11 @@ document.getElementById("newGame").addEventListener("click", () => {
   winner = false;
   draw = false;
   locked = false;
+  document.querySelectorAll("[data-row][data-col]").forEach((cell) => {
+    const cellColored =
+      cell.classList.contains("bg-green-100") &&
+      cell.classList.remove("bg-green-100");
+  });
   startGame();
 });
 
@@ -322,6 +327,14 @@ function checkWin() {
     const isRowEqual = new Set(row).size === 1 && row[0] != null;
 
     if (isRowEqual) {
+      // extract index of matched row
+      const matchedRowIndex = board.indexOf(row);
+      const allMatchedCells = document.querySelectorAll(
+        `[data-row="${matchedRowIndex}"]`,
+      );
+      allMatchedCells.forEach((cell) => {
+        cell.classList.add("bg-green-100");
+      });
       // the contents of board are strings and need to be parsed
       if (row[0].includes(`id="${p1Name}Marker"`)) {
         winner = true;
@@ -344,6 +357,10 @@ function checkWin() {
   const isFirstColumnEqual =
     new Set(FirstColumn).size === 1 && FirstColumn[0] != null;
   if (isFirstColumnEqual) {
+    const FirstColumnCells = document.querySelectorAll('[data-col="0"]');
+    FirstColumnCells.forEach((cell) => {
+      cell.classList.add("bg-green-100");
+    });
     if (FirstColumn[0].includes(`id="${p1Name}Marker"`)) {
       winner = true;
       celebrate(p1Name);
@@ -363,6 +380,10 @@ function checkWin() {
   const isThirdColumnEqual =
     new Set(thirdColumn).size === 1 && thirdColumn[0] != null;
   if (isThirdColumnEqual) {
+    const thirdColumnCells = document.querySelectorAll('[data-col="2"]');
+    thirdColumnCells.forEach((cell) => {
+      cell.classList.add("bg-green-100");
+    });
     if (thirdColumn[0].includes(`id="${p1Name}Marker"`)) {
       winner = true;
       celebrate(p1Name);
@@ -382,6 +403,10 @@ function checkWin() {
   const isSecondColumnEqual =
     new Set(secondColumn).size === 1 && secondColumn[0] != null;
   if (isSecondColumnEqual) {
+    const secondColumnCells = document.querySelectorAll('[data-col="1"]');
+    secondColumnCells.forEach((cell) => {
+      cell.classList.add("bg-green-100");
+    });
     if (secondColumn[0].includes(`id="${p1Name}Marker"`)) {
       winner = true;
       celebrate(p1Name);
@@ -402,6 +427,15 @@ function checkWin() {
     board[1][1] === board[2][2] &&
     board[0][0] != null
   ) {
+    document
+      .querySelector("[data-row='0'][data-col='0']")
+      .classList.add("bg-green-100");
+    document
+      .querySelector("[data-row='1'][data-col='1']")
+      .classList.add("bg-green-100");
+    document
+      .querySelector("[data-row='2'][data-col='2']")
+      .classList.add("bg-green-100");
     if (board[0][0].includes(`id="${p1Name}Marker"`)) {
       winner = true;
       celebrate(p1Name);
@@ -422,6 +456,15 @@ function checkWin() {
     board[0][2] === board[2][0] &&
     board[0][2] != null
   ) {
+    document
+      .querySelector("[data-row='0'][data-col='2']")
+      .classList.add("bg-green-100");
+    document
+      .querySelector("[data-row='1'][data-col='1']")
+      .classList.add("bg-green-100");
+    document
+      .querySelector("[data-row='2'][data-col='0']")
+      .classList.add("bg-green-100");
     if (board[0][2].includes(`id="${p1Name}Marker"`)) {
       winner = true;
       celebrate(p1Name);
