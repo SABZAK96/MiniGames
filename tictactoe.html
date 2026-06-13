@@ -13,12 +13,17 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+    <script
+      src="https://cdn.socket.io/4.8.1/socket.io.min.js"
+      integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
     <!-- navbar -->
-    <div class="navbar bg-base-200 px-4 shadow-sm">
+    <div class="navbar bg-[#FFF8E7] px-4 shadow-sm">
       <div class="navbar-start">
-        <a href="/index.html" class="btn btn-ghost">← Games</a>
+        <a href="home.html"><img class="w-30" src="./images/logo.png" alt="" /></a>
       </div>
       <div class="navbar-center">
         <span class="text-xl font-bold">Poké TicTacToe</span>
@@ -66,35 +71,37 @@
       <dialog id="my_modal_4" class="modal">
         <div class="modal-box w-11/12 max-w-5xl">
           <div id="modeBox">
-            <h3 id="chooseMode" class="text-lg font-bold">Choose who you want to play with!</h3>
-          <div class="flex flex-row gap-1 mt-4">
-            <div
-              id="ai"
-              class="mode card bg-base-100 flex-1 justify-center items-center shadow-sm"
-            >
-              <div class="card-body">
-                <h2 class="card-title">AI</h2>
+            <h3 id="chooseMode" class="text-lg font-bold">
+              Choose who you want to play with!
+            </h3>
+            <div class="flex flex-row gap-1 mt-4">
+              <div
+                id="ai"
+                class="mode card bg-base-100 flex-1 justify-center items-center shadow-sm"
+              >
+                <div class="card-body">
+                  <h2 class="card-title">AI</h2>
+                </div>
               </div>
-            </div>
 
-            <div
-              id="local"
-              class="mode card bg-base-100 flex-1 justify-center items-center shadow-sm"
-            >
-              <div class="card-body">
-                <h2 class="card-title">Local</h2>
+              <div
+                id="local"
+                class="mode card bg-base-100 flex-1 justify-center items-center shadow-sm"
+              >
+                <div class="card-body">
+                  <h2 class="card-title">Local</h2>
+                </div>
               </div>
-            </div>
 
-            <div
-              id="online"
-              class="mode card bg-base-100 flex-1 justify-center items-center shadow-sm"
-            >
-              <div class="card-body">
-                <h2 class="card-title">Online</h2>
+              <div
+                id="online"
+                class="mode card bg-base-100 flex-1 justify-center items-center shadow-sm"
+              >
+                <div class="card-body">
+                  <h2 class="card-title">Online</h2>
+                </div>
               </div>
             </div>
-          </div>
           </div>
 
           <h3 class="text-lg font-bold mt-4">Pick Your Poke Marker!</h3>
@@ -142,7 +149,7 @@
         </div>
       </dialog>
 
-            <!-- another modal for selection confirmation with ai -->
+      <!-- another modal for selection confirmation with ai -->
       <dialog id="my_modal_ai" class="modal">
         <div class="modal-box w-11/12 max-w-5xl">
           <form
@@ -157,7 +164,9 @@
             <div><img id="pokePicAi" src="" class="w-75 h-75" /></div>
             <!-- modal action is for placing buttons on the bottom right so i brought the form out of it to have a full width search bar -->
             <div class="modal-action mt-0">
-              <button id="startGameAi" class="btn btn-primary">Let's Go!</button>
+              <button id="startGameAi" class="btn btn-primary">
+                Let's Go!
+              </button>
             </div>
           </form>
         </div>
@@ -189,8 +198,12 @@
 
         <!-- round / game controls -->
         <div class="flex gap-2 w-full">
-          <button id="newRound" class="btn btn-outline flex-1">New Round</button>
-          <button id="newGame" class="btn btn-error btn-outline flex-1">New Game</button>
+          <button id="newRound" class="btn btn-outline flex-1">
+            New Round
+          </button>
+          <button id="newGame" class="btn btn-error btn-outline flex-1">
+            New Game
+          </button>
         </div>
       </div>
 
