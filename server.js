@@ -5,17 +5,18 @@ const app = express();
 const axios = require("axios");
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const port = 5000;
+//having socket and server on the same port - we create an http server
+const http = require("http");
+const server = http.createServer(app);
 const cors = require("cors");
 app.use(cors());
-app.listen(port, () => {
-  console.log("server's up!");
-});
 
 // setting up socket for online tictactoe game
 const { Server } = require("socket.io");
 const io = new Server({
+  server,
   cors: {
-    origin: "http://localhost:5000",
+    origin: `http://localhost:${port}`,
   },
 });
 
@@ -39,6 +40,11 @@ io.on("connection", (socket) => {
       roomNumber = Math.floor((Math.random() + 1) * 1000);
       socket.join(roomNumber);
 
+      socket.emit("RoomID", {
+        roomID: roomNumber,
+        message: "Waiting for opponent...",
+      });
+
       waitingRoom = roomNumber;
     } else {
       socket.join(roomNumber);
@@ -46,8 +52,15 @@ io.on("connection", (socket) => {
       waitingRoom = null;
     }
   });
+
+  socket.on("disconnect", () => {
+    waitingRoom = null;
+  });
 });
-io.listen(3001);
+
+server.listen(port, () => {
+  console.log("server's up!");
+});
 
 app.use(express.json());
 app.use(express.static(__dirname));

@@ -1,5 +1,5 @@
 // socket connections for online mode
-const socket = io("http://localhost:3001");
+const socket = io("http://localhost:5000");
 
 // toggle daiseyUI theme component and add it to localstorage
 const theme = document.querySelector(".theme-controller");
