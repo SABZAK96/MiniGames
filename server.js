@@ -5,9 +5,49 @@ const app = express();
 const axios = require("axios");
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const port = 5000;
+const cors = require("cors");
+app.use(cors());
 app.listen(port, () => {
   console.log("server's up!");
 });
+
+// setting up socket for online tictactoe game
+const { Server } = require("socket.io");
+const io = new Server({
+  cors: {
+    origin: "http://localhost:5000",
+  },
+});
+
+let waitingRoom = null;
+let roomNumber = undefined;
+io.on("connection", (socket) => {
+  console.log(`Client connected with id ${socket.id}`);
+
+  socket.on("playerSelection", (data) => {
+    const player = { name: data.name, pokeImage: data.pokemonImage };
+    if (data.roomType === "id") {
+      if (io.sockets.adapter.rooms.get(data.roomId)) {
+        socket.join(data.roomId);
+        if (io.sockets.adapter.rooms.get(data.roomId).size === 2) {
+          io.to(data.roomId).emit("playerInfo", player);
+        }
+      } else {
+        socket.emit("errorMessage", "Room ID does not exist!");
+      }
+    } else if (!waitingRoom) {
+      roomNumber = Math.floor((Math.random() + 1) * 1000);
+      socket.join(roomNumber);
+
+      waitingRoom = roomNumber;
+    } else {
+      socket.join(roomNumber);
+      io.to(roomNumber).emit("playerInfo", player);
+      waitingRoom = null;
+    }
+  });
+});
+io.listen(3001);
 
 app.use(express.json());
 app.use(express.static(__dirname));

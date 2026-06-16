@@ -1,3 +1,6 @@
+// socket connections for online mode
+const socket = io("http://localhost:3001");
+
 // toggle daiseyUI theme component and add it to localstorage
 const theme = document.querySelector(".theme-controller");
 const element = document.getElementById("page");
@@ -47,6 +50,7 @@ let p2Wins = Number(document.getElementById("p2wins").textContent);
 let selectedPoke = { name: undefined, image: undefined };
 let playerName = undefined;
 let selectedMode = undefined;
+let selectedRoom = undefined;
 
 async function searchPoke() {
   await getPokes();
@@ -65,10 +69,27 @@ async function searchPoke() {
           mode.classList.remove("bg-primary", "text-white");
       });
       mode.classList.add("bg-primary", "text-white");
+      if (mode.id === "online") {
+        document.getElementById("onlineRooms").classList.remove("hidden");
+      }
 
       selectedMode = mode.id;
       console.log(selectedMode);
     });
+  });
+// handling rooms for online play
+  document.getElementById("joinRandom").addEventListener("click", () => {
+    document.getElementById("joinRandom").classList.add("bg-primary", "text-white");
+    document.getElementById("joinID").classList.remove("bg-primary", "text-white");
+    document.getElementById("roomID").classList.add("hidden");
+    selectedRoom = "random";
+  });
+
+  document.getElementById("joinID").addEventListener("click", () => {
+    document.getElementById("joinID").classList.add("bg-primary", "text-white");
+    document.getElementById("joinRandom").classList.remove("bg-primary", "text-white");
+    document.getElementById("roomID").classList.remove("hidden");
+    selectedRoom = "id";
   });
 
   // select listener registered once, outside forEach
@@ -124,6 +145,15 @@ async function searchPoke() {
       firstPlayer = playerOneMarker;
       playerPlaying = playerOneMarker;
       startGame();
+    }
+    if (selectedMode === "online") {
+      const playerInfo = {
+        name: playerName.value,
+        pokemonImage: selectedPoke.image,
+        roomType: selectedRoom,
+        roomId: selectedRoom === "id" ? document.getElementById("roomID").value : null,
+      };
+      socket.emit("playerSelection", playerInfo);
     }
   });
 
