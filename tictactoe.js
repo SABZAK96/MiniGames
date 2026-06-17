@@ -203,6 +203,7 @@ async function searchPoke() {
   document.getElementById("my_modal_6").addEventListener("close", () => {
     document.getElementById("p1Name").textContent = p1Name;
     document.getElementById("p2Name").textContent = p2Name;
+    startGameOnline();
   });
 
   // start game after player confirms their marker
@@ -607,4 +608,47 @@ function checkWin() {
   }
 
   return false;
+}
+function startGameOnline() {
+  let p1 = { name: p1Name, marker: playerOneMarker };
+  let p2 = { name: p2Name, marker: playerTwoMarker };
+  socket.emit("start game", { p1, p2 });
+  socket.on("first move", (data) => {
+    playerPlaying = { marker: data.marker, name: data.name };
+    document.getElementById("currentTurn").innerHTML = data.name;
+  });
+
+  const allCells = document.querySelectorAll("[data-row][data-col]");
+  allCells.forEach((cell) => {
+    cell.innerHTML = "";
+    cell.addEventListener("click", async () => {
+      if (locked) return;
+      if (winner) return;
+      if (draw) return;
+      if (cell.innerHTML !== "") return;
+      // p1Name is always "myself" (set in joinRoom); playerPlaying.name is the
+      // shared "whose turn is it" value broadcast by the server - if they don't
+      // match, it's not my turn yet (or "first move" hasn't arrived yet)
+      //(data.playerOne.pokeImage === document.getElementById("pokePicSelf").src). It's a "who am I" value
+      if (!playerPlaying || playerPlaying.name !== p1Name) return;
+
+      let r = cell.dataset.row;
+      let c = cell.dataset.col;
+      cell.innerHTML = playerPlaying.marker;
+      locked = true;
+      socket.emit("move", { r, c, playerPlaying, p1, p2 });
+      syncBoard();
+      checkWin();
+    });
+  });
+  socket.on("announce move", (data) => {
+    document.querySelector(
+      `[data-row="${data.row}"][data-col="${data.col}"]`,
+    ).innerHTML = data.marker;
+    playerPlaying = data.currentPlayer;
+    document.getElementById("currentTurn").innerHTML = data.currentPlayer.name;
+    syncBoard();
+    checkWin();
+    locked = false;
+  });
 }

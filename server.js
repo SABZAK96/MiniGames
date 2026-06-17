@@ -67,7 +67,36 @@ io.on("connection", (socket) => {
       waitingRoom = null;
     }
   });
+  socket.on("start game", (data) => {
+    // socket.rooms always contains this socket's own default room (named
+    // after its id) plus whatever room it joined - filter the default one
+    // out to get the actual game room, instead of relying on the shared
+    // roomNumber variable (which isn't necessarily this socket's room)
+    const roomId = [...socket.rooms].find((id) => id !== socket.id);
 
+    let firstPlayer = undefined;
+    if (!firstPlayer || firstPlayer === data.p2) {
+      firstPlayer = data.p1;
+    } else {
+      firstPlayer === data.p2;
+    }
+    io.to(roomId).emit("first move", firstPlayer);
+  });
+
+  socket.on("move", (data) => {
+    const roomId = [...socket.rooms].find((id) => id !== socket.id);
+    // data.playerPlaying, data.p1 and data.p2 are separate objects built
+    // independently on the client, so === would compare them by identity
+    // (always false) - compare by name instead, since that's a primitive value
+    const currentPlayer =
+      data.playerPlaying.name === data.p1.name ? data.p2 : data.p1;
+    io.to(roomId).emit("announce move", {
+      row: data.r,
+      col: data.c,
+      marker: data.playerPlaying.marker,
+      currentPlayer: currentPlayer,
+    });
+  });
   socket.on("disconnect", () => {
     waitingRoom = null;
   });
