@@ -13,8 +13,7 @@ app.use(cors());
 
 // setting up socket for online tictactoe game
 const { Server } = require("socket.io");
-const io = new Server({
-  server,
+const io = new Server(server, {
   cors: {
     origin: `http://localhost:${port}`,
   },
@@ -26,12 +25,22 @@ io.on("connection", (socket) => {
   console.log(`Client connected with id ${socket.id}`);
 
   socket.on("playerSelection", (data) => {
-    const player = { name: data.name, pokeImage: data.pokemonImage };
+    // store this player's data on their own socket (not a shared/global variable)
+    // so it can never leak into another room or a later game
+    socket.player = { name: data.name, pokeImage: data.pokemonImage };
+
     if (data.roomType === "id") {
       if (io.sockets.adapter.rooms.get(data.roomId)) {
         socket.join(data.roomId);
-        if (io.sockets.adapter.rooms.get(data.roomId).size === 2) {
-          io.to(data.roomId).emit("playerInfo", player);
+        const room = io.sockets.adapter.rooms.get(data.roomId);
+        if (room.size === 2) {
+          // room is a Set of the two socket ids currently in this room
+          const [firstId, secondId] = room;
+          // look up each socket by id and read back the .player we stored above
+          io.to(data.roomId).emit("joinRoom", {
+            playerOne: io.sockets.sockets.get(firstId).player,
+            playerTwo: io.sockets.sockets.get(secondId).player,
+          });
         }
       } else {
         socket.emit("errorMessage", "Room ID does not exist!");
@@ -40,7 +49,7 @@ io.on("connection", (socket) => {
       roomNumber = Math.floor((Math.random() + 1) * 1000);
       socket.join(roomNumber);
 
-      socket.emit("RoomID", {
+      socket.emit("roomID", {
         roomID: roomNumber,
         message: "Waiting for opponent...",
       });
@@ -48,7 +57,13 @@ io.on("connection", (socket) => {
       waitingRoom = roomNumber;
     } else {
       socket.join(roomNumber);
-      io.to(roomNumber).emit("playerInfo", player);
+      const room = io.sockets.adapter.rooms.get(roomNumber);
+      // same lookup as above: read player data straight off this room's two sockets
+      const [firstId, secondId] = room;
+      io.to(roomNumber).emit("joinRoom", {
+        playerOne: io.sockets.sockets.get(firstId).player,
+        playerTwo: io.sockets.sockets.get(secondId).player,
+      });
       waitingRoom = null;
     }
   });

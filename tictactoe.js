@@ -77,17 +77,23 @@ async function searchPoke() {
       console.log(selectedMode);
     });
   });
-// handling rooms for online play
+  // handling rooms for online play
   document.getElementById("joinRandom").addEventListener("click", () => {
-    document.getElementById("joinRandom").classList.add("bg-primary", "text-white");
-    document.getElementById("joinID").classList.remove("bg-primary", "text-white");
+    document
+      .getElementById("joinRandom")
+      .classList.add("bg-primary", "text-white");
+    document
+      .getElementById("joinID")
+      .classList.remove("bg-primary", "text-white");
     document.getElementById("roomID").classList.add("hidden");
     selectedRoom = "random";
   });
 
   document.getElementById("joinID").addEventListener("click", () => {
     document.getElementById("joinID").classList.add("bg-primary", "text-white");
-    document.getElementById("joinRandom").classList.remove("bg-primary", "text-white");
+    document
+      .getElementById("joinRandom")
+      .classList.remove("bg-primary", "text-white");
     document.getElementById("roomID").classList.remove("hidden");
     selectedRoom = "id";
   });
@@ -151,12 +157,40 @@ async function searchPoke() {
         name: playerName.value,
         pokemonImage: selectedPoke.image,
         roomType: selectedRoom,
-        roomId: selectedRoom === "id" ? document.getElementById("roomID").value : null,
+        roomId:
+          selectedRoom === "id"
+            ? document.getElementById("roomID").value
+            : null,
       };
       socket.emit("playerSelection", playerInfo);
+      document.getElementById("my_modal_6").showModal();
+      document.getElementById("pokeNameSelf").innerHTML = selectedPoke.name;
+      document.getElementById("pokePicSelf").src = selectedPoke.image;
     }
   });
+  socket.on("roomID", (data) => {
+    document.getElementById("roomStatus").classList.remove("hidden");
+    document.getElementById("roomStatus").textContent = data.message;
+    document.getElementById("roomNumber").classList.remove("hidden");
+    document.getElementById("roomNumber").textContent = data.roomID;
+    document.getElementById("startGameOnline").disabled = true;
+  });
+  socket.on("joinRoom", (data) => {
+    if (data.playerOne.pokeImage === document.getElementById("pokePicSelf").src) {
+      playerOneMarker = `<img id="${p1Name}Marker" src="${data.playerOne.pokeImage}" class="w-full h-full object-contain">`;
+      document.getElementById("OpponentName").textContent = data.playerTwo.name;
+      document.getElementById("pokePicOpponent").src = data.playerTwo.pokeImage;
+      playerTwoMarker = `<img id="${p2Name}Marker" src="${data.playerTwo.pokeImage}" class="w-full h-full object-contain">`;
+    } else {
+      playerTwoMarker = `<img id="${p2Name}Marker" src="${data.playerOne.pokeImage}" class="w-full h-full object-contain">`;
+      document.getElementById("OpponentName").textContent = data.playerOne.name;
+      document.getElementById("pokePicOpponent").src = data.playerOne.pokeImage;
+      playerOneMarker = `<img id="${p1Name}Marker" src="${data.playerTwo.pokeImage}" class="w-full h-full object-contain">`;
+    }
 
+    document.getElementById("roomStatus").classList.add("hidden");
+    document.getElementById("startGameOnline").disabled = false;
+  });
   // start game after player confirms their marker
   document.getElementById("my_modal_5").addEventListener(
     "close",

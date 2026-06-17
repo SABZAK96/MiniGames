@@ -107,19 +107,25 @@
           </div>
 
           <div id="onlineRooms" class="flex flex-row gap-1 mt-4 hidden">
-            <div id="joinRandom"
+            <div
+              id="joinRandom"
               class="card bg-base-100 flex-1 justify-center items-center shadow-sm"
             >
-              <div  class="card-body">
+              <div class="card-body">
                 <h2 class="card-title">Join a Random Room</h2>
               </div>
             </div>
-            <div id="joinID"
+            <div
+              id="joinID"
               class="card bg-base-100 flex-1 justify-center items-center shadow-sm"
             >
-              <div  class="card-body flex flex-col">
+              <div class="card-body flex flex-col">
                 <h2 class="card-title">Join with a Room ID</h2>
-                <input id="roomID" type="text" class="hidden text-black rounded bg-white">
+                <input
+                  id="roomID"
+                  type="text"
+                  class="hidden text-black rounded bg-white"
+                />
               </div>
             </div>
           </div>
@@ -164,6 +170,51 @@
             <!-- modal action is for placing buttons on the bottom right so i brought the form out of it to have a full width search bar -->
             <div class="modal-action mt-0">
               <button id="startGame" class="btn btn-primary">Let's Go!</button>
+            </div>
+          </form>
+        </div>
+      </dialog>
+
+      <!-- different modal for online play -->
+      <dialog id="my_modal_6" class="modal">
+        <div class="modal-box w-11/12 max-w-5xl">
+          <form
+            method="dialog"
+            class="flex flex-col justify-center items-center gap-3 mt-4"
+          >
+            <div class="font-bold text-xl">You selected</div>
+            <div
+              id="pokeNameSelf"
+              class="italic text-primary text-3xl font-bold"
+            ></div>
+            <div><img id="pokePicSelf" src="" class="w-75 h-75" /></div>
+
+            <p id="roomStatus" class="font-bold mt-2 hidden"></p>
+
+            <p class="font-bold">
+              Room ID: <span id="roomNumber" class="mt-2 hidden"></span>
+            </p>
+
+            <div class="font-bold text-xl">Your Opponent</div>
+            <div
+              id="OpponentName"
+              class="italic text-primary text-3xl font-bold"
+            >
+              <span>!</span>
+            </div>
+            <div>
+              <img
+                id="pokePicOpponent"
+                src="./images/qm1.png"
+                class="w-75 h-75 object-cover"
+              />
+            </div>
+
+            <!-- modal action is for placing buttons on the bottom right so i brought the form out of it to have a full width search bar -->
+            <div class="modal-action mt-0">
+              <button id="startGameOnline" class="btn btn-primary">
+                Let's Go!
+              </button>
             </div>
           </form>
         </div>
