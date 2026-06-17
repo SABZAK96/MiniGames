@@ -49,7 +49,7 @@ io.on("connection", (socket) => {
       roomNumber = Math.floor((Math.random() + 1) * 1000);
       socket.join(roomNumber);
 
-      socket.emit("roomID", {
+      io.to(roomNumber).emit("roomID", {
         roomID: roomNumber,
         message: "Waiting for opponent...",
       });

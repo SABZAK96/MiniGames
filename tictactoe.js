@@ -159,7 +159,7 @@ async function searchPoke() {
         roomType: selectedRoom,
         roomId:
           selectedRoom === "id"
-            ? document.getElementById("roomID").value
+            ? Number(document.getElementById("roomID").value)
             : null,
       };
       socket.emit("playerSelection", playerInfo);
@@ -176,14 +176,21 @@ async function searchPoke() {
     document.getElementById("startGameOnline").disabled = true;
   });
   socket.on("joinRoom", (data) => {
-    if (data.playerOne.pokeImage === document.getElementById("pokePicSelf").src) {
+    if (
+      data.playerOne.pokeImage === document.getElementById("pokePicSelf").src
+    ) {
+      p1Name = data.playerOne.name;
+      p2Name = data.playerTwo.name;
       playerOneMarker = `<img id="${p1Name}Marker" src="${data.playerOne.pokeImage}" class="w-full h-full object-contain">`;
       document.getElementById("OpponentName").textContent = data.playerTwo.name;
       document.getElementById("pokePicOpponent").src = data.playerTwo.pokeImage;
       playerTwoMarker = `<img id="${p2Name}Marker" src="${data.playerTwo.pokeImage}" class="w-full h-full object-contain">`;
     } else {
+      p1Name = data.playerTwo.name;
+      p2Name = data.playerOne.name;
       playerTwoMarker = `<img id="${p2Name}Marker" src="${data.playerOne.pokeImage}" class="w-full h-full object-contain">`;
-      document.getElementById("OpponentName").textContent = data.playerOne.name;
+      document.getElementById("OpponentName").textContent =
+        data.playerOne.name + "!";
       document.getElementById("pokePicOpponent").src = data.playerOne.pokeImage;
       playerOneMarker = `<img id="${p1Name}Marker" src="${data.playerTwo.pokeImage}" class="w-full h-full object-contain">`;
     }
@@ -191,6 +198,13 @@ async function searchPoke() {
     document.getElementById("roomStatus").classList.add("hidden");
     document.getElementById("startGameOnline").disabled = false;
   });
+
+  // showing the names after closing the modal in online mode
+  document.getElementById("my_modal_6").addEventListener("close", () => {
+    document.getElementById("p1Name").textContent = p1Name;
+    document.getElementById("p2Name").textContent = p2Name;
+  });
+
   // start game after player confirms their marker
   document.getElementById("my_modal_5").addEventListener(
     "close",
