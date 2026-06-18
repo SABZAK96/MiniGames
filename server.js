@@ -21,9 +21,11 @@ const io = new Server(server, {
 
 let waitingRoom = null;
 let roomNumber = undefined;
+// who-goes-first is decided once per room (both players' clients emit
+// "start game" independently, so this must be shared, not per-socket)
+const firstPlayerByRoom = {};
 io.on("connection", (socket) => {
   console.log(`Client connected with id ${socket.id}`);
-
   socket.on("playerSelection", (data) => {
     // store this player's data on their own socket (not a shared/global variable)
     // so it can never leak into another room or a later game
@@ -74,13 +76,19 @@ io.on("connection", (socket) => {
     // roomNumber variable (which isn't necessarily this socket's room)
     const roomId = [...socket.rooms].find((id) => id !== socket.id);
 
-    let firstPlayer = undefined;
-    if (!firstPlayer || firstPlayer === data.p2) {
-      firstPlayer = data.p1;
-    } else {
-      firstPlayer === data.p2;
+    // the first "start game" emit for this room already decided who goes
+    // first - reply to this late socket directly instead of re-deciding,
+    // since it registered its "first move" listener after that broadcast
+    // already went out and would otherwise never see it. data.p1 is always
+    // this socket's own identity, so the other socket already decided -
+    // that decision can only be the opponent, i.e. data.p2
+    if (firstPlayerByRoom[roomId]) {
+      socket.emit("first move", data.p2);
+      return;
     }
-    io.to(roomId).emit("first move", firstPlayer);
+
+    firstPlayerByRoom[roomId] = data.p1.name;
+    io.to(roomId).emit("first move", data.p1);
   });
 
   socket.on("move", (data) => {

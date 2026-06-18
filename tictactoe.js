@@ -201,9 +201,11 @@ async function searchPoke() {
 
   // showing the names after closing the modal in online mode
   document.getElementById("my_modal_6").addEventListener("close", () => {
-    document.getElementById("p1Name").textContent = p1Name;
-    document.getElementById("p2Name").textContent = p2Name;
-    startGameOnline();
+    if (p1Name && p2Name) {
+      document.getElementById("p1Name").textContent = p1Name;
+      document.getElementById("p2Name").textContent = p2Name;
+      startGameOnline();
+    }
   });
 
   // start game after player confirms their marker
@@ -341,24 +343,26 @@ function startGame() {
 
 // add a new listener for new game
 document.getElementById("newRound").addEventListener("click", () => {
-  playerPlaying =
-    firstPlayer === playerOneMarker ? playerTwoMarker : playerOneMarker;
-  firstPlayer =
-    firstPlayer === playerOneMarker ? playerTwoMarker : playerOneMarker;
-  board = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null],
-  ];
-  winner = false;
-  draw = false;
-  locked = false;
-  document.querySelectorAll("[data-row][data-col]").forEach((cell) => {
-    const cellColored =
-      cell.classList.contains("bg-green-100") &&
-      cell.classList.remove("bg-green-100");
-  });
-  startGame();
+  if (selectedMode === "local" || selectedMode === "ai") {
+    playerPlaying =
+      firstPlayer === playerOneMarker ? playerTwoMarker : playerOneMarker;
+    firstPlayer =
+      firstPlayer === playerOneMarker ? playerTwoMarker : playerOneMarker;
+    board = [
+      [null, null, null],
+      [null, null, null],
+      [null, null, null],
+    ];
+    winner = false;
+    draw = false;
+    locked = false;
+    document.querySelectorAll("[data-row][data-col]").forEach((cell) => {
+      const cellColored =
+        cell.classList.contains("bg-green-100") &&
+        cell.classList.remove("bg-green-100");
+    });
+    startGame();
+  } else startGameOnline;
 });
 
 // listener for new game
@@ -615,14 +619,14 @@ function startGameOnline() {
   socket.emit("start game", { p1, p2 });
   socket.on("first move", (data) => {
     playerPlaying = { marker: data.marker, name: data.name };
-    document.getElementById("currentTurn").innerHTML = data.name;
+    document.getElementById("currentTurn").innerHTML = playerPlaying.name;
   });
 
   const allCells = document.querySelectorAll("[data-row][data-col]");
   allCells.forEach((cell) => {
     cell.innerHTML = "";
     cell.addEventListener("click", async () => {
-      if (locked) return;
+      if (locked) return; // lock the board until the announce move arrives
       if (winner) return;
       if (draw) return;
       if (cell.innerHTML !== "") return;
