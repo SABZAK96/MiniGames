@@ -71,6 +71,8 @@ async function searchPoke() {
       mode.classList.add("bg-primary", "text-white");
       if (mode.id === "online") {
         document.getElementById("onlineRooms").classList.remove("hidden");
+      } else {
+        document.getElementById("onlineRooms").classList.add("hidden");
       }
 
       selectedMode = mode.id;
@@ -148,9 +150,15 @@ async function searchPoke() {
       const aiPoke = (await axios.get(aiPokeOptions[randOption].url)).data
         .sprites.other["official-artwork"].front_default;
       playerTwoMarker = `<img id="${p2Name}Marker" src="${aiPoke}" class="w-full h-full object-contain">`;
-      firstPlayer = playerOneMarker;
-      playerPlaying = playerOneMarker;
-      startGame();
+      document.getElementById("my_modal_ai").addEventListener(
+        "close",
+        () => {
+          firstPlayer = playerOneMarker;
+          playerPlaying = playerOneMarker;
+          startGame();
+        },
+        { once: true },
+      );
     }
     if (selectedMode === "online") {
       const playerInfo = {
@@ -475,7 +483,7 @@ function checkWin() {
       }
     }
   });
-  if (winner) return;
+  if (winner) return true;
   // check matching columns - extracting first elements of rows using map
   const FirstColumn = board.map((row) => row[0]);
   const isFirstColumnEqual =

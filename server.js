@@ -32,20 +32,26 @@ io.on("connection", (socket) => {
     socket.player = { name: data.name, pokeImage: data.pokemonImage };
 
     if (data.roomType === "id") {
-      if (io.sockets.adapter.rooms.get(data.roomId)) {
-        socket.join(data.roomId);
-        const room = io.sockets.adapter.rooms.get(data.roomId);
-        if (room.size === 2) {
-          // room is a Set of the two socket ids currently in this room
-          const [firstId, secondId] = room;
-          // look up each socket by id and read back the .player we stored above
-          io.to(data.roomId).emit("joinRoom", {
-            playerOne: io.sockets.sockets.get(firstId).player,
-            playerTwo: io.sockets.sockets.get(secondId).player,
-          });
-        }
-      } else {
-        socket.emit("errorMessage", "Room ID does not exist!");
+      // check size BEFORE joining, so a rejected socket never becomes a
+      // member of the room in the first place (no leave/cleanup needed)
+      const existingRoom = io.sockets.adapter.rooms.get(data.roomId);
+      if (existingRoom && existingRoom.size >= 2) {
+        socket.emit("errorMessage", "Room is full!");
+        return;
+      }
+      // with this way we can created a room with specific id as well - along with joining an exiting one
+      socket.join(data.roomId);
+      // re-fetch: if this is a brand-new room, existingRoom was undefined
+      // before the join, and socket.join() doesn't update that reference
+      const room = io.sockets.adapter.rooms.get(data.roomId);
+      if (room.size === 2) {
+        // room is a Set of the two socket ids currently in this room
+        const [firstId, secondId] = room;
+        // look up each socket by id and read back the .player we stored above
+        io.to(data.roomId).emit("joinRoom", {
+          playerOne: io.sockets.sockets.get(firstId).player,
+          playerTwo: io.sockets.sockets.get(secondId).player,
+        });
       }
     } else if (!waitingRoom) {
       roomNumber = Math.floor((Math.random() + 1) * 1000);
