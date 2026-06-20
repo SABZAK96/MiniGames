@@ -101,7 +101,7 @@ easyMode.addEventListener("click", () => {
 
     newResponse.forEach((img) => {
       const element = document.createElement("div");
-      element.className = "card relative md:w-60 md:h-60 w-40 h-40";
+      element.className = "card relative md:w-60 md:h-60 w-25 h-25";
       element.dataset.id = img; // data-id='${img}' assigning our own attribute
       element.innerHTML = `<img src="${img}" class="back w-full h-full object-contain" />
     <img src="/pokeball-seeklogo.png" class="front absolute inset-0 w-full h-full object-contain" />`;
@@ -272,7 +272,7 @@ mediumMode.addEventListener("click", () => {
 
     newResponse.forEach((img) => {
       const element = document.createElement("div");
-      element.className = "card relative w-48 h-48 ";
+      element.className = "card relative md:w-48 md:h-48 w-25 h-25 ";
       element.dataset.id = img; // data-id assigned as our own attribute for pair matching
       element.innerHTML = `<img src="${img}" class="back w-full h-full object-contain" />
     <img src="/pokeball-seeklogo.png" class="front absolute inset-0 w-full h-full object-contain" />`;
@@ -458,7 +458,7 @@ hardMode.addEventListener("click", () => {
 
     newResponse.forEach((img) => {
       const element = document.createElement("div");
-      element.className = "card relative w-35 h-35";
+      element.className = "card relative md:w-35 md:h-35 h-20 w-20";
       element.dataset.id = img; // data-id assigned as our own attribute for pair matching
       element.innerHTML = `<img src="${img}" class="back w-full h-full object-contain" />
     <img src="/pokeball-seeklogo.png" class="front absolute inset-0 w-full h-full object-contain" />`;
