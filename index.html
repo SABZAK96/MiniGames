@@ -42,7 +42,7 @@
         <a href="home.html"><img class="w-30" src="./images/logo.png" alt="" /></a>
       </div>
       <div class="navbar-center">
-        <span class="text-xl font-bold">Poké Games</span>
+        <span class="text-xl font-bold">Poké Memory</span>
       </div>
       <div class="navbar-end">
         <label class="flex cursor-pointer gap-2">
@@ -79,61 +79,58 @@
         </label>
       </div>
     </div>
-    <!-- container of difficulties -->
-    <div class="flex flex-row gap-1 items-center justify-center pt-5">
-      <button id="easy" class="btn btn-info">Easy</button>
-      <button id="medium" class="btn btn-info">Medium</button>
-      <button id="hard" class="btn btn-info">Hard</button>
-    </div>
-    <!-- container of start and reset -->
-    <div
-      id="options"
-      class="flex flex-row gap-1 items-center justify-center pt-2 mb-3 hidden"
-    ></div>
-    <!-- container of info -->
-    <div id="info" class="mx-auto overflow-x-auto mb-3 hidden">
-      <table class="table text-center mx-auto">
-        <!-- head -->
+    <!-- top section: difficulty picker, controls, and live stats -->
+    <div class="flex flex-col items-center gap-4 px-6 pt-8 pb-6">
+      <div class="w-96 md:w-200 flex flex-col gap-3">
+        <!-- container of difficulties -->
+        <div class="bg-base-200 rounded-xl p-4 w-full text-center">
+          <p class="text-sm text-base-content/60 mb-2">Choose a Difficulty</p>
+          <div class="flex flex-row gap-2 justify-center">
+            <button id="easy" class="btn btn-info flex-1">Easy</button>
+            <button id="medium" class="btn btn-info flex-1">Medium</button>
+            <button id="hard" class="btn btn-info flex-1">Hard</button>
+          </div>
+        </div>
 
-        <tbody>
-          <!-- row 1 -->
-          <tr>
-            <td class="font-bold text-xl">
-              Total Number of Matched Pairs to win: <span id="total"></span>
-            </td>
-          </tr>
-          <!-- row 2 -->
-          <tr>
-            <td class="font-bold text-xl">
-              Number of Matches: <span id="matched"></span>
-            </td>
-          </tr>
-          <!-- row 3 -->
-          <tr>
-            <td class="font-bold text-xl">
-              Number of pair left: <span id="unmatched"></span>
-            </td>
-          </tr>
-          <!-- row 4 -->
-          <tr>
-            <td class="font-bold text-xl">
-              Number of Clicks: <span id="clicks"></span>
-            </td>
-          </tr>
-          <!-- row 5 -->
-          <tr>
-            <td class="font-bold text-xl">
-              You got <span id="timeLimit"></span> seconds.<span
-                >Remaining Time: <span id="easyTime"></span
-              ></span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <!-- container of start and reset -->
+        <div
+          id="options"
+          class="flex flex-row gap-2 items-center justify-center w-full hidden"
+        ></div>
+
+        <!-- container of info -->
+        <div
+          id="info"
+          class="stats stats-vertical md:stats-horizontal shadow w-full hidden"
+        >
+          <div class="stat place-items-center">
+            <div class="stat-title">Pairs to Win</div>
+            <div class="stat-value text-xl"><span id="total"></span></div>
+          </div>
+          <div class="stat place-items-center">
+            <div class="stat-title">Matched</div>
+            <div class="stat-value text-xl"><span id="matched"></span></div>
+          </div>
+          <div class="stat place-items-center">
+            <div class="stat-title">Pairs Left</div>
+            <div class="stat-value text-xl"><span id="unmatched"></span></div>
+          </div>
+          <div class="stat place-items-center">
+            <div class="stat-title">Clicks</div>
+            <div class="stat-value text-xl"><span id="clicks"></span></div>
+          </div>
+          <div class="stat place-items-center">
+            <div class="stat-title">Time Left / Limit</div>
+            <div class="stat-value text-xl">
+              <span id="easyTime"></span>/<span id="timeLimit"></span>s
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
- 
+
     <!-- container of pokes -->
-    <div id="pokeContainer"></div>
+    <div id="pokeContainer" class="mt-8"></div>
     <script src="code.js"></script>
   </body>
 </html>
