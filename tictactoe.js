@@ -188,6 +188,12 @@ async function searchPoke() {
     document.getElementById("onlineError").classList.remove("hidden");
     document.getElementById("my_modal_4").showModal();
   });
+
+  socket.on("opponentLeft", (data) => {
+    document.getElementById("my_modal_win").showModal();
+    document.getElementById("messageTitle").innerHTML = data;
+    document.getElementById("findMatch").classList.remove("hidden");
+  });
   socket.on("roomID", (data) => {
     document.getElementById("roomStatus").classList.remove("hidden");
     document.getElementById("roomStatus").textContent = data.message;
@@ -386,40 +392,6 @@ document.getElementById("newRound").addEventListener("click", () => {
   } else {
     startGameOnline();
   }
-});
-
-// listener for new game
-// add a new listener for new game - should reset everything and go back to poke selection
-document.getElementById("newGame").addEventListener("click", () => {
-  playerPlaying = undefined;
-  board = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null],
-  ];
-  winner = false;
-  draw = false;
-  locked = false;
-  document.querySelectorAll("[data-row][data-col]").forEach((cell) => {
-    const cellColored =
-      cell.classList.contains("bg-green-100") &&
-      cell.classList.remove("bg-green-100");
-  });
-  playerOneMarker = undefined;
-  playerTwoMarker = undefined;
-  p1Name = undefined;
-  p2Name = undefined;
-  pokeTaken = undefined;
-  selectedMode = undefined;
-  p1Wins = 0;
-  p2Wins = 0;
-  document.getElementById("p1wins").textContent = 0;
-  document.getElementById("p2wins").textContent = 0;
-  document.getElementById("p1Name").textContent = "";
-  document.getElementById("p2Name").textContent = "";
-  document.getElementById("currentTurn").innerHTML = "";
-  document.getElementById("modeBox").classList.remove("hidden");
-  searchPoke();
 });
 
 function celebrate(name) {
@@ -679,3 +651,66 @@ function startGameOnline() {
     locked = false;
   });
 }
+
+function resetToModeSelect() {
+  playerPlaying = undefined;
+  board = [
+    [null, null, null],
+    [null, null, null],
+    [null, null, null],
+  ];
+  winner = false;
+  draw = false;
+  locked = false;
+  document.querySelectorAll("[data-row][data-col]").forEach((cell) => {
+    const cellColored =
+      cell.classList.contains("bg-green-100") &&
+      cell.classList.remove("bg-green-100");
+  });
+  playerOneMarker = undefined;
+  playerTwoMarker = undefined;
+  p1Name = undefined;
+  p2Name = undefined;
+  pokeTaken = undefined;
+  selectedMode = undefined;
+  p1Wins = 0;
+  p2Wins = 0;
+  document.getElementById("p1wins").textContent = 0;
+  document.getElementById("p2wins").textContent = 0;
+  document.getElementById("p1Name").textContent = "";
+  document.getElementById("p2Name").textContent = "";
+  document.getElementById("currentTurn").innerHTML = "";
+  document.getElementById("modeBox").classList.remove("hidden");
+
+  // clear the leftover highlight from whichever mode/room was picked last
+  // round - selectedMode/selectedRoom are reset above, but nothing else
+  // un-highlights the cards, so they'd still *look* selected otherwise
+  selectedRoom = undefined;
+  document
+    .querySelectorAll(".mode")
+    .forEach((mode) => mode.classList.remove("bg-primary", "text-white"));
+  document.getElementById("onlineRooms").classList.add("hidden");
+  document
+    .getElementById("joinRandom")
+    .classList.remove("bg-primary", "text-white");
+  document
+    .getElementById("joinID")
+    .classList.remove("bg-primary", "text-white");
+  document.getElementById("roomID").classList.add("hidden");
+
+  searchPoke();
+}
+
+// listener for new game
+// add a new listener for new game - should reset everything and go back to poke selection
+document.getElementById("newGame").addEventListener("click", resetToModeSelect);
+
+// registered once - "opponentLeft" can fire multiple times per session
+// (rematch after rematch), so these must not be re-added on every occurrence
+document.getElementById("findMatch").addEventListener("click", () => {
+  document.getElementById("my_modal_win").close();
+  resetToModeSelect();
+});
+document.getElementById("my_modal_win").addEventListener("close", () => {
+  document.getElementById("findMatch").classList.add("hidden");
+});
