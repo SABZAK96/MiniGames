@@ -29,7 +29,8 @@ io.on("connection", (socket) => {
   socket.on("playerSelection", (data) => {
     // store this player's data on their own socket (not a shared/global variable)
     // so it can never leak into another room or a later game
-    socket.player = { name: data.name, pokeImage: data.pokemonImage };
+    socket.player = { name: data.name, pokeName: data.pokeName, pokeImage: data.pokemonImage };
+    socket.emit("playerSelected", socket.player);
 
     if (data.roomType === "id") {
       // check size BEFORE joining, so a rejected socket never becomes a

@@ -163,6 +163,7 @@ async function searchPoke() {
     if (selectedMode === "online") {
       const playerInfo = {
         name: playerName.value,
+        pokeName: selectedPoke.name,
         pokemonImage: selectedPoke.image,
         roomType: selectedRoom,
         roomId:
@@ -171,9 +172,11 @@ async function searchPoke() {
             : null,
       };
       socket.emit("playerSelection", playerInfo);
-      document.getElementById("my_modal_6").showModal();
-      document.getElementById("pokeNameSelf").innerHTML = selectedPoke.name;
-      document.getElementById("pokePicSelf").src = selectedPoke.image;
+      socket.once("playerSelected", (data) => {
+        document.getElementById("my_modal_6").showModal();
+        document.getElementById("pokeNameSelf").innerHTML = data.pokeName;
+        document.getElementById("pokePicSelf").src = data.pokeImage;
+      });
     }
   });
   socket.on("roomID", (data) => {
@@ -351,26 +354,29 @@ function startGame() {
 
 // add a new listener for new game
 document.getElementById("newRound").addEventListener("click", () => {
+  board = [
+    [null, null, null],
+    [null, null, null],
+    [null, null, null],
+  ];
+  winner = false;
+  draw = false;
+  locked = false;
+  document.querySelectorAll("[data-row][data-col]").forEach((cell) => {
+    const cellColored =
+      cell.classList.contains("bg-green-100") &&
+      cell.classList.remove("bg-green-100");
+  });
   if (selectedMode === "local" || selectedMode === "ai") {
     playerPlaying =
       firstPlayer === playerOneMarker ? playerTwoMarker : playerOneMarker;
     firstPlayer =
       firstPlayer === playerOneMarker ? playerTwoMarker : playerOneMarker;
-    board = [
-      [null, null, null],
-      [null, null, null],
-      [null, null, null],
-    ];
-    winner = false;
-    draw = false;
-    locked = false;
-    document.querySelectorAll("[data-row][data-col]").forEach((cell) => {
-      const cellColored =
-        cell.classList.contains("bg-green-100") &&
-        cell.classList.remove("bg-green-100");
-    });
+
     startGame();
-  } else startGameOnline;
+  } else {
+    startGameOnline();
+  }
 });
 
 // listener for new game
