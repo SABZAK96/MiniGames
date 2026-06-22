@@ -61,180 +61,14 @@ async function searchPoke() {
   document.getElementById("pokePreview").innerHTML = "";
   document.getElementById("my_modal_4").showModal();
   playerName = document.getElementById("name");
-  const modes = document.querySelectorAll(".mode");
-  modes.forEach((mode) => {
-    mode.addEventListener("click", () => {
-      modes.forEach((mode) => {
-        mode.classList.contains("bg-primary", "text-white") &&
-          mode.classList.remove("bg-primary", "text-white");
-      });
-      mode.classList.add("bg-primary", "text-white");
-      if (mode.id === "online") {
-        document.getElementById("onlineRooms").classList.remove("hidden");
-      } else {
-        document.getElementById("onlineRooms").classList.add("hidden");
-      }
-
-      selectedMode = mode.id;
-      console.log(selectedMode);
-    });
-  });
-  // handling rooms for online play
-  document.getElementById("joinRandom").addEventListener("click", () => {
-    document
-      .getElementById("joinRandom")
-      .classList.add("bg-primary", "text-white");
-    document
-      .getElementById("joinID")
-      .classList.remove("bg-primary", "text-white");
-    document.getElementById("roomID").classList.add("hidden");
-    selectedRoom = "random";
-  });
-
-  document.getElementById("joinID").addEventListener("click", () => {
-    document.getElementById("joinID").classList.add("bg-primary", "text-white");
-    document
-      .getElementById("joinRandom")
-      .classList.remove("bg-primary", "text-white");
-    document.getElementById("roomID").classList.remove("hidden");
-    selectedRoom = "id";
-  });
-
-  // select listener registered once, outside forEach
-  document.getElementById("select").addEventListener("click", async () => {
-    if (!selectedMode) {
-      document.getElementById("chooseMode").classList.add("text-red-500");
-      return;
-    }
-    if (!selectedPoke.name) {
-      document
-        .getElementById("search")
-        .classList.add("border-1", "border-red-500");
-      return;
-    }
-    if (!playerName.value.trim()) {
-      document
-        .getElementById("name")
-        .classList.add("border-1", "border-red-500");
-      return;
-    }
-
-    document.getElementById("pokeName").innerHTML = `${selectedPoke.name}!`;
-    document.getElementById("pokePic").src = selectedPoke.image;
-    document.getElementById("my_modal_4").close();
-    // using && for short circuiting cause turnary needs an else block
-    document.getElementById("name").classList.contains("border-red-500") &&
-      document.getElementById("name").classList.remove("border-red-500");
-    document.getElementById("search").classList.contains("border-red-500") &&
-      document.getElementById("search").classList.remove("border-red-500");
-    document.getElementById("chooseMode").classList.contains("text-red-500") &&
-      document.getElementById("chooseMode").classList.remove("text-red-500");
-    if (selectedMode === "local") {
-      document.getElementById("my_modal_5").showModal();
-      document.getElementById("modeBox").classList.add("hidden");
-    }
-    if (selectedMode === "ai") {
-      p1Name = playerName.value;
-      document.getElementById("p1Name").textContent = p1Name;
-      pokeTaken = selectedPoke.name;
-      document.getElementById("my_modal_ai").showModal();
-      document.getElementById("pokeNameAi").textContent = pokeTaken + "!";
-      document.getElementById("pokePicAi").src = selectedPoke.image;
-      p2Name = "AI";
-      document.getElementById("p2Name").textContent = p2Name;
-      playerOneMarker = `<img id="${p1Name}Marker" src="${selectedPoke.image}" class="w-full h-full object-contain">`;
-      const aiPokeOptions = pokeObjects.filter(
-        (poke) => poke.name !== selectedPoke.name,
-      );
-      const randOption = Math.floor(Math.random() * 200 + 1);
-      const aiPoke = (await axios.get(aiPokeOptions[randOption].url)).data
-        .sprites.other["official-artwork"].front_default;
-      playerTwoMarker = `<img id="${p2Name}Marker" src="${aiPoke}" class="w-full h-full object-contain">`;
-      document.getElementById("my_modal_ai").addEventListener(
-        "close",
-        () => {
-          firstPlayer = playerOneMarker;
-          playerPlaying = playerOneMarker;
-          startGame();
-        },
-        { once: true },
-      );
-    }
-    if (selectedMode === "online") {
-      const playerInfo = {
-        name: playerName.value,
-        pokeName: selectedPoke.name,
-        pokemonImage: selectedPoke.image,
-        roomType: selectedRoom,
-        roomId:
-          selectedRoom === "id"
-            ? Number(document.getElementById("roomID").value)
-            : null,
-      };
-      document.getElementById("onlineError").classList.add("hidden");
-      socket.emit("playerSelection", playerInfo);
-
-      socket.once("playerSelected", (data) => {
-        document.getElementById("my_modal_6").showModal();
-        document.getElementById("pokeNameSelf").innerHTML = data.pokeName;
-        document.getElementById("pokePicSelf").src = data.pokeImage;
-      });
-    }
-  });
-  socket.on("errorMessage", (message) => {
-    // rejected before joining a room, so my_modal_6 was never opened -
-    // reopen the picker and show why instead of leaving the player stuck
-    document.getElementById("onlineError").textContent = message;
-    document.getElementById("onlineError").classList.remove("hidden");
-    document.getElementById("my_modal_4").showModal();
-  });
-
-  socket.on("opponentLeft", (data) => {
-    document.getElementById("my_modal_win").showModal();
-    document.getElementById("messageTitle").innerHTML = data;
-    document.getElementById("findMatch").classList.remove("hidden");
-  });
-  socket.on("roomID", (data) => {
-    document.getElementById("roomStatus").classList.remove("hidden");
-    document.getElementById("roomStatus").textContent = data.message;
-    document.getElementById("roomNumber").classList.remove("hidden");
-    document.getElementById("roomNumber").textContent = data.roomID;
-    document.getElementById("startGameOnline").disabled = true;
-  });
-  socket.on("joinRoom", (data) => {
-    if (
-      data.playerOne.pokeImage === document.getElementById("pokePicSelf").src
-    ) {
-      p1Name = data.playerOne.name;
-      p2Name = data.playerTwo.name;
-      playerOneMarker = `<img id="${p1Name}Marker" src="${data.playerOne.pokeImage}" class="w-full h-full object-contain">`;
-      document.getElementById("OpponentName").textContent = data.playerTwo.name;
-      document.getElementById("pokePicOpponent").src = data.playerTwo.pokeImage;
-      playerTwoMarker = `<img id="${p2Name}Marker" src="${data.playerTwo.pokeImage}" class="w-full h-full object-contain">`;
-    } else {
-      p1Name = data.playerTwo.name;
-      p2Name = data.playerOne.name;
-      playerTwoMarker = `<img id="${p2Name}Marker" src="${data.playerOne.pokeImage}" class="w-full h-full object-contain">`;
-      document.getElementById("OpponentName").textContent =
-        data.playerOne.name + "!";
-      document.getElementById("pokePicOpponent").src = data.playerOne.pokeImage;
-      playerOneMarker = `<img id="${p1Name}Marker" src="${data.playerTwo.pokeImage}" class="w-full h-full object-contain">`;
-    }
-
-    document.getElementById("roomStatus").classList.add("hidden");
-    document.getElementById("startGameOnline").disabled = false;
-  });
-
-  // showing the names after closing the modal in online mode
-  document.getElementById("my_modal_6").addEventListener("close", () => {
-    if (p1Name && p2Name) {
-      document.getElementById("p1Name").textContent = p1Name;
-      document.getElementById("p2Name").textContent = p2Name;
-      startGameOnline();
-    }
-  });
 
   // start game after player confirms their marker
+  // kept inside searchPoke (re-attached every call, with {once:true}) on
+  // purpose: local mode's flow is player1 confirms -> modal closes -> this
+  // calls searchPoke() again for player2 -> they confirm -> modal closes a
+  // second time, and THAT closure is what starts the game. Each round needs
+  // its own one-shot listener since the close event means something
+  // different depending on which player just confirmed.
   document.getElementById("my_modal_5").addEventListener(
     "close",
     () => {
@@ -260,6 +94,187 @@ async function searchPoke() {
     { once: true },
   );
 }
+
+// everything below is registered exactly ONCE, for the whole session -
+// searchPoke() itself runs every time mode-selection restarts (new game,
+// rematch after an opponent leaves, etc.), so any listener attached inside
+// it would get duplicated on every restart instead of just once. That bug
+// is what caused a single "Confirm" click to fire two playerSelection
+// emits from the same socket, which the server then mistook for two
+// different players matching with each other ("matched with myself").
+const modes = document.querySelectorAll(".mode");
+modes.forEach((mode) => {
+  mode.addEventListener("click", () => {
+    modes.forEach((mode) => {
+      mode.classList.contains("bg-primary", "text-white") &&
+        mode.classList.remove("bg-primary", "text-white");
+    });
+    mode.classList.add("bg-primary", "text-white");
+    if (mode.id === "online") {
+      document.getElementById("onlineRooms").classList.remove("hidden");
+    } else {
+      document.getElementById("onlineRooms").classList.add("hidden");
+    }
+
+    selectedMode = mode.id;
+    console.log(selectedMode);
+  });
+});
+
+// handling rooms for online play
+document.getElementById("joinRandom").addEventListener("click", () => {
+  document
+    .getElementById("joinRandom")
+    .classList.add("bg-primary", "text-white");
+  document
+    .getElementById("joinID")
+    .classList.remove("bg-primary", "text-white");
+  document.getElementById("roomID").classList.add("hidden");
+  selectedRoom = "random";
+});
+
+document.getElementById("joinID").addEventListener("click", () => {
+  document.getElementById("joinID").classList.add("bg-primary", "text-white");
+  document
+    .getElementById("joinRandom")
+    .classList.remove("bg-primary", "text-white");
+  document.getElementById("roomID").classList.remove("hidden");
+  selectedRoom = "id";
+});
+
+document.getElementById("select").addEventListener("click", async () => {
+  if (!selectedMode) {
+    document.getElementById("chooseMode").classList.add("text-red-500");
+    return;
+  }
+  if (!selectedPoke.name) {
+    document
+      .getElementById("search")
+      .classList.add("border-1", "border-red-500");
+    return;
+  }
+  if (!playerName.value.trim()) {
+    document
+      .getElementById("name")
+      .classList.add("border-1", "border-red-500");
+    return;
+  }
+
+  document.getElementById("pokeName").innerHTML = `${selectedPoke.name}!`;
+  document.getElementById("pokePic").src = selectedPoke.image;
+  document.getElementById("my_modal_4").close();
+  // using && for short circuiting cause turnary needs an else block
+  document.getElementById("name").classList.contains("border-red-500") &&
+    document.getElementById("name").classList.remove("border-red-500");
+  document.getElementById("search").classList.contains("border-red-500") &&
+    document.getElementById("search").classList.remove("border-red-500");
+  document.getElementById("chooseMode").classList.contains("text-red-500") &&
+    document.getElementById("chooseMode").classList.remove("text-red-500");
+  if (selectedMode === "local") {
+    document.getElementById("my_modal_5").showModal();
+    document.getElementById("modeBox").classList.add("hidden");
+  }
+  if (selectedMode === "ai") {
+    p1Name = playerName.value;
+    document.getElementById("p1Name").textContent = p1Name;
+    pokeTaken = selectedPoke.name;
+    document.getElementById("my_modal_ai").showModal();
+    document.getElementById("pokeNameAi").textContent = pokeTaken + "!";
+    document.getElementById("pokePicAi").src = selectedPoke.image;
+    p2Name = "AI";
+    document.getElementById("p2Name").textContent = p2Name;
+    playerOneMarker = `<img id="${p1Name}Marker" src="${selectedPoke.image}" class="w-full h-full object-contain">`;
+    const aiPokeOptions = pokeObjects.filter(
+      (poke) => poke.name !== selectedPoke.name,
+    );
+    const randOption = Math.floor(Math.random() * 200 + 1);
+    const aiPoke = (await axios.get(aiPokeOptions[randOption].url)).data
+      .sprites.other["official-artwork"].front_default;
+    playerTwoMarker = `<img id="${p2Name}Marker" src="${aiPoke}" class="w-full h-full object-contain">`;
+    document.getElementById("my_modal_ai").addEventListener(
+      "close",
+      () => {
+        firstPlayer = playerOneMarker;
+        playerPlaying = playerOneMarker;
+        startGame();
+      },
+      { once: true },
+    );
+  }
+  if (selectedMode === "online") {
+    const playerInfo = {
+      name: playerName.value,
+      pokeName: selectedPoke.name,
+      pokemonImage: selectedPoke.image,
+      roomType: selectedRoom,
+      roomId:
+        selectedRoom === "id"
+          ? Number(document.getElementById("roomID").value)
+          : null,
+    };
+    document.getElementById("onlineError").classList.add("hidden");
+    socket.emit("playerSelection", playerInfo);
+
+    socket.once("playerSelected", (data) => {
+      document.getElementById("my_modal_6").showModal();
+      document.getElementById("pokeNameSelf").innerHTML = data.pokeName;
+      document.getElementById("pokePicSelf").src = data.pokeImage;
+    });
+  }
+});
+
+socket.on("errorMessage", (message) => {
+  // rejected before joining a room, so my_modal_6 was never opened -
+  // reopen the picker and show why instead of leaving the player stuck
+  document.getElementById("onlineError").textContent = message;
+  document.getElementById("onlineError").classList.remove("hidden");
+  document.getElementById("my_modal_4").showModal();
+});
+
+socket.on("opponentLeft", (data) => {
+  document.getElementById("my_modal_win").showModal();
+  document.getElementById("messageTitle").innerHTML = data;
+  document.getElementById("findMatch").classList.remove("hidden");
+});
+socket.on("roomID", (data) => {
+  document.getElementById("roomStatus").classList.remove("hidden");
+  document.getElementById("roomStatus").textContent = data.message;
+  document.getElementById("roomNumber").classList.remove("hidden");
+  document.getElementById("roomNumber").textContent = data.roomID;
+  document.getElementById("startGameOnline").disabled = true;
+});
+socket.on("joinRoom", (data) => {
+  if (
+    data.playerOne.pokeImage === document.getElementById("pokePicSelf").src
+  ) {
+    p1Name = data.playerOne.name;
+    p2Name = data.playerTwo.name;
+    playerOneMarker = `<img id="${p1Name}Marker" src="${data.playerOne.pokeImage}" class="w-full h-full object-contain">`;
+    document.getElementById("OpponentName").textContent = data.playerTwo.name;
+    document.getElementById("pokePicOpponent").src = data.playerTwo.pokeImage;
+    playerTwoMarker = `<img id="${p2Name}Marker" src="${data.playerTwo.pokeImage}" class="w-full h-full object-contain">`;
+  } else {
+    p1Name = data.playerTwo.name;
+    p2Name = data.playerOne.name;
+    playerTwoMarker = `<img id="${p2Name}Marker" src="${data.playerOne.pokeImage}" class="w-full h-full object-contain">`;
+    document.getElementById("OpponentName").textContent =
+      data.playerOne.name + "!";
+    document.getElementById("pokePicOpponent").src = data.playerOne.pokeImage;
+    playerOneMarker = `<img id="${p1Name}Marker" src="${data.playerTwo.pokeImage}" class="w-full h-full object-contain">`;
+  }
+
+  document.getElementById("roomStatus").classList.add("hidden");
+  document.getElementById("startGameOnline").disabled = false;
+});
+
+// showing the names after closing the modal in online mode
+document.getElementById("my_modal_6").addEventListener("close", () => {
+  if (p1Name && p2Name) {
+    document.getElementById("p1Name").textContent = p1Name;
+    document.getElementById("p2Name").textContent = p2Name;
+    startGameOnline();
+  }
+});
 
 const searchInput = document.getElementById("search");
 searchInput.addEventListener("input", () => {
