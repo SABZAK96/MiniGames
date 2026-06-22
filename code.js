@@ -30,6 +30,12 @@ theme.addEventListener("change", () => {
 let timer = undefined;
 let popup = undefined;
 
+// show a message using the same modal style as tictactoe instead of window.alert
+function showMessage(message) {
+  document.getElementById("messageTitle").innerHTML = message;
+  document.getElementById("my_modal").showModal();
+}
+
 // easy mode button
 const easyMode = document.getElementById("easy");
 easyMode.addEventListener("click", () => {
@@ -63,7 +69,7 @@ easyMode.addEventListener("click", () => {
       if (gameTime == 0 && win === false) {
         clearInterval(timer);
         clearInterval(popup);
-        window.alert("you lost!");
+        showMessage("you lost!");
       }
     }, 1000);
 
@@ -113,7 +119,7 @@ easyMode.addEventListener("click", () => {
     let matched = 0;
 
     popup = setInterval(() => {
-      window.alert("Power Up!");
+      showMessage("Power Up!");
       document.querySelectorAll(".card").forEach((element) => {
         if (
           !matchedCards.includes(element.dataset.id) &&
@@ -173,7 +179,7 @@ easyMode.addEventListener("click", () => {
               clearInterval(timer);
               clearInterval(popup);
               setTimeout(() => {
-                window.alert("you won!");
+                showMessage("you won!");
               }, 802);
             }
 
@@ -235,7 +241,7 @@ mediumMode.addEventListener("click", () => {
       if (mediumTime == 0 && win === false) {
         clearInterval(timer);
         clearInterval(popup);
-        window.alert("you lost!");
+        showMessage("you lost!");
       }
     }, 1000);
 
@@ -284,7 +290,7 @@ mediumMode.addEventListener("click", () => {
     let matched = 0;
 
     popup = setInterval(() => {
-      window.alert("Power Up!");
+      showMessage("Power Up!");
       document.querySelectorAll(".card").forEach((element) => {
         if (
           !matchedCards.includes(element.dataset.id) &&
@@ -340,7 +346,7 @@ mediumMode.addEventListener("click", () => {
               clearInterval(timer);
               clearInterval(popup);
               setTimeout(() => {
-                window.alert("you won!");
+                showMessage("you won!");
               }, 802);
             }
 
@@ -401,7 +407,7 @@ hardMode.addEventListener("click", () => {
       if (hardTime == 0 && win === false) {
         clearInterval(timer);
         clearInterval(popup);
-        window.alert("you lost!");
+        showMessage("you lost!");
       }
     }, 1000);
 
@@ -422,7 +428,7 @@ hardMode.addEventListener("click", () => {
     let matched = 0;
 
     popup = setInterval(() => {
-      window.alert("Power Up!");
+      showMessage("Power Up!");
       document.querySelectorAll(".card").forEach((element) => {
         if (
           !matchedCards.includes(element.dataset.id) &&
@@ -506,7 +512,7 @@ hardMode.addEventListener("click", () => {
               clearInterval(timer);
               clearInterval(popup);
               setTimeout(() => {
-                window.alert("you won!");
+                showMessage("you won!");
               }, 802);
             }
 

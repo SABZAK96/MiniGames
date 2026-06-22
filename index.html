@@ -1,11 +1,11 @@
 <!doctype html>
-<html id="page" lang="en" data-theme="light" >
+<html id="page" lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Poke Game</title>
-    
-        <link
+
+    <link
       href="https://cdn.jsdelivr.net/npm/daisyui@5"
       rel="stylesheet"
       type="text/css"
@@ -39,7 +39,9 @@
     <!-- navbar -->
     <div class="navbar bg-[#FFF8E7] px-4 shadow-sm">
       <div class="navbar-start">
-        <a href="home.html"><img class="w-30" src="./images/logo.png" alt="" /></a>
+        <a href="home.html"
+          ><img class="w-30" src="./images/logo.png" alt=""
+        /></a>
       </div>
       <div class="navbar-center">
         <span class="text-xl font-bold">Poké Memory</span>
@@ -131,6 +133,17 @@
       <!-- container of pokes -->
       <div id="pokeContainer"></div>
     </div>
+
+    <!-- message modal -->
+    <dialog id="my_modal" class="modal">
+      <div class="modal-box flex flex-col justify-center items-center">
+        <h3 id="messageTitle" class="text-lg font-bold"></h3>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
+
     <script src="code.js"></script>
   </body>
 </html>
