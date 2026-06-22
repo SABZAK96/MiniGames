@@ -69,6 +69,10 @@ async function searchPoke() {
   // second time, and THAT closure is what starts the game. Each round needs
   // its own one-shot listener since the close event means something
   // different depending on which player just confirmed.
+  // safe from stacking (unlike the listeners moved out below) because
+  // {once:true} removes this listener the moment it fires, BEFORE the
+  // searchPoke() call inside it runs and attaches the next one - so there's
+  // never a moment where two close-listeners exist on this dialog at once.
   document.getElementById("my_modal_5").addEventListener(
     "close",
     () => {
