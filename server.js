@@ -112,12 +112,18 @@ io.on("connection", (socket) => {
 
       socket.join(roomNumber);
       const room = io.sockets.adapter.rooms.get(roomNumber);
-      // same lookup as above: read player data straight off this room's two sockets
-      const [firstId, secondId] = room;
-      io.to(roomNumber).emit("joinRoom", {
-        playerOne: io.sockets.sockets.get(firstId).player,
-        playerTwo: io.sockets.sockets.get(secondId).player,
-      });
+      // don't assume waitingRoom meant "exactly one other real player is
+      // here" - verify it, same as the id-room branch does. Without this,
+      // any stale/duplicate membership in this room would get silently
+      // paired instead of caught.
+      if (room.size === 2) {
+        // same lookup as above: read player data straight off this room's two sockets
+        const [firstId, secondId] = room;
+        io.to(roomNumber).emit("joinRoom", {
+          playerOne: io.sockets.sockets.get(firstId).player,
+          playerTwo: io.sockets.sockets.get(secondId).player,
+        });
+      }
       waitingRoom = null;
     }
   });
@@ -171,6 +177,22 @@ io.on("connection", (socket) => {
           "opponentLeft",
           "Your Opponent has left the room, Please try joining another room!",
         );
+        // the match is over - make every other socket actually leave too,
+        // otherwise they stay a permanent member of this room for the rest
+        // of their connection (nothing else ever calls .leave()). A future
+        // random room number landing on this same id would then silently
+        // "pair" a brand-new player with this stale leftover member.
+        // note: join() and leave() are independent - rematching just ADDS
+        // a new room on top of this one, it doesn't replace it. without
+        // this cleanup, the surviving player would end up a member of
+        // every room from every match they've ever played in this session.
+        room.forEach((memberId) => {
+          // skip the disconnecting socket itself - socket.io removes it
+          // from this room automatically right after this handler returns. this will also remove other person in the room
+          if (memberId !== socket.id) {
+            io.sockets.sockets.get(memberId)?.leave(roomId);
+          }
+        });
       }
     }
   });

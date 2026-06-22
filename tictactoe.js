@@ -717,6 +717,14 @@ function resetToModeSelect() {
     .classList.remove("bg-primary", "text-white");
   document.getElementById("roomID").classList.add("hidden");
 
+  // OpponentName/pokePicOpponent are only ever set inside the "joinRoom"
+  // handler - nothing else clears them, so without this they'd keep
+  // showing the previous match's opponent until (or unless) a genuinely
+  // new "joinRoom" event arrives, making a fresh wait screen look like an
+  // instant rematch with whoever just left
+  document.getElementById("OpponentName").textContent = "";
+  document.getElementById("pokePicOpponent").src = "./images/qm1.png";
+
   searchPoke();
 }
 
