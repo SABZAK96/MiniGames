@@ -171,13 +171,22 @@ async function searchPoke() {
             ? Number(document.getElementById("roomID").value)
             : null,
       };
+      document.getElementById("onlineError").classList.add("hidden");
       socket.emit("playerSelection", playerInfo);
+
       socket.once("playerSelected", (data) => {
         document.getElementById("my_modal_6").showModal();
         document.getElementById("pokeNameSelf").innerHTML = data.pokeName;
         document.getElementById("pokePicSelf").src = data.pokeImage;
       });
     }
+  });
+  socket.on("errorMessage", (message) => {
+    // rejected before joining a room, so my_modal_6 was never opened -
+    // reopen the picker and show why instead of leaving the player stuck
+    document.getElementById("onlineError").textContent = message;
+    document.getElementById("onlineError").classList.remove("hidden");
+    document.getElementById("my_modal_4").showModal();
   });
   socket.on("roomID", (data) => {
     document.getElementById("roomStatus").classList.remove("hidden");
