@@ -127,6 +127,28 @@ io.on("connection", (socket) => {
       waitingRoom = null;
     }
   });
+  socket.on("request a rematch", (data) => {
+    const roomId = [...socket.rooms].find((id) => id !== socket.id);
+    const room = io.sockets.adapter.rooms.get(roomId);
+    const [first, second] = room;
+    const firstSocket = io.sockets.sockets.get(first);
+    const secondSocket = io.sockets.sockets.get(second);
+    if (data.name === firstSocket.player.name) {
+      const targetSocket = secondSocket;
+      targetSocket.emit("rematch request", data.name);
+      socket.emit("wait for response", "Waiting for opponent response...");
+    } else {
+      const targetSocket = firstSocket;
+      targetSocket.emit("rematch request", data.name);
+      socket.emit("wait for response", "Waiting for opponent response...");
+    }
+  });
+
+  socket.on("request decision", (data) => {
+    const roomId = [...socket.rooms].find((id) => id !== socket.id);
+    socket.to(roomId).emit("request result", data);
+  });
+
   socket.on("start game", (data) => {
     // socket.rooms always contains this socket's own default room (named
     // after its id) plus whatever room it joined - filter the default one

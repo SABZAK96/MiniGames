@@ -158,9 +158,7 @@ document.getElementById("select").addEventListener("click", async () => {
     return;
   }
   if (!playerName.value.trim()) {
-    document
-      .getElementById("name")
-      .classList.add("border-1", "border-red-500");
+    document.getElementById("name").classList.add("border-1", "border-red-500");
     return;
   }
 
@@ -192,8 +190,8 @@ document.getElementById("select").addEventListener("click", async () => {
       (poke) => poke.name !== selectedPoke.name,
     );
     const randOption = Math.floor(Math.random() * 200 + 1);
-    const aiPoke = (await axios.get(aiPokeOptions[randOption].url)).data
-      .sprites.other["official-artwork"].front_default;
+    const aiPoke = (await axios.get(aiPokeOptions[randOption].url)).data.sprites
+      .other["official-artwork"].front_default;
     playerTwoMarker = `<img id="${p2Name}Marker" src="${aiPoke}" class="w-full h-full object-contain">`;
     document.getElementById("my_modal_ai").addEventListener(
       "close",
@@ -248,9 +246,7 @@ socket.on("roomID", (data) => {
   document.getElementById("startGameOnline").disabled = true;
 });
 socket.on("joinRoom", (data) => {
-  if (
-    data.playerOne.pokeImage === document.getElementById("pokePicSelf").src
-  ) {
+  if (data.playerOne.pokeImage === document.getElementById("pokePicSelf").src) {
     p1Name = data.playerOne.name;
     p2Name = data.playerTwo.name;
     playerOneMarker = `<img id="${p1Name}Marker" src="${data.playerOne.pokeImage}" class="w-full h-full object-contain">`;
@@ -385,33 +381,6 @@ function startGame() {
     });
   });
 }
-
-// add a new listener for new game
-document.getElementById("newRound").addEventListener("click", () => {
-  board = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null],
-  ];
-  winner = false;
-  draw = false;
-  locked = false;
-  document.querySelectorAll("[data-row][data-col]").forEach((cell) => {
-    const cellColored =
-      cell.classList.contains("bg-green-100") &&
-      cell.classList.remove("bg-green-100");
-  });
-  if (selectedMode === "local" || selectedMode === "ai") {
-    playerPlaying =
-      firstPlayer === playerOneMarker ? playerTwoMarker : playerOneMarker;
-    firstPlayer =
-      firstPlayer === playerOneMarker ? playerTwoMarker : playerOneMarker;
-
-    startGame();
-  } else {
-    startGameOnline();
-  }
-});
 
 function celebrate(name) {
   document.getElementById("my_modal_win").showModal();
@@ -627,14 +596,15 @@ function checkWin() {
 
   return false;
 }
+
+let isFirstRound = true;
 function startGameOnline() {
   let p1 = { name: p1Name, marker: playerOneMarker };
   let p2 = { name: p2Name, marker: playerTwoMarker };
-  socket.emit("start game", { p1, p2 });
-  socket.on("first move", (data) => {
-    playerPlaying = { marker: data.marker, name: data.name };
-    document.getElementById("currentTurn").innerHTML = playerPlaying.name;
-  });
+  if (isFirstRound) {
+    firstRound(p1, p2);
+    isFirstRound = false;
+  }
 
   const allCells = document.querySelectorAll("[data-row][data-col]");
   allCells.forEach((cell) => {
@@ -732,6 +702,76 @@ function resetToModeSelect() {
 // add a new listener for new game - should reset everything and go back to poke selection
 document.getElementById("newGame").addEventListener("click", resetToModeSelect);
 
+// add a new listener for new game
+document.getElementById("newRound").addEventListener("click", () => {
+  board = [
+    [null, null, null],
+    [null, null, null],
+    [null, null, null],
+  ];
+  winner = false;
+  draw = false;
+  locked = false;
+  document.querySelectorAll("[data-row][data-col]").forEach((cell) => {
+    const cellColored =
+      cell.classList.contains("bg-green-100") &&
+      cell.classList.remove("bg-green-100");
+  });
+  if (selectedMode === "local" || selectedMode === "ai") {
+    playerPlaying =
+      firstPlayer === playerOneMarker ? playerTwoMarker : playerOneMarker;
+    firstPlayer =
+      firstPlayer === playerOneMarker ? playerTwoMarker : playerOneMarker;
+
+    startGame();
+  } else {
+    socket.emit("request a rematch", { name: p1Name, marker: playerOneMarker });
+  }
+});
+
+// registered once at load - the recipient of a rematch request never
+// clicks "newRound" themselves, so these can't live inside that handler
+socket.on("rematch request", (data) => {
+  document.getElementById("my_modal_rematch").showModal();
+  document.getElementById("requester").innerHTML =
+    data + "wants to do another round with you! What are you going to do?";
+});
+socket.on("wait for response", (data) => {
+  document.getElementById("my_modal_waiting").showModal();
+  document.getElementById("waitMessage").innerHTML = data;
+});
+let accept = null;
+document.getElementById("accept").addEventListener("click", () => {
+  accept = true;
+  socket.emit("request decision", accept);
+  accept = null;
+  document.getElementById("my_modal_rematch").close();
+  startGameOnline();
+});
+document.getElementById("reject").addEventListener("click", () => {
+  accept = false;
+  socket.emit("request decision", accept);
+  accept = null;
+  document.getElementById("my_modal_rematch").close();
+});
+
+socket.on("request result", (data) => {
+  if (data === true) {
+    document.getElementById("waitMessage").innerHTML =
+      "Your request has been accepted!";
+    setTimeout(() => {
+      document.getElementById("my_modal_waiting").close();
+    }, 2000);
+    startGameOnline();
+  } else {
+    document.getElementById("waitMessage").innerHTML =
+      "Your request has been rejected!";
+    setTimeout(() => {
+      document.getElementById("my_modal_waiting").close();
+    }, 2000);
+  }
+});
+
 // registered once - "opponentLeft" can fire multiple times per session
 // (rematch after rematch), so these must not be re-added on every occurrence
 document.getElementById("findMatch").addEventListener("click", () => {
@@ -741,3 +781,11 @@ document.getElementById("findMatch").addEventListener("click", () => {
 document.getElementById("my_modal_win").addEventListener("close", () => {
   document.getElementById("findMatch").classList.add("hidden");
 });
+
+function firstRound(p1, p2) {
+  socket.emit("start game", { p1, p2 });
+  socket.on("first move", (data) => {
+    playerPlaying = { marker: data.marker, name: data.name };
+    document.getElementById("currentTurn").innerHTML = playerPlaying.name;
+  });
+}

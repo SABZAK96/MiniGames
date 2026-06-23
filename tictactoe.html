@@ -348,6 +348,37 @@
       </form>
     </dialog>
 
+    <!-- request a rematch request modal -->
+    <dialog id="my_modal_rematch" class="modal">
+      <div class="modal-box flex flex-col justify-center items-center gap-3">
+        <h3 id="requester" class="text-lg font-bold"></h3>
+        <div class="flex flex-row gap-2">
+          <button
+            id="accept"
+            type="button"
+            class="btn btn-primary flex-1"
+          >
+            Accept
+          </button>
+          <button
+            id="reject"
+            type="button"
+            class="btn btn-primary flex-1"
+          >
+            Reject
+          </button>
+        </div>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
+    <!-- modal for waiting -->
+    <dialog id="my_modal_waiting" class="modal">
+      <div class="modal-box">
+        <h3 id="waitMessage" class="text-lg font-bold"></h3>
+      </div>
+    </dialog>
     <script src="tictactoe.js"></script>
   </body>
 </html>
