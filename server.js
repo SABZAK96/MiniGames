@@ -24,6 +24,46 @@ let roomNumber = undefined;
 // who-goes-first is decided once per room (both players' clients emit
 // "start game" independently, so this must be shared, not per-socket)
 const firstPlayerByRoom = {};
+
+// socket.rooms always contains this socket's own default room (named after
+// its id) plus whatever room it joined - filter the default one out to get
+// the actual game room, instead of relying on a shared roomNumber variable
+// (which isn't necessarily this socket's room)
+const getRoomId = (socket) =>
+  [...socket.rooms].find((id) => id !== socket.id);
+
+function setPlayer(socket, data) {
+  // store this player's data on their own socket (not a shared/global
+  // variable) so it can never leak into another room or a later game
+  socket.player = {
+    name: data.name,
+    pokeName: data.pokeName,
+    pokeImage: data.pokemonImage,
+  };
+  socket.emit("playerSelected", socket.player);
+}
+
+function isPokeTaken(roomId, pokeName) {
+  const room = io.sockets.adapter.rooms.get(roomId);
+  if (!room || room.size !== 1) return false;
+  const [otherId] = room;
+  const otherPlayer = io.sockets.sockets.get(otherId).player;
+  return otherPlayer?.pokeName === pokeName;
+}
+
+function emitJoinRoomIfFull(roomId) {
+  const room = io.sockets.adapter.rooms.get(roomId);
+  if (room && room.size === 2) {
+    // room is a Set of the two socket ids currently in this room
+    const [firstId, secondId] = room;
+    // look up each socket by id and read back the .player we stored above
+    io.to(roomId).emit("joinRoom", {
+      playerOne: io.sockets.sockets.get(firstId).player,
+      playerTwo: io.sockets.sockets.get(secondId).player,
+    });
+  }
+}
+
 io.on("connection", (socket) => {
   console.log(`Client connected with id ${socket.id}`);
   socket.on("playerSelection", (data) => {
@@ -37,48 +77,21 @@ io.on("connection", (socket) => {
       }
       // existingRoom, if present here, is the other player already waiting
       // in this room - check before this socket commits to the same pick
-      if (existingRoom && existingRoom.size === 1) {
-        const [otherId] = existingRoom;
-        const otherPlayer = io.sockets.sockets.get(otherId).player;
-        if (otherPlayer?.pokeName === data.pokeName) {
-          socket.emit(
-            "errorMessage",
-            "That pokemon is already taken - pick another!",
-          );
-          return;
-        }
+      if (existingRoom && existingRoom.size === 1 && isPokeTaken(data.roomId, data.pokeName)) {
+        socket.emit(
+          "errorMessage",
+          "That pokemon is already taken - pick another!",
+        );
+        return;
       }
 
-      // store this player's data on their own socket (not a shared/global
-      // variable) so it can never leak into another room or a later game
-      socket.player = {
-        name: data.name,
-        pokeName: data.pokeName,
-        pokeImage: data.pokemonImage,
-      };
-      socket.emit("playerSelected", socket.player);
+      setPlayer(socket, data);
 
       // with this way we can created a room with specific id as well - along with joining an exiting one
       socket.join(data.roomId);
-      // re-fetch: if this is a brand-new room, existingRoom was undefined
-      // before the join, and socket.join() doesn't update that reference
-      const room = io.sockets.adapter.rooms.get(data.roomId);
-      if (room.size === 2) {
-        // room is a Set of the two socket ids currently in this room
-        const [firstId, secondId] = room;
-        // look up each socket by id and read back the .player we stored above
-        io.to(data.roomId).emit("joinRoom", {
-          playerOne: io.sockets.sockets.get(firstId).player,
-          playerTwo: io.sockets.sockets.get(secondId).player,
-        });
-      }
+      emitJoinRoomIfFull(data.roomId);
     } else if (!waitingRoom) {
-      socket.player = {
-        name: data.name,
-        pokeName: data.pokeName,
-        pokeImage: data.pokemonImage,
-      };
-      socket.emit("playerSelected", socket.player);
+      setPlayer(socket, data);
 
       roomNumber = Math.floor((Math.random() + 1) * 1000);
       socket.join(roomNumber);
@@ -92,10 +105,7 @@ io.on("connection", (socket) => {
     } else {
       // the socket already waiting in waitingRoom - check its pick before
       // this socket commits to the same one
-      const waitingSocketRoom = io.sockets.adapter.rooms.get(waitingRoom);
-      const [waitingId] = waitingSocketRoom;
-      const waitingPlayer = io.sockets.sockets.get(waitingId).player;
-      if (waitingPlayer?.pokeName === data.pokeName) {
+      if (isPokeTaken(waitingRoom, data.pokeName)) {
         socket.emit(
           "errorMessage",
           "That pokemon is already taken - pick another!",
@@ -103,32 +113,18 @@ io.on("connection", (socket) => {
         return;
       }
 
-      socket.player = {
-        name: data.name,
-        pokeName: data.pokeName,
-        pokeImage: data.pokemonImage,
-      };
-      socket.emit("playerSelected", socket.player);
-
+      setPlayer(socket, data);
       socket.join(roomNumber);
-      const room = io.sockets.adapter.rooms.get(roomNumber);
       // don't assume waitingRoom meant "exactly one other real player is
       // here" - verify it, same as the id-room branch does. Without this,
       // any stale/duplicate membership in this room would get silently
       // paired instead of caught.
-      if (room.size === 2) {
-        // same lookup as above: read player data straight off this room's two sockets
-        const [firstId, secondId] = room;
-        io.to(roomNumber).emit("joinRoom", {
-          playerOne: io.sockets.sockets.get(firstId).player,
-          playerTwo: io.sockets.sockets.get(secondId).player,
-        });
-      }
+      emitJoinRoomIfFull(roomNumber);
       waitingRoom = null;
     }
   });
   socket.on("request a rematch", (data) => {
-    const roomId = [...socket.rooms].find((id) => id !== socket.id);
+    const roomId = getRoomId(socket);
     const room = io.sockets.adapter.rooms.get(roomId);
     const [first, second] = room;
     const firstSocket = io.sockets.sockets.get(first);
@@ -145,16 +141,12 @@ io.on("connection", (socket) => {
   });
 
   socket.on("request decision", (data) => {
-    const roomId = [...socket.rooms].find((id) => id !== socket.id);
+    const roomId = getRoomId(socket);
     socket.to(roomId).emit("request result", data);
   });
 
   socket.on("start game", (data) => {
-    // socket.rooms always contains this socket's own default room (named
-    // after its id) plus whatever room it joined - filter the default one
-    // out to get the actual game room, instead of relying on the shared
-    // roomNumber variable (which isn't necessarily this socket's room)
-    const roomId = [...socket.rooms].find((id) => id !== socket.id);
+    const roomId = getRoomId(socket);
 
     // the first "start game" emit for this room already decided who goes
     // first - reply to this late socket directly instead of re-deciding,
@@ -172,7 +164,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("move", (data) => {
-    const roomId = [...socket.rooms].find((id) => id !== socket.id);
+    const roomId = getRoomId(socket);
     // data.playerPlaying, data.p1 and data.p2 are separate objects built
     // independently on the client, so === would compare them by identity
     // (always false) - compare by name instead, since that's a primitive value
@@ -189,7 +181,7 @@ io.on("connection", (socket) => {
     // "disconnecting" fires before socket.io automatically removes this
     // socket from its rooms, so socket.rooms still has the real room id here
     // (by the time "disconnect" fires below, that cleanup already happened)
-    const roomId = [...socket.rooms].find((id) => id !== socket.id);
+    const roomId = getRoomId(socket);
     if (roomId) {
       const room = io.sockets.adapter.rooms.get(roomId);
       // this socket itself is still counted here, so > 1 means someone
