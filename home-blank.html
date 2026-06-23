@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Poké Games</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link href="theme.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      .card {
+        transition-property: transform;
+        transition-duration: 0.5s;
+        transform-style: preserve-3d;
+        perspective: 1000px;
+      }
+      .flip {
+        /* flips the whole card containing front and back */
+         animation-name: flipping;
+        animation-duration: 2s;
+        
+      }
+      .back {
+        /* when card is flipped, this should be rotated as well to come into front and be visible */
+        transform: rotateY(180deg);
+        /* backface should be hidden because we dont wanna see it behing the logo */
+        backface-visibility: hidden;
+      }
+      .front {
+       
+        /* visible unti flipped by rotation */
+        
+        backface-visibility: hidden;
+      }
+
+      @keyframes flipping {
+        0%{
+          transform: rotateY(0deg);
+        }
+        50% {
+          transform: rotateY(180deg);
+        }
+        100% {
+          transform: rotateY(0deg);
+        }
+      }
+      .pop-cell {
+        opacity: 0;
+        transform: scale(0) rotate(0deg);
+        animation-duration: 6s;
+        animation-iteration-count: infinite;
+        animation-timing-function: ease-in-out;
+      }
+      /* every step shares the same 85%-95%-100% tail, so they all fade
+         out and go blank at the exact same moment, then restart together */
+      .step-1 {
+        animation-name: popStep1;
+      }
+      .step-2 {
+        animation-name: popStep2;
+      }
+      .step-3 {
+        animation-name: popStep3;
+      }
+      .step-4 {
+        animation-name: popStep4;
+      }
+      .step-5 {
+        animation-name: popStep5;
+      }
+      @keyframes popStep1 {
+        0% {
+          opacity: 0;
+          transform: scale(0) rotate(0deg);
+        }
+        3% {
+          opacity: 1;
+          transform: scale(1.15) rotate(8deg);
+        }
+        8% {
+          opacity: 1;
+          transform: scale(1) rotate(-10deg);
+        }
+
+        13%,
+        85% {
+          opacity: 1;
+          transform: scale(1) rotate(0deg);
+        }
+        95%,
+        100% {
+          opacity: 0;
+          transform: scale(0) rotate(0deg);
+        }
+      }
+      @keyframes popStep2 {
+        0%,
+        9% {
+          opacity: 0;
+          transform: scale(0) rotate(0deg);
+        }
+        12% {
+          opacity: 1;
+          transform: scale(1.15) rotate(8deg);
+        }
+        17% {
+          opacity: 1;
+          transform: scale(1) rotate(-10deg);
+        }
+
+        22%,
+        85% {
+          opacity: 1;
+          transform: scale(1) rotate(0deg);
+        }
+        95%,
+        100% {
+          opacity: 0;
+          transform: scale(0) rotate(0deg);
+        }
+      }
+      @keyframes popStep3 {
+        0%,
+        21% {
+          opacity: 0;
+          transform: scale(0) rotate(0deg);
+        }
+        24% {
+          opacity: 1;
+          transform: scale(1.15) rotate(8deg);
+        }
+        29% {
+          opacity: 1;
+          transform: scale(1) rotate(-10deg);
+        }
+
+        34%,
+        85% {
+          opacity: 1;
+          transform: scale(1) rotate(0deg);
+        }
+        95%,
+        100% {
+          opacity: 0;
+          transform: scale(0) rotate(0deg);
+        }
+      }
+      @keyframes popStep4 {
+        0%,
+        33% {
+          opacity: 0;
+          transform: scale(0) rotate(0deg);
+        }
+        36% {
+          opacity: 1;
+          transform: scale(1.15) rotate(8deg);
+        }
+        41% {
+          opacity: 1;
+          transform: scale(1) rotate(-10deg);
+        }
+
+        46%,
+        85% {
+          opacity: 1;
+          transform: scale(1) rotate(0deg);
+        }
+        95%,
+        100% {
+          opacity: 0;
+          transform: scale(0) rotate(0deg);
+        }
+      }
+      @keyframes popStep5 {
+        0%,
+        45% {
+          opacity: 0;
+          transform: scale(0) rotate(0deg);
+        }
+        48% {
+          opacity: 1;
+          transform: scale(1.15) rotate(8deg);
+        }
+        53% {
+          opacity: 1;
+          transform: scale(1) rotate(-10deg);
+        }
+
+        58%,
+        85% {
+          opacity: 1;
+          transform: scale(1) rotate(0deg);
+        }
+
+        95%,
+        100% {
+          opacity: 0;
+          transform: scale(0) rotate(0deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- navbar -->
+    <div class="navbar bg-base-200 px-4 shadow-sm">
+      <div class="navbar-start">
+        <a href="home.html"
+          ><img class="w-30" src="./images/logo.png" alt=""
+        /></a>
+      </div>
+      <div class="navbar-center">
+        <span class="text-xl font-bold"></span>
+      </div>
+      <div class="navbar-end"></div>
+    </div>
+    <div
+      class="hero min-h-screen"
+      style="background-image: url(images/hero.png)"
+    >
+      <div class="hero-overlay"></div>
+      <div class="hero-content text-neutral-content text-center">
+        <div id="heroImage" class="md:w-full">
+          <h1 class="mb-5 text-5xl font-bold">Welcome to Poké Games</h1>
+          <p class="mb-10">
+            A collection of Pokémon-themed mini games. Pick your favourite and
+            start playing!
+          </p>
+
+          <div
+            class="flex md:flex-row flex-col gap-5 justify-center items-center"
+          >
+            <!-- first game container- tic-tac-toe -->
+            <div
+              class="card bg-[color:var(--color-base-100)]/10 backdrop-blur-sm text-base-content shadow-sm p-4 flex flex-col items-center gap-3 w-full"
+            >
+              <h2
+                class="card-title font-bold text-lg md:text-2xl tracking-wide mb-1 text-[color:var(--color-base-100)]"
+              >
+                Poké TicTacToe
+              </h2>
+              <!-- container of grids -->
+              <div id="ticGrid" class="flex flex-col gap-2">
+                <div class="flex flex-row gap-2">
+                  <div
+                    class="w-10 h-10 md:w-20 md:h-20 rounded-md border-2 border-[color:var(--color-base-100)] pikachu pop-cell step-1"
+                  ></div>
+                  <div
+                    class="w-10 h-10 md:w-20 md:h-20 rounded-md border-2 border-[color:var(--color-base-100)]"
+                  ></div>
+                  <div
+                    class="w-10 h-10 md:w-20 md:h-20 rounded-md border-2 border-[color:var(--color-base-100)] ditto pop-cell step-2"
+                  ></div>
+                </div>
+
+                <div class="flex flex-row gap-2">
+                  <div
+                    class="w-10 h-10 md:w-20 md:h-20 rounded-md border-2 border-[color:var(--color-base-100)]"
+                  ></div>
+                  <div
+                    class="w-10 h-10 md:w-20 md:h-20 rounded-md border-2 border-[color:var(--color-base-100)] pikachu pop-cell step-3"
+                  ></div>
+                  <div
+                    class="w-10 h-10 md:w-20 md:h-20 rounded-md border-2 border-[color:var(--color-base-100)]"
+                  ></div>
+                </div>
+
+                <div class="flex flex-row gap-2">
+                  <div
+                    class="w-10 h-10 md:w-20 md:h-20 rounded-md border-2 border-[color:var(--color-base-100)] ditto pop-cell step-4"
+                  ></div>
+                  <div
+                    class="w-10 h-10 md:w-20 md:h-20 rounded-md border-2 border-[color:var(--color-base-100)]"
+                  ></div>
+                  <div
+                    class="w-10 h-10 md:w-20 md:h-20 rounded-md border-2 border-[color:var(--color-base-100)] pikachu pop-cell step-5"
+                  ></div>
+                </div>
+              </div>
+              <!-- explanations -->
+              <div
+                class="text-sm md:text-base text-[color:var(--color-base-100)]/80 max-w-xs mt-2"
+              >
+                Pick your favourite Pokémon as your marker and go head to head
+                against a friend, a random player or the AI.
+              </div>
+            </div>
+
+            <!-- second game - memory game -->
+            <div
+              class="card bg-[color:var(--color-base-100)]/10 backdrop-blur-sm text-base-content shadow-sm p-4 flex flex-col items-center gap-3 w-full"
+            >
+              <h2
+                class="card-title font-bold text-lg md:text-2xl tracking-wide mb-1 text-[color:var(--color-base-100)]"
+              >
+                Poké Memory Game
+              </h2>
+              <!-- container of pokes -->
+              <div
+                id="pokeContainer"
+                class="grid grid-cols-3 gap-2 mx-auto justify-items-center"
+              >
+                <div
+                  class="card relative md:w-20 md:h-20 w-10 h-10 pikachu memory-step-1 flip"
+                >
+                  <img
+                    src="pokeball-seeklogo.png"
+                    class="face object-cover absolute inset-0"
+                    alt=""
+                  />
+                </div>
+                <div class="card relative md:w-20 md:h-20 w-10 h-10">
+                  <img
+                    src="pokeball-seeklogo.png"
+                    class="face object-cover absolute inset-0"
+                    alt=""
+                  />
+                </div>
+                <div
+                  class="card relative md:w-20 md:h-20 w-10 h-10 ditto memory-step-4 flip"
+                >
+                  <img
+                    src="pokeball-seeklogo.png"
+                    class="face object-cover absolute inset-0"
+                    alt=""
+                  />
+                </div>
+                <div
+                  class="card relative md:w-20 md:h-20 w-10 h-10 pikachu memory-step-2 flip"
+                >
+                  <img
+                    src="pokeball-seeklogo.png"
+                    class="face object-cover absolute inset-0"
+                    alt=""
+                  />
+                </div>
+                <div
+                  class="card relative md:w-20 md:h-20 w-10 h-10 ditto memory-step-3 flip"
+                >
+                  <img
+                    src="pokeball-seeklogo.png"
+                    class="face object-cover absolute inset-0"
+                    alt=""
+                  />
+                </div>
+                <div class="card relative md:w-20 md:h-20 w-10 h-10">
+                  <img
+                    src="pokeball-seeklogo.png"
+                    class="face object-cover absolute inset-0"
+                    alt=""
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="home-blank.js"></script>
+  </body>
+</html>
