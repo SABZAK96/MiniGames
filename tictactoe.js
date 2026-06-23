@@ -629,20 +629,24 @@ function startGameOnline() {
       checkWin();
     });
   });
-  socket.on("announce move", (data) => {
-    document.querySelector(
-      `[data-row="${data.row}"][data-col="${data.col}"]`,
-    ).innerHTML = data.marker;
-    playerPlaying = data.currentPlayer;
-    document.getElementById("currentTurn").innerHTML = data.currentPlayer.name;
-    syncBoard();
-    checkWin();
-    locked = false;
-  });
 }
 
-function resetToModeSelect() {
-  playerPlaying = undefined;
+// registered once at load - startGameOnline() runs again on every rematch
+// round, so an "announce move" listener attached inside it would stack: by
+// round N there'd be N copies all reacting to the same move, each re-running
+// checkWin() and re-incrementing the win count / re-firing confetti
+socket.on("announce move", (data) => {
+  document.querySelector(
+    `[data-row="${data.row}"][data-col="${data.col}"]`,
+  ).innerHTML = data.marker;
+  playerPlaying = data.currentPlayer;
+  document.getElementById("currentTurn").innerHTML = data.currentPlayer.name;
+  syncBoard();
+  checkWin();
+  locked = false;
+});
+
+function resetToNewRound() {
   board = [
     [null, null, null],
     [null, null, null],
@@ -656,6 +660,10 @@ function resetToModeSelect() {
       cell.classList.contains("bg-green-100") &&
       cell.classList.remove("bg-green-100");
   });
+}
+function resetToModeSelect() {
+  playerPlaying = undefined;
+  resetToNewRound();
   playerOneMarker = undefined;
   playerTwoMarker = undefined;
   p1Name = undefined;
@@ -704,20 +712,8 @@ document.getElementById("newGame").addEventListener("click", resetToModeSelect);
 
 // add a new listener for new game
 document.getElementById("newRound").addEventListener("click", () => {
-  board = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null],
-  ];
-  winner = false;
-  draw = false;
-  locked = false;
-  document.querySelectorAll("[data-row][data-col]").forEach((cell) => {
-    const cellColored =
-      cell.classList.contains("bg-green-100") &&
-      cell.classList.remove("bg-green-100");
-  });
   if (selectedMode === "local" || selectedMode === "ai") {
+    resetToNewRound();
     playerPlaying =
       firstPlayer === playerOneMarker ? playerTwoMarker : playerOneMarker;
     firstPlayer =
@@ -725,6 +721,9 @@ document.getElementById("newRound").addEventListener("click", () => {
 
     startGame();
   } else {
+    // reset is deferred until the rematch is actually accepted (see
+    // "accept" and "request result" below) - resetting here would clear
+    // this player's board even if the opponent ends up rejecting
     socket.emit("request a rematch", { name: p1Name, marker: playerOneMarker });
   }
 });
@@ -734,7 +733,7 @@ document.getElementById("newRound").addEventListener("click", () => {
 socket.on("rematch request", (data) => {
   document.getElementById("my_modal_rematch").showModal();
   document.getElementById("requester").innerHTML =
-    data + "wants to do another round with you! What are you going to do?";
+    data + " wants to do another round with you! What are you going to do?";
 });
 socket.on("wait for response", (data) => {
   document.getElementById("my_modal_waiting").showModal();
@@ -746,6 +745,7 @@ document.getElementById("accept").addEventListener("click", () => {
   socket.emit("request decision", accept);
   accept = null;
   document.getElementById("my_modal_rematch").close();
+  resetToNewRound();
   startGameOnline();
 });
 document.getElementById("reject").addEventListener("click", () => {
@@ -762,6 +762,7 @@ socket.on("request result", (data) => {
     setTimeout(() => {
       document.getElementById("my_modal_waiting").close();
     }, 2000);
+    resetToNewRound();
     startGameOnline();
   } else {
     document.getElementById("waitMessage").innerHTML =
