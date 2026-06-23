@@ -54,15 +54,20 @@ function displayFields() {
       const element = document.createElement("div");
       element.classList.add(
         "cell",
-        "w-14",
-        "h-14",
+        "flex-1",
+        "min-w-0",
+        "min-h-0",
+        "max-w-14",
+        "aspect-square",
         "border-2",
         "border-base-300",
         "rounded-lg",
         "flex",
         "items-center",
         "justify-center",
-        "text-2xl",
+        "text-sm",
+        "sm:text-xl",
+        "leading-none",
         "font-bold",
         "uppercase",
       );
@@ -127,7 +132,7 @@ async function revealHints() {
     hintsRevealed++;
     return;
   }
-  if(hintsRevealed === 4) return;
+  if (hintsRevealed === 4) return;
 }
 
 async function init() {
@@ -146,92 +151,93 @@ let answer = [];
 let pokeSplit = [];
 let remainingTarget = [];
 let gameOver = false;
-document.addEventListener("keydown", (e) => {
+
+function submitGuess() {
   // if the game is finished exit the loop after each keypress
   if (gameOver) return;
-  if (e.key === "Enter") {
-    let index = 0;
-    if (currentRow < 6) {
-      if (answer.length === pokeSplit.length) {
-        while (index < pokeName.length) {
-          if (
-            pokeSplit.includes(answer[index]) &&
-            pokeSplit[index] === answer[index]
-          ) {
-            document
-              .querySelector(`[data-col="${index}"][data-row="${currentRow}"]`)
-              .classList.add("bg-success");
-            remainingTarget = remainingTarget.filter(
-              (u) => u !== answer[index],
-            );
+  let index = 0;
+  if (currentRow < 6) {
+    if (answer.length === pokeSplit.length) {
+      while (index < pokeName.length) {
+        if (
+          pokeSplit.includes(answer[index]) &&
+          pokeSplit[index] === answer[index]
+        ) {
+          document
+            .querySelector(`[data-col="${index}"][data-row="${currentRow}"]`)
+            .classList.add("bg-success");
+          remainingTarget = remainingTarget.filter((u) => u !== answer[index]);
 
-            index++;
-          } else if (
-            pokeSplit.includes(answer[index]) &&
-            pokeSplit[index] !== answer[index] &&
-            remainingTarget.includes(answer[index])
-          ) {
-            document
-              .querySelector(`[data-col="${index}"][data-row="${currentRow}"]`)
-              .classList.add("bg-warning");
+          index++;
+        } else if (
+          pokeSplit.includes(answer[index]) &&
+          pokeSplit[index] !== answer[index] &&
+          remainingTarget.includes(answer[index])
+        ) {
+          document
+            .querySelector(`[data-col="${index}"][data-row="${currentRow}"]`)
+            .classList.add("bg-warning");
 
-            index++;
-          } else {
-            document
-              .querySelector(`[data-col="${index}"][data-row="${currentRow}"]`)
-              .classList.add("bg-base-300");
-            index++;
-          }
-        }
-
-        //win condition
-        if (remainingTarget.length === 0) {
-          gameOver = true;
-          document.getElementById("pokeSilhouette").removeAttribute("style");
-          jsConfetti.addConfetti();
-
-          jsConfetti.addConfetti({
-            emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
-          });
-          document.getElementById("messageTitle").innerHTML = "You Won!";
-          document.getElementById("message").innerHTML =
-            "You Guessed it Right! 🎉";
-
-          // set time out shows the modal after current loop is finished
-          setTimeout(
-            () => document.getElementById("my_modal_2").showModal(),
-            0,
-          );
+          index++;
         } else {
-          currentCol = 0;
-          answer = [];
-          currentRow++;
+          document
+            .querySelector(`[data-col="${index}"][data-row="${currentRow}"]`)
+            .classList.add("bg-base-300");
+          index++;
         }
-      } else {
-        document
-          .querySelector(`[data-row="${currentRow}"]`)
-          .classList.add("shakeDiv");
-
-        // remove the class from the div after the animation is finished for the next tries
-        setTimeout(
-          () =>
-            document
-              .querySelector(`[data-row="${currentRow}"]`)
-              .classList.remove("shakeDiv"),
-          500,
-        );
       }
-      //lose condition
-      if (currentRow === 6 && remainingTarget.length !== 0) {
+
+      //win condition
+      if (remainingTarget.length === 0) {
         gameOver = true;
         document.getElementById("pokeSilhouette").removeAttribute("style");
-        document.getElementById("messageTitle").innerHTML = "You Lost!";
-        document.getElementById("message").innerHTML = "Maybe next time?";
+        jsConfetti.addConfetti();
+
+        jsConfetti.addConfetti({
+          emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
+        });
+        document.getElementById("messageTitle").innerHTML = "You Won!";
+        document.getElementById("message").innerHTML =
+          "You Guessed it Right! 🎉";
 
         // set time out shows the modal after current loop is finished
         setTimeout(() => document.getElementById("my_modal_2").showModal(), 0);
+      } else {
+        currentCol = 0;
+        answer = [];
+        currentRow++;
       }
+    } else {
+      document
+        .querySelector(`[data-row="${currentRow}"]`)
+        .classList.add("shakeDiv");
+
+      // remove the class from the div after the animation is finished for the next tries
+      setTimeout(
+        () =>
+          document
+            .querySelector(`[data-row="${currentRow}"]`)
+            .classList.remove("shakeDiv"),
+        500,
+      );
     }
+    //lose condition
+    if (currentRow === 6 && remainingTarget.length !== 0) {
+      gameOver = true;
+      document.getElementById("pokeSilhouette").removeAttribute("style");
+      document.getElementById("messageTitle").innerHTML = "You Lost!";
+      document.getElementById("message").innerHTML = "Maybe next time?";
+
+      // set time out shows the modal after current loop is finished
+      setTimeout(() => document.getElementById("my_modal_2").showModal(), 0);
+    }
+  }
+}
+
+document.addEventListener("keydown", (e) => {
+  if (gameOver) return;
+  if (e.key === "Enter") {
+    submitGuess();
   } else if (e.key === "Backspace") {
     if (currentCol > 0) {
       currentCol--;
@@ -250,6 +256,8 @@ document.addEventListener("keydown", (e) => {
     }
   }
 });
+
+document.getElementById("submitGuess").addEventListener("click", submitGuess);
 
 // reveal hints
 document.getElementById("revealHint").addEventListener("click", revealHints);

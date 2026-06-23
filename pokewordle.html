@@ -59,7 +59,9 @@
     <!-- navbar -->
     <div class="navbar bg-[#FFF8E7] px-4 shadow-sm">
       <div class="navbar-start">
-        <a href="home.html"><img class="w-30" src="./images/logo.png" alt="" /></a>
+        <a href="home.html"
+          ><img class="w-30" src="./images/logo.png" alt=""
+        /></a>
       </div>
       <div class="navbar-center">
         <span class="text-xl font-bold">Poké Wordle</span>
@@ -99,94 +101,103 @@
         </label>
       </div>
     </div>
+<!-- main content -->
+    <div class="px-6 py-8">
+      <!-- 2-column layout -->
+      <div
+        class="flex flex-col lg:flex-row gap-6 px-6 py-8 max-w-7xl mx-auto lg:items-stretch"
+      >
+        <!-- left: hints + image stacked (shows above game on small, beside on large) -->
+        <div class="flex flex-col gap-3 lg:w-52 lg:flex-shrink-0">
+          <!-- hints panel -->
+          <div class="bg-base-200 rounded-xl p-4">
+            <p class="font-semibold mb-3">You have 3 Hints</p>
+            <div
+              id="hintsList"
+              class="flex flex-col gap-2 text-sm min-h-16 mb-3"
+            >
+              <p id="noHintsMsg" class="text-base-content/50 italic text-xs">
+                No hints revealed yet
+              </p>
+            </div>
+            <button id="revealHint" class="btn btn-sm btn-outline w-full">
+              Reveal Hint
+            </button>
+          </div>
 
-    <!-- 2-column layout -->
-    <div class="flex flex-col lg:flex-row gap-6 px-6 py-8 max-w-7xl mx-auto lg:items-stretch">
-      <!-- left: hints + image stacked (shows above game on small, beside on large) -->
-      <div class="flex flex-col gap-3 lg:w-52 lg:flex-shrink-0">
-        <!-- hints panel -->
-        <div class="bg-base-200 rounded-xl p-4">
-          <p class="font-semibold mb-3">You have 3 Hints</p>
-          <div id="hintsList" class="flex flex-col gap-2 text-sm min-h-16 mb-3">
-            <p id="noHintsMsg" class="text-base-content/50 italic text-xs">
-              No hints revealed yet
+          <!-- silhouette panel -->
+          <div
+            class="bg-base-200 rounded-xl p-4 flex flex-col items-center gap-3 flex-1"
+          >
+            <p class="font-semibold">Pokémon</p>
+            <div
+              class="w-full aspect-square bg-base-300 rounded-lg flex items-center justify-center overflow-hidden"
+            >
+              <img
+                id="pokeSilhouette"
+                src=""
+                alt="Pokémon silhouette"
+                class="w-full h-full object-contain"
+              />
+            </div>
+            <p class="text-xs text-base-content/50 text-center">
+              Guess to reveal!
             </p>
           </div>
-          <button id="revealHint" class="btn btn-sm btn-outline w-full">
-            Reveal Hint
+        </div>
+
+        <!-- right: game -->
+        <div class="flex flex-col items-center gap-6 flex-1 min-w-0">
+          <p class="text-base-content/60 text-sm">
+            Guess the Pokémon Name in 6 tries
+          </p>
+
+          <!-- how to play box -->
+          <div class="bg-base-200 rounded-xl p-4 w-full text-sm">
+            <p class="font-semibold mb-2">How to play:</p>
+            <div class="flex items-center gap-2 mb-1">
+              <div class="w-6 h-6 rounded bg-success flex-shrink-0"></div>
+              <span>Correct letter, correct position</span>
+            </div>
+            <div class="flex items-center gap-2 mb-1">
+              <div class="w-6 h-6 rounded bg-warning flex-shrink-0"></div>
+              <span>Correct letter, wrong position</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded bg-base-300 flex-shrink-0"></div>
+              <span>Letter not in the word</span>
+            </div>
+          </div>
+
+          <!-- 6x5 letter grid -->
+          <div id="grid" class="flex flex-col gap-2 w-full">
+            <!-- row 0 -->
+            <div class="flex gap-2 guess w-full justify-center" data-row="0"></div>
+
+            <!-- row 1 -->
+            <div class="flex gap-2 guess w-full justify-center" data-row="1"></div>
+
+            <!-- row 2 -->
+            <div class="flex gap-2 guess w-full justify-center" data-row="2"></div>
+
+            <!-- row 3 -->
+            <div class="flex gap-2 guess w-full justify-center" data-row="3"></div>
+
+            <!-- row 4 -->
+            <div class="flex gap-2 guess w-full justify-center" data-row="4"></div>
+
+            <!-- row 5 -->
+            <div class="flex gap-2 guess w-full justify-center" data-row="5"></div>
+          </div>
+
+          <!-- message area -->
+          <div class="text-center font-semibold text-base hidden"></div>
+
+          <!-- submit button -->
+          <button id="submitGuess" class="btn btn-primary w-full">
+            Submit Guess (Enter)
           </button>
         </div>
-
-        <!-- silhouette panel -->
-        <div class="bg-base-200 rounded-xl p-4 flex flex-col items-center gap-3 flex-1">
-          <p class="font-semibold">Pokémon</p>
-          <div
-            class="w-full aspect-square bg-base-300 rounded-lg flex items-center justify-center overflow-hidden"
-          >
-            <img
-              id="pokeSilhouette"
-              src=""
-              alt="Pokémon silhouette"
-              class="w-full h-full object-contain"
-            />
-          </div>
-          <p class="text-xs text-base-content/50 text-center">
-            Guess to reveal!
-          </p>
-        </div>
-      </div>
-
-      <!-- right: game -->
-      <div class="flex flex-col items-center gap-6 flex-1 min-w-0">
-        <p class="text-base-content/60 text-sm">
-          Guess the Pokémon Name in 6 tries
-        </p>
-
-        <!-- how to play box -->
-        <div class="bg-base-200 rounded-xl p-4 w-full text-sm">
-          <p class="font-semibold mb-2">How to play:</p>
-          <div class="flex items-center gap-2 mb-1">
-            <div class="w-6 h-6 rounded bg-success flex-shrink-0"></div>
-            <span>Correct letter, correct position</span>
-          </div>
-          <div class="flex items-center gap-2 mb-1">
-            <div class="w-6 h-6 rounded bg-warning flex-shrink-0"></div>
-            <span>Correct letter, wrong position</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="w-6 h-6 rounded bg-base-300 flex-shrink-0"></div>
-            <span>Letter not in the word</span>
-          </div>
-        </div>
-
-        <!-- 6x5 letter grid -->
-        <div id="grid" class="flex flex-col gap-2">
-          <!-- row 0 -->
-          <div class="flex gap-2 guess" data-row="0"></div>
-
-          <!-- row 1 -->
-          <div class="flex gap-2 guess" data-row="1"></div>
-
-          <!-- row 2 -->
-          <div class="flex gap-2 guess" data-row="2"></div>
-
-          <!-- row 3 -->
-          <div class="flex gap-2 guess" data-row="3"></div>
-
-          <!-- row 4 -->
-          <div class="flex gap-2 guess" data-row="4"></div>
-
-          <!-- row 5 -->
-          <div class="flex gap-2 guess" data-row="5"></div>
-        </div>
-
-        <!-- message area -->
-        <div class="text-center font-semibold text-base hidden"></div>
-
-        <!-- submit button -->
-        <button id="submitGuess" class="btn btn-primary w-full">
-          Submit Guess (Enter)
-        </button>
       </div>
     </div>
 
