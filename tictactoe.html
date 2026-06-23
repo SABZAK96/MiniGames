@@ -10,6 +10,7 @@
       rel="stylesheet"
       type="text/css"
     />
+    <link href="theme.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
@@ -21,7 +22,7 @@
   </head>
   <body>
     <!-- navbar -->
-    <div class="navbar bg-[#FFF8E7] px-4 shadow-sm">
+    <div class="navbar bg-base-200 px-4 shadow-sm">
       <div class="navbar-start">
         <a href="home.html"
           ><img class="w-30" src="./images/logo.png" alt=""
@@ -82,7 +83,7 @@
                 class="mode card bg-base-100 flex-1 justify-center items-center shadow-sm"
               >
                 <div class="card-body">
-                  <h2 class="card-title">AI</h2>
+                  <h2 class="card-title text-sm md:text-xl">AI</h2>
                 </div>
               </div>
 
@@ -91,7 +92,7 @@
                 class="mode card bg-base-100 flex-1 justify-center items-center shadow-sm"
               >
                 <div class="card-body">
-                  <h2 class="card-title">Local</h2>
+                  <h2 class="card-title text-sm md:text-xl">Local</h2>
                 </div>
               </div>
 
@@ -100,7 +101,7 @@
                 class="mode card bg-base-100 flex-1 justify-center items-center shadow-sm"
               >
                 <div class="card-body">
-                  <h2 class="card-title">Online</h2>
+                  <h2 class="card-title text-sm md:text-xl">Online</h2>
                 </div>
               </div>
             </div>
@@ -112,7 +113,7 @@
               class="card bg-base-100 flex-1 justify-center items-center shadow-sm"
             >
               <div class="card-body">
-                <h2 class="card-title">Join a Random Room</h2>
+                <h2 class="card-title text-sm md:text-xl">Join a Random Room</h2>
               </div>
             </div>
             <div
@@ -120,7 +121,7 @@
               class="card bg-base-100 flex-1 justify-center items-center shadow-sm"
             >
               <div class="card-body flex flex-col">
-                <h2 class="card-title">Join with a Room ID</h2>
+                <h2 class="card-title text-sm md:text-xl">Join with a Room ID</h2>
                 <input
                   id="roomID"
                   type="text"
@@ -162,10 +163,10 @@
             method="dialog"
             class="flex flex-col justify-center items-center gap-3 mt-4"
           >
-            <div class="font-bold text-xl">You selected</div>
+            <div class="font-bold text-base">You selected</div>
             <div
               id="pokeName"
-              class="italic text-primary text-3xl font-bold"
+              class="italic text-primary text-xl font-bold"
             ></div>
             <div><img id="pokePic" src="" class="w-75 h-75" /></div>
             <!-- modal action is for placing buttons on the bottom right so i brought the form out of it to have a full width search bar -->
@@ -183,10 +184,10 @@
             method="dialog"
             class="flex flex-col justify-center items-center gap-3 mt-4"
           >
-            <div class="font-bold text-xl">You selected</div>
+            <div class="font-bold text-base">You selected</div>
             <div
               id="pokeNameSelf"
-              class="italic text-primary text-3xl font-bold"
+              class="italic text-primary text-xl font-bold"
             ></div>
             <div><img id="pokePicSelf" src="" class="w-75 h-75" /></div>
 
@@ -196,10 +197,10 @@
               Room ID: <span id="roomNumber" class="mt-2 hidden"></span>
             </p>
 
-            <div class="font-bold text-xl">Your Opponent</div>
+            <div class="font-bold text-base">Your Opponent</div>
             <div
               id="OpponentName"
-              class="italic text-primary text-3xl font-bold"
+              class="italic text-primary text-xl font-bold"
             ></div>
             <div>
               <img
@@ -226,10 +227,10 @@
             method="dialog"
             class="flex flex-col justify-center items-center gap-3 mt-4"
           >
-            <div class="font-bold text-xl">You selected</div>
+            <div class="font-bold text-base">You selected</div>
             <div
               id="pokeNameAi"
-              class="italic text-primary text-3xl font-bold"
+              class="italic text-primary text-xl font-bold"
             ></div>
             <div><img id="pokePicAi" src="" class="w-75 h-75" /></div>
             <!-- modal action is for placing buttons on the bottom right so i brought the form out of it to have a full width search bar -->
@@ -375,8 +376,8 @@
     </dialog>
     <!-- modal for waiting -->
     <dialog id="my_modal_waiting" class="modal">
-      <div class="modal-box">
-        <h3 id="waitMessage" class="text-lg font-bold"></h3>
+      <div class="modal-box flex flex-col justify-center items-center gap-3">
+        <h3 id="waitMessage" class="text-lg font-bold text-center"></h3>
       </div>
     </dialog>
     <script src="tictactoe.js"></script>

@@ -1,0 +1,63 @@
+/* shared color palette for all games, built around the navbar's cream (#FFF8E7) */
+
+[data-theme="light"] {
+  --color-base-100: #fff8e7;
+  --color-base-200: #f7ecd3;
+  --color-base-300: #ecd9ad;
+  --color-base-content: #3b2f2f;
+
+  --color-primary: #d14b3d;
+  --color-primary-content: #fff8e7;
+
+  --color-secondary: #2e86ab;
+  --color-secondary-content: #fff8e7;
+
+  --color-accent: #5a9b5c;
+  --color-accent-content: #fff8e7;
+
+  --color-neutral: #4a3728;
+  --color-neutral-content: #fff8e7;
+
+  --color-info: #4a90a4;
+  --color-info-content: #fff8e7;
+
+  --color-success: #5a9b5c;
+  --color-success-content: #fff8e7;
+
+  --color-warning: #e0a736;
+  --color-warning-content: #3b2f2f;
+
+  --color-error: #c1432d;
+  --color-error-content: #fff8e7;
+}
+
+[data-theme="dark"] {
+  --color-base-100: #2b2118;
+  --color-base-200: #241b14;
+  --color-base-300: #1c150f;
+  --color-base-content: #f5e6c8;
+
+  --color-primary: #e15b43;
+  --color-primary-content: #2b2118;
+
+  --color-secondary: #5fa8c7;
+  --color-secondary-content: #2b2118;
+
+  --color-accent: #6fae6a;
+  --color-accent-content: #2b2118;
+
+  --color-neutral: #f5e6c8;
+  --color-neutral-content: #2b2118;
+
+  --color-info: #5fa8c7;
+  --color-info-content: #2b2118;
+
+  --color-success: #6fae6a;
+  --color-success-content: #2b2118;
+
+  --color-warning: #e1a93e;
+  --color-warning-content: #2b2118;
+
+  --color-error: #d9534f;
+  --color-error-content: #2b2118;
+}
