@@ -5,8 +5,8 @@ function fillCells(selector, imageSrc) {
   document.querySelectorAll(selector).forEach((cell) => {
     let element = document.createElement("img");
     element.classList.add(
-      "w-7",
-      "h-7",
+      "w-13",
+      "h-13",
       "md:w-17",
       "md:h-17",
       "object-contain",
