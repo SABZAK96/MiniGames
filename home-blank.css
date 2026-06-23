@@ -1,0 +1,244 @@
+.flip {
+  /* flips the whole card containing front and back */
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  animation-iteration-count: infinite;
+  animation-duration: 5s;
+  animation-timing-function: ease-in-out;
+}
+/* each card gets its own keyframes on the SAME shared duration, so
+   they flip in, in order, hold revealed, then all flip back to the
+   front face together at 80%-85% before the whole cycle restarts */
+.memory-step-1 {
+  animation-name: memoryFlip1;
+}
+.memory-step-2 {
+  animation-name: memoryFlip2;
+}
+.memory-step-3 {
+  animation-name: memoryFlip3;
+}
+.memory-step-4 {
+  animation-name: memoryFlip4;
+}
+.back {
+  /* when card is flipped, this should be rotated as well to come into front and be visible */
+  transform: rotateY(180deg);
+  /* backface should be hidden because we dont wanna see it behing the logo */
+  backface-visibility: hidden;
+}
+.front {
+  /* visible unti flipped by rotation */
+
+  backface-visibility: hidden;
+}
+
+@keyframes memoryFlip1 {
+  0% {
+    transform: rotateY(0deg);
+  }
+  5%,
+  80% {
+    transform: rotateY(180deg);
+  }
+  85%,
+  100% {
+    transform: rotateY(0deg);
+  }
+}
+@keyframes memoryFlip2 {
+  0%,
+  10% {
+    transform: rotateY(0deg);
+  }
+  15%,
+  80% {
+    transform: rotateY(180deg);
+  }
+  85%,
+  100% {
+    transform: rotateY(0deg);
+  }
+}
+@keyframes memoryFlip3 {
+  0%,
+  25% {
+    transform: rotateY(0deg);
+  }
+  30%,
+  80% {
+    transform: rotateY(180deg);
+  }
+  85%,
+  100% {
+    transform: rotateY(0deg);
+  }
+}
+@keyframes memoryFlip4 {
+  0%,
+  40% {
+    transform: rotateY(0deg);
+  }
+  45%,
+  80% {
+    transform: rotateY(180deg);
+  }
+  85%,
+  100% {
+    transform: rotateY(0deg);
+  }
+}
+.pop-cell {
+  opacity: 0;
+  transform: scale(0) rotate(0deg);
+  animation-duration: 6s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+/* every step shares the same 85%-95%-100% tail, so they all fade
+   out and go blank at the exact same moment, then restart together */
+.step-1 {
+  animation-name: popStep1;
+}
+.step-2 {
+  animation-name: popStep2;
+}
+.step-3 {
+  animation-name: popStep3;
+}
+.step-4 {
+  animation-name: popStep4;
+}
+.step-5 {
+  animation-name: popStep5;
+}
+@keyframes popStep1 {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  3% {
+    opacity: 1;
+    transform: scale(1.15) rotate(8deg);
+  }
+  8% {
+    opacity: 1;
+    transform: scale(1) rotate(-10deg);
+  }
+
+  13%,
+  85% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  95%,
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+}
+@keyframes popStep2 {
+  0%,
+  9% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  12% {
+    opacity: 1;
+    transform: scale(1.15) rotate(8deg);
+  }
+  17% {
+    opacity: 1;
+    transform: scale(1) rotate(-10deg);
+  }
+
+  22%,
+  85% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  95%,
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+}
+@keyframes popStep3 {
+  0%,
+  21% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  24% {
+    opacity: 1;
+    transform: scale(1.15) rotate(8deg);
+  }
+  29% {
+    opacity: 1;
+    transform: scale(1) rotate(-10deg);
+  }
+
+  34%,
+  85% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  95%,
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+}
+@keyframes popStep4 {
+  0%,
+  33% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  36% {
+    opacity: 1;
+    transform: scale(1.15) rotate(8deg);
+  }
+  41% {
+    opacity: 1;
+    transform: scale(1) rotate(-10deg);
+  }
+
+  46%,
+  85% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  95%,
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+}
+@keyframes popStep5 {
+  0%,
+  45% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  48% {
+    opacity: 1;
+    transform: scale(1.15) rotate(8deg);
+  }
+  53% {
+    opacity: 1;
+    transform: scale(1) rotate(-10deg);
+  }
+
+  58%,
+  85% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+
+  95%,
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+}
