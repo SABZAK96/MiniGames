@@ -30,6 +30,11 @@ const jsConfetti = new JSConfetti();
 
 let poke = undefined;
 let pokeName = undefined;
+
+function capitalize(word) {
+  return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
 // fetch a random poke from the api
 async function getRandomPokemon() {
   // generate a random int number between 1 to 1000
@@ -82,7 +87,9 @@ function displayFields() {
 //display poke image
 function pokeImage() {
   const pokeImage = poke.sprites.other["official-artwork"].front_default;
-  document.getElementById("pokeSilhouette").src = pokeImage;
+  const silhouette = document.getElementById("pokeSilhouette");
+  silhouette.src = pokeImage;
+  silhouette.classList.add("silhouette");
 }
 
 // hint generator
@@ -190,7 +197,9 @@ function submitGuess() {
       //win condition
       if (remainingTarget.length === 0) {
         gameOver = true;
-        document.getElementById("pokeSilhouette").removeAttribute("style");
+        document.getElementById("pokeSilhouette").classList.remove("silhouette");
+        document.getElementById("pokeReveal").src =
+          poke.sprites.other["official-artwork"].front_default;
         jsConfetti.addConfetti();
 
         jsConfetti.addConfetti({
@@ -198,7 +207,7 @@ function submitGuess() {
         });
         document.getElementById("messageTitle").innerHTML = "You Won!";
         document.getElementById("message").innerHTML =
-          "You Guessed it Right! 🎉";
+          `It was <strong>${capitalize(pokeName)}</strong>! 🎉`;
 
         // set time out shows the modal after current loop is finished
         setTimeout(() => document.getElementById("my_modal_2").showModal(), 0);
@@ -224,9 +233,12 @@ function submitGuess() {
     //lose condition
     if (currentRow === 6 && remainingTarget.length !== 0) {
       gameOver = true;
-      document.getElementById("pokeSilhouette").removeAttribute("style");
+      document.getElementById("pokeSilhouette").classList.remove("silhouette");
+      document.getElementById("pokeReveal").src =
+        poke.sprites.other["official-artwork"].front_default;
       document.getElementById("messageTitle").innerHTML = "You Lost!";
-      document.getElementById("message").innerHTML = "Maybe next time?";
+      document.getElementById("message").innerHTML =
+        `The Pokémon was <strong>${capitalize(pokeName)}</strong>. Maybe next time?`;
 
       // set time out shows the modal after current loop is finished
       setTimeout(() => document.getElementById("my_modal_2").showModal(), 0);

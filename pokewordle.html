@@ -16,12 +16,12 @@
       .cell {
         transition: background-color 0.3s ease;
       }
-      #pokeSilhouette {
+      .silhouette {
         filter: brightness(0);
       }
       /* [data-theme="dark"] is an attribute selector  */
-      /* find #pokeSilhouette that is inside an element where data-theme="dark" and make it white */
-      [data-theme="dark"] #pokeSilhouette {
+      /* find .silhouette that is inside an element where data-theme="dark" and make it white */
+      [data-theme="dark"] .silhouette {
         filter: brightness(0) invert(1);
       }
       .shakeDiv {
@@ -108,9 +108,9 @@
         class="flex flex-col lg:flex-row gap-6 px-6 py-8 max-w-7xl mx-auto lg:items-stretch"
       >
         <!-- left: hints + image stacked (shows above game on small, beside on large) -->
-        <div class="flex flex-col gap-3 lg:w-52 lg:flex-shrink-0">
+        <div class="flex flex-col gap-3  lg:w-52 lg:flex-shrink-0">
           <!-- hints panel -->
-          <div class="bg-base-200 rounded-xl p-4">
+          <div class="bg-base-200 text-center rounded-xl p-4">
             <p class="font-semibold mb-3">You have 3 Hints</p>
             <div
               id="hintsList"
@@ -131,13 +131,13 @@
           >
             <p class="font-semibold">Pokémon</p>
             <div
-              class="w-full aspect-square bg-base-300 rounded-lg flex items-center justify-center overflow-hidden"
+              class="w-50 max-w-full mx-auto aspect-square bg-base-300 rounded-lg flex items-center justify-center overflow-hidden lg:w-full"
             >
               <img
                 id="pokeSilhouette"
                 src=""
                 alt="Pokémon silhouette"
-                class="w-full h-full object-contain"
+                class="w-full h-full object-contain silhouette"
               />
             </div>
             <p class="text-xs text-base-content/50 text-center">
@@ -205,6 +205,12 @@
     <dialog id="my_modal_2" class="modal">
       <div class="modal-box flex flex-col justify-center items-center">
         <h3 id="messageTitle" class="text-lg font-bold"></h3>
+        <img
+          id="pokeReveal"
+          src=""
+          alt="Pokémon reveal"
+          class="w-32 h-32 object-contain"
+        />
         <p id="message" class="py-4"></p>
         <div class="modal-action w-full">
           <form method="dialog" class="flex gap-3 w-full">
