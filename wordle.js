@@ -257,6 +257,30 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+async function resetToDefault() {
+  //clearing the hints container
+  document.getElementById("hintsList").innerHTML =
+    '<p id="noHintsMsg" class="text-base-content/50 italic text-xs">No hints revealed yet</p>';
+  hintsRevealed = 0;
+  currentRow = 0;
+  currentCol = 0;
+  answer = [];
+  pokeSplit = [];
+  remainingTarget = [];
+
+  // gameOver stays true (it already is, from the finished game) until the
+  // new pokemon has finished loading, so keydown/submitGuess can't read
+  // pokeName while it's still being fetched
+  await init();
+  gameOver = false;
+}
+
+document.getElementById("retryGame").addEventListener("click", resetToDefault);
+
+document.getElementById("closeResult").addEventListener("click", () => {
+  document.getElementById("my_modal_2").close();
+});
+
 document.getElementById("submitGuess").addEventListener("click", submitGuess);
 
 // reveal hints

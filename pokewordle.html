@@ -206,6 +206,16 @@
       <div class="modal-box flex flex-col justify-center items-center">
         <h3 id="messageTitle" class="text-lg font-bold"></h3>
         <p id="message" class="py-4"></p>
+        <div class="modal-action w-full">
+          <form method="dialog" class="flex gap-3 w-full">
+            <button id="closeResult" class="btn btn-outline flex-1">
+              Close
+            </button>
+            <button id="retryGame" class="btn btn-primary flex-1">
+              Retry
+            </button>
+          </form>
+        </div>
       </div>
       <form method="dialog" class="modal-backdrop">
         <button>close</button>
