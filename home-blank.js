@@ -3,7 +3,6 @@ let dittoImage = undefined;
 
 function fillCells(selector, imageSrc) {
   document.querySelectorAll(selector).forEach((cell) => {
-    
     let element = document.createElement("img");
     element.classList.add(
       "w-7",
@@ -12,7 +11,6 @@ function fillCells(selector, imageSrc) {
       "md:h-17",
       "object-contain",
       "poke",
-      "back",
     );
     element.src = imageSrc;
     cell.appendChild(element);
@@ -31,6 +29,12 @@ async function getPoke() {
     dittoResult.data.sprites.other["official-artwork"].front_default;
   fillCells(".pikachu", pikachuImage);
   fillCells(".ditto", dittoImage);
+
+  // only the memory-game faces should start rotated away (waiting to be
+  // flipped into view) - the tic-tac-toe images should stay plainly visible
+  document.querySelectorAll("#pokeContainer .poke").forEach((img) => {
+    img.classList.add("back");
+  });
 }
 
 getPoke();
