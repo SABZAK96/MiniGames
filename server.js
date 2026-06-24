@@ -4,7 +4,7 @@ require("dotenv/config"); // Automatically loads environment variables
 const app = express();
 const axios = require("axios");
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-const port = 5000;
+const port = process.env.PORT || 5000;
 //having socket and server on the same port - we create an http server
 const http = require("http");
 const server = http.createServer(app);
@@ -13,11 +13,7 @@ app.use(cors());
 
 // setting up socket for online tictactoe game
 const { Server } = require("socket.io");
-const io = new Server(server, {
-  cors: {
-    origin: `http://localhost:${port}`,
-  },
-});
+const io = new Server(server);
 
 let waitingRoom = null;
 let roomNumber = undefined;
@@ -149,7 +145,8 @@ io.on("connection", (socket) => {
     const roomId = getRoomId(socket);
     if (data === true) {
       // a rematch was just accepted - this only ever fires once per round
-      // (only the accepting player emits it), so the alternation can't
+      // (onl
+      // pting player emits it), so the alternation can't
       // race the way deciding round 1 does. Flip to whichever of the
       // room's two names isn't the one stored from last round.
       const room = io.sockets.adapter.rooms.get(roomId);

@@ -1,5 +1,7 @@
 // socket connections for online mode
-const socket = io("http://localhost:5000");
+// no URL -> connects to whatever origin served this page, works in both
+// local dev and production without needing to hardcode a host
+const socket = io();
 
 // toggle daiseyUI theme component and add it to localstorage
 const theme = document.querySelector(".theme-controller");
@@ -402,7 +404,7 @@ async function AiPlay() {
       return "P1";
     }),
   );
-  const response = await fetch("http://localhost:5000/api/generate", {
+  const response = await fetch("/api/generate", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ board: simplifiedBoard }),
