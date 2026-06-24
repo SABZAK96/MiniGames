@@ -39,6 +39,15 @@ function showMessage(message) {
   document.getElementById("my_modal").showModal();
 }
 
+// separate from showMessage/my_modal on purpose - modal-top keeps it from
+// covering the cards. Auto-closes after 1s, but the player can also click
+// the backdrop to dismiss it sooner if they don't want to wait
+function showPowerUp() {
+  const powerUpModal = document.getElementById("powerUpModal");
+  powerUpModal.showModal();
+  setTimeout(() => powerUpModal.close(), 1000);
+}
+
 // easy mode button
 const easyMode = document.getElementById("easy");
 easyMode.addEventListener("click", () => {
@@ -122,7 +131,7 @@ easyMode.addEventListener("click", () => {
     let matched = 0;
 
     popup = setInterval(() => {
-      showMessage("Power Up!");
+      showPowerUp();
       document.querySelectorAll(".card").forEach((element) => {
         if (
           !matchedCards.includes(element.dataset.id) &&
@@ -298,7 +307,7 @@ mediumMode.addEventListener("click", () => {
     let matched = 0;
 
     popup = setInterval(() => {
-      showMessage("Power Up!");
+      showPowerUp();
       document.querySelectorAll(".card").forEach((element) => {
         if (
           !matchedCards.includes(element.dataset.id) &&
@@ -441,7 +450,7 @@ hardMode.addEventListener("click", () => {
     let matched = 0;
 
     popup = setInterval(() => {
-      showMessage("Power Up!");
+      showPowerUp();
       document.querySelectorAll(".card").forEach((element) => {
         if (
           !matchedCards.includes(element.dataset.id) &&
