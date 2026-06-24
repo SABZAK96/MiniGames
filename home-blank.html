@@ -14,6 +14,218 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
+  <style>
+    .step-1-bg {
+      background-color: transparent;
+    }
+    .step-1-letter {
+      animation-name: letterPop1;
+      animation-duration: 10s;
+      animation-iteration-count: infinite;
+    }
+    .step-2-bg {
+      background-color: transparent;
+    }
+    .step-2-letter {
+      animation-name: letterPop2;
+      animation-duration: 10s;
+      animation-iteration-count: infinite;
+    }
+    .step-3-bg {
+      background-color: transparent;
+    }
+    .step-3-letter {
+      animation-name: letterPop3;
+      animation-duration: 10s;
+      animation-iteration-count: infinite;
+    }
+    .step-4-bg {
+      background-color: transparent;
+    }
+    .step-4-letter {
+      animation-name: letterPop4;
+      animation-duration: 10s;
+      animation-iteration-count: infinite;
+    }
+    .step-5-bg {
+      background-color: transparent;
+    }
+    .step-5-letter {
+      animation-name: letterPop5;
+      animation-duration: 10s;
+      animation-iteration-count: infinite;
+    }
+    .step-6-bg {
+      background-color: transparent;
+    }
+    .step-6-letter {
+      animation-name: letterPop6;
+      animation-duration: 10s;
+      animation-iteration-count: infinite;
+    }
+    .step-7-bg {
+      background-color: transparent;
+    }
+    .step-7-letter {
+      animation-name: letterPop7;
+      animation-duration: 10s;
+      animation-iteration-count: infinite;
+    }
+    .step-8-bg {
+      background-color: transparent;
+    }
+    .step-8-letter {
+    }
+    .step-9-bg {
+      background-color: transparent;
+    }
+    .step-9-letter {
+    }
+    .step-10-bg {
+      background-color: transparent;
+    }
+    .step-10-letter {
+    }
+    .step-11-bg {
+      background-color: transparent;
+    }
+    .step-11-letter {
+    }
+    .step-12-bg {
+      background-color: transparent;
+    }
+    .step-12-letter {
+    }
+    .step-13-bg {
+      background-color: transparent;
+    }
+    .step-13-letter {
+    }
+    .step-14-bg {
+      background-color: transparent;
+    }
+    .step-14-letter {
+    }
+
+    @keyframes letterPop1 {
+      0% {
+        opacity: 0;
+      }
+      2%,
+      85% {
+        opacity: 1;
+      }
+      90%,
+      100% {
+        opacity: 0;
+      }
+    }
+    @keyframes letterPop2 {
+      0%,
+      4% {
+        opacity: 0;
+      }
+      9%,
+      85% {
+        opacity: 1;
+      }
+      90%,
+      100% {
+        opacity: 0;
+      }
+    }
+    @keyframes letterPop3 {
+      0%,
+      11% {
+        opacity: 0;
+      }
+      16%,
+      85% {
+        opacity: 1;
+      }
+      90%,
+      100% {
+        opacity: 0;
+      }
+    }
+    @keyframes letterPop4 {
+      0%,
+      18% {
+        opacity: 0;
+      }
+      23%,
+      85% {
+        opacity: 1;
+      }
+      90%,
+      100% {
+        opacity: 0;
+      }
+    }
+    @keyframes letterPop5 {
+      0%,
+      25% {
+        opacity: 0;
+      }
+      30%,
+      85% {
+        opacity: 1;
+      }
+      90%,
+      100% {
+        opacity: 0;
+      }
+    }
+    @keyframes letterPop6 {
+      0%,
+      32% {
+        opacity: 0;
+      }
+      37%,
+      85% {
+        opacity: 1;
+      }
+      90%,
+      100% {
+        opacity: 0;
+      }
+    }
+    @keyframes letterPop7 {
+      0%,
+      39% {
+        opacity: 0;
+      }
+      44%,
+      85% {
+        opacity: 1;
+      }
+      90%,
+      100% {
+        opacity: 0;
+      }
+    }
+    @keyframes bgChange1 {
+      
+    }
+     @keyframes bgChange2 {
+      
+    }
+     @keyframes bgChange3 {
+      
+    }
+     @keyframes bgChange4 {
+      
+    }
+     @keyframes bgChange5 {
+      
+    }
+     @keyframes bgChange6 {
+      
+    }
+     @keyframes bgChange7 {
+      
+    }
+  </style>
   <body>
     <!-- navbar -->
     <div class="navbar bg-base-200 px-4 shadow-sm">
@@ -40,8 +252,9 @@
             start playing!
           </p>
 
+          <!-- container of all ggames -->
           <div
-            class="flex md:flex-row flex-col gap-5 justify-center items-stretch"
+            class="flex lg:flex-row flex-col gap-5 justify-center items-stretch"
           >
             <!-- first game container- tic-tac-toe -->
             <div
@@ -56,37 +269,37 @@
               <div id="ticGrid" class="flex flex-col gap-2">
                 <div class="flex flex-row gap-2">
                   <div
-                    class="w-15 h-15 md:w-20 md:h-20 rounded-md border-2 border-[color:var(--color-base-100)] pikachu pop-cell step-1"
+                    class="w-15 h-15 lg:w-20 lg:h-20 md:w-15 md:h-15 rounded-md border-2 border-[color:var(--color-base-100)] pikachu pop-cell step-1"
                   ></div>
                   <div
-                    class="w-15 h-15 md:w-20 md:h-20 rounded-md border-2 border-[color:var(--color-base-100)]"
+                    class="w-15 h-15 lg:w-20 lg:h-20 md:w-15 md:h-15 rounded-md border-2 border-[color:var(--color-base-100)]"
                   ></div>
                   <div
-                    class="w-15 h-15 md:w-20 md:h-20 rounded-md border-2 border-[color:var(--color-base-100)] ditto pop-cell step-2"
+                    class="w-15 h-15 lg:w-20 lg:h-20 md:w-15 md:h-15 rounded-md border-2 border-[color:var(--color-base-100)] ditto pop-cell step-2"
+                  ></div>
+                </div>
+
+                <div class="flex flex-row gap-3">
+                  <div
+                    class="w-15 h-15 lg:w-20 lg:h-20 md:w-15 md:h-15 rounded-md border-2 border-[color:var(--color-base-100)]"
+                  ></div>
+                  <div
+                    class="w-15 h-15 lg:w-20 lg:h-20 md:w-15 md:h-15 rounded-md border-2 border-[color:var(--color-base-100)] pikachu pop-cell step-3"
+                  ></div>
+                  <div
+                    class="w-15 h-15 lg:w-20 lg:h-20 md:w-15 md:h-15 rounded-md border-2 border-[color:var(--color-base-100)]"
                   ></div>
                 </div>
 
                 <div class="flex flex-row gap-2">
                   <div
-                    class="w-15 h-15 md:w-20 md:h-20 rounded-md border-2 border-[color:var(--color-base-100)]"
+                    class="w-15 h-15 lg:w-20 lg:h-20 md:w-15 md:h-15 rounded-md border-2 border-[color:var(--color-base-100)] ditto pop-cell step-4"
                   ></div>
                   <div
-                    class="w-15 h-15 md:w-20 md:h-20 rounded-md border-2 border-[color:var(--color-base-100)] pikachu pop-cell step-3"
+                    class="w-15 h-15 lg:w-20 lg:h-20 md:w-15 md:h-15 rounded-md border-2 border-[color:var(--color-base-100)]"
                   ></div>
                   <div
-                    class="w-15 h-15 md:w-20 md:h-20 rounded-md border-2 border-[color:var(--color-base-100)]"
-                  ></div>
-                </div>
-
-                <div class="flex flex-row gap-2">
-                  <div
-                    class="w-15 h-15 md:w-20 md:h-20 rounded-md border-2 border-[color:var(--color-base-100)] ditto pop-cell step-4"
-                  ></div>
-                  <div
-                    class="w-15 h-15 md:w-20 md:h-20 rounded-md border-2 border-[color:var(--color-base-100)]"
-                  ></div>
-                  <div
-                    class="w-15 h-15 md:w-20 md:h-20 rounded-md border-2 border-[color:var(--color-base-100)] pikachu pop-cell step-5"
+                    class="w-15 h-15 lg:w-20 lg:h-20 md:w-15 md:h-15 rounded-md border-2 border-[color:var(--color-base-100)] pikachu pop-cell step-5"
                   ></div>
                 </div>
               </div>
@@ -101,7 +314,7 @@
 
             <!-- second game - memory game -->
             <div
-              class="card bg-[color:var(--color-base-100)]/10 backdrop-blur-sm text-base-content shadow-sm p-4 flex flex-col items-center gap-3 w-full"
+              class="card bg-[color:var(--color-base-100)]/10 backdrop-blur-sm text-base-content shadow-sm p-4 flex flex-col items-center gap-3 w-full min-w-[21rem]"
             >
               <h2
                 class="card-title font-bold text-lg md:text-2xl tracking-wide mb-1 text-[color:var(--color-base-100)]"
@@ -168,7 +381,151 @@
               <div
                 class="text-sm md:text-base text-[color:var(--color-base-100)]/80 max-w-xs mt-2"
               >
-                Flip and match pairs of Pokémon cards before the time runs out. Three difficulty levels to test you.
+                Flip and match pairs of Pokémon cards before the time runs out.
+                Three difficulty levels to test you.
+              </div>
+            </div>
+
+            <!-- third game - wordle -->
+            <div
+              class="card bg-[color:var(--color-base-100)]/10 backdrop-blur-sm text-base-content shadow-sm p-4 flex flex-col items-center gap-3 w-full"
+            >
+              <h2
+                class="card-title font-bold text-lg md:text-2xl tracking-wide mb-1 text-[color:var(--color-base-100)]"
+              >
+                Poké wordle
+              </h2>
+              <!-- container of letter boxes - first guess  -->
+              <div class="flex flex-row gap-2">
+                <div
+                  class="md:w-10 md:h-10 rounded-md border-2 border-[color:var(--color-base-100)] step-1-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-100)] md:text-2xl text-center step-1-letter"
+                  >
+                    P
+                  </p>
+                </div>
+                <div
+                  class="md:w-10 md:h-10 rounded-md border-2 border-[color:var(--color-base-100)] step-2-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-100)] md:text-2xl text-center step-2-letter"
+                  >
+                    S
+                  </p>
+                </div>
+                <div
+                  class="md:w-10 md:h-10 rounded-md border-2 border-[color:var(--color-base-100)] step-3-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-100)] md:text-2xl text-center step-3-letter"
+                  >
+                    Y
+                  </p>
+                </div>
+                <div
+                  class="md:w-10 md:h-10 rounded-md border-2 border-[color:var(--color-base-100)] step-4-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-100)] md:text-2xl text-center step-4-letter"
+                  >
+                    D
+                  </p>
+                </div>
+                <div
+                  class="md:w-10 md:h-10 rounded-md border-2 border-[color:var(--color-base-100)] step-5-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-100)] md:text-2xl text-center step-5-letter"
+                  >
+                    U
+                  </p>
+                </div>
+                <div
+                  class="md:w-10 md:h-10 rounded-md border-2 border-[color:var(--color-base-100)] step-6-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-100)] md:text-2xl text-center step-6-letter"
+                  >
+                    C
+                  </p>
+                </div>
+                <div
+                  class="md:w-10 md:h-10 rounded-md border-2 border-[color:var(--color-base-100)] step-7-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-100)] md:text-2xl text-center step-7-letter"
+                  >
+                    K
+                  </p>
+                </div>
+              </div>
+              <!-- container of letter boxes - second guess correct -->
+              <div class="flex flex-row gap-2">
+                <div
+                  class="md:w-10 md:h-10 rounded-md border-2 border-[color:var(--color-base-100)] step-8-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-100)] md:text-2xl text-center step-8-letter"
+                  >
+                    P
+                  </p>
+                </div>
+                <div
+                  class="md:w-10 md:h-10 rounded-md border-2 border-[color:var(--color-base-100)] step-9-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-100)] md:text-2xl text-center step-9-letter"
+                  >
+                    I
+                  </p>
+                </div>
+                <div
+                  class="md:w-10 md:h-10 rounded-md border-2 border-[color:var(--color-base-100)] step-10-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-100)] md:text-2xl text-center step-10-letter"
+                  >
+                    K
+                  </p>
+                </div>
+                <div
+                  class="md:w-10 md:h-10 rounded-md border-2 border-[color:var(--color-base-100)] step-11-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-100)] md:text-2xl text-center step-11-letter"
+                  >
+                    A
+                  </p>
+                </div>
+                <div
+                  class="md:w-10 md:h-10 rounded-md border-2 border-[color:var(--color-base-100)] step-12-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-100)] md:text-2xl text-center step-12-letter"
+                  >
+                    C
+                  </p>
+                </div>
+                <div
+                  class="md:w-10 md:h-10 rounded-md border-2 border-[color:var(--color-base-100)] step-13-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-100)] md:text-2xl text-center step-13-letter"
+                  >
+                    H
+                  </p>
+                </div>
+                <div
+                  class="md:w-10 md:h-10 rounded-md border-2 border-[color:var(--color-base-100)] step-14-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-100)] md:text-2xl text-center step-14-letter"
+                  >
+                    U
+                  </p>
+                </div>
               </div>
             </div>
           </div>

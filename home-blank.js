@@ -33,13 +33,9 @@ async function getPoke() {
   // only the memory-game faces should start rotated away (waiting to be
   // flipped into view) - the tic-tac-toe images should stay plainly visible
   document.querySelectorAll("#pokeContainer .poke").forEach((img) => {
-    img.classList.remove("w-7", "h-7", "md:w-17", "md:h-17", "object-contain");
+    img.classList.remove("w-13", "h-13", "md:w-17", "md:h-17", "object-contain");
     img.classList.add("absolute", "inset-0", "object-cover", "back");
   });
 }
 
 getPoke();
-
-// document.querySelectorAll("#pokeContainer img.poke ").forEach((cell) => {
-//   cell.classList.add("hidden");
-// });
