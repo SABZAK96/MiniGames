@@ -1,3 +1,6 @@
+//js confetti
+const jsConfetti = new JSConfetti();
+
 // toggle daiseyUI theme component and add it to localstorage
 const theme = document.querySelector(".theme-controller");
 const element = document.getElementById("page");
@@ -69,7 +72,7 @@ easyMode.addEventListener("click", () => {
       if (gameTime == 0 && win === false) {
         clearInterval(timer);
         clearInterval(popup);
-        showMessage("you lost!");
+        showMessage("you lost! Maybe next time?");
       }
     }, 1000);
 
@@ -179,7 +182,12 @@ easyMode.addEventListener("click", () => {
               clearInterval(timer);
               clearInterval(popup);
               setTimeout(() => {
-                showMessage("you won!");
+                jsConfetti.addConfetti({
+                  emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
+                  confettiNumber: 50,
+                });
+
+                showMessage("you won! 🎉");
               }, 802);
             }
 
@@ -346,6 +354,11 @@ mediumMode.addEventListener("click", () => {
               clearInterval(timer);
               clearInterval(popup);
               setTimeout(() => {
+                jsConfetti.addConfetti({
+                  emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
+                  confettiNumber: 50,
+                });
+
                 showMessage("you won!");
               }, 802);
             }
@@ -512,6 +525,11 @@ hardMode.addEventListener("click", () => {
               clearInterval(timer);
               clearInterval(popup);
               setTimeout(() => {
+                jsConfetti.addConfetti({
+                  emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
+                  confettiNumber: 50,
+                });
+
                 showMessage("you won!");
               }, 802);
             }
