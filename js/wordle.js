@@ -253,14 +253,46 @@ function submitGuess() {
 // keyboard has something to actually attach to (see guessInput in the HTML)
 const guessInput = document.getElementById("guessInput");
 
-// auto-focus on load/new round for desktop (typing works immediately, same
-// as before), and re-focus on tap for mobile (some mobile browsers refuse
-// to open the keyboard without a user gesture, and focus can get lost
-// after submitting a guess or tapping elsewhere on the page)
-guessInput.focus();
-document.getElementById("grid").addEventListener("touchend", () => {
+// auto-focus on load so desktop typing works immediately with no click
+// needed first - but only on non-touch devices. Calling .focus() outside
+// a real user gesture is the mobile bug: touch browsers can flash the
+// keyboard open and immediately close it again, leaving the input stuck
+// "focused" in the DOM with no visible keyboard and no way to reopen it
+// (a later .focus() call is a no-op since it's already focused). Touch
+// devices instead rely entirely on the touchend handler below, which runs
+// inside a genuine tap and doesn't have this problem.
+if (!("ontouchstart" in window)) {
+  guessInput.focus();
+}
+// touchend for mobile taps, click for desktop mouse clicks - without the
+// click listener, a desktop user who clicks away (blurring guessInput) has
+// no way to regain focus and type again, since nothing else refocuses it
+const grid = document.getElementById("grid");
+grid.addEventListener("touchend", () => {
   guessInput.focus();
 });
+grid.addEventListener("click", () => {
+  guessInput.focus();
+});
+
+// hide the bottom dock nav while the on-screen keyboard is open - fixed-
+// position elements can end up "floating" mid-screen instead of pinned to
+// the bottom on mobile, since some mobile browsers don't shrink the layout
+// viewport (which fixed positioning anchors to) the same way they shrink
+// the visible viewport when the keyboard appears. Simplest fix: just don't
+// show it while the keyboard's up, since there's no need to navigate away
+// mid-guess anyway. Touch-only - desktop has no virtual keyboard, so there's
+// nothing to hide the dock for, and the dock isn't even shown on desktop
+// widths anyway (it's md:hidden).
+if ("ontouchstart" in window) {
+  const mobileDock = document.getElementById("mobileDock");
+  guessInput.addEventListener("focus", () => {
+    mobileDock.classList.add("hidden");
+  });
+  guessInput.addEventListener("blur", () => {
+    mobileDock.classList.remove("hidden");
+  });
+}
 
 // letters + backspace: driven by the "input" event (reliable on every
 // platform, since it fires off the actual text-content change) rather than
