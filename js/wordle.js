@@ -50,7 +50,7 @@ function displayFields() {
   //display other rows accordingly
   const guessRows = document.querySelectorAll(".guess");
   pokeName = poke.name;
-  console.log(pokeName);
+  // console.log(pokeName);
   let indexRow = 0;
   guessRows.forEach((row) => {
     row.innerHTML = "";

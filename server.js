@@ -21,16 +21,17 @@ const io = new Server(server, {
 
 let waitingRoom = null;
 let roomNumber = undefined;
-// who-goes-first is decided once per room (both players' clients emit
-// "start game" independently, so this must be shared, not per-socket)
+// who goes first, by name. Set once for round 1 by "start game" (a genuine
+// race between both clients' "Let's Go" clicks), then flipped exactly once
+// per rematch by "request decision" (no race there - only the accepting
+// player emits it). "get first move" just reads this value, never writes it.
 const firstPlayerByRoom = {};
 
 // socket.rooms always contains this socket's own default room (named after
 // its id) plus whatever room it joined - filter the default one out to get
 // the actual game room, instead of relying on a shared roomNumber variable
 // (which isn't necessarily this socket's room)
-const getRoomId = (socket) =>
-  [...socket.rooms].find((id) => id !== socket.id);
+const getRoomId = (socket) => [...socket.rooms].find((id) => id !== socket.id);
 
 function setPlayer(socket, data) {
   // store this player's data on their own socket (not a shared/global
@@ -77,7 +78,11 @@ io.on("connection", (socket) => {
       }
       // existingRoom, if present here, is the other player already waiting
       // in this room - check before this socket commits to the same pick
-      if (existingRoom && existingRoom.size === 1 && isPokeTaken(data.roomId, data.pokeName)) {
+      if (
+        existingRoom &&
+        existingRoom.size === 1 &&
+        isPokeTaken(data.roomId, data.pokeName)
+      ) {
         socket.emit(
           "errorMessage",
           "That pokemon is already taken - pick another!",
@@ -142,25 +147,42 @@ io.on("connection", (socket) => {
 
   socket.on("request decision", (data) => {
     const roomId = getRoomId(socket);
+    if (data === true) {
+      // a rematch was just accepted - this only ever fires once per round
+      // (only the accepting player emits it), so the alternation can't
+      // race the way deciding round 1 does. Flip to whichever of the
+      // room's two names isn't the one stored from last round.
+      const room = io.sockets.adapter.rooms.get(roomId);
+      const [firstId, secondId] = room;
+      const firstName = io.sockets.sockets.get(firstId).player.name;
+      const secondName = io.sockets.sockets.get(secondId).player.name;
+      firstPlayerByRoom[roomId] =
+        firstPlayerByRoom[roomId] === firstName ? secondName : firstName;
+    }
     socket.to(roomId).emit("request result", data);
   });
 
+  // round 1 only - each client emits this exactly once, ever, when they
+  // close their own "Let's Go" modal. Whoever's call the server sees first
+  // decides who goes first and broadcasts it to the room - both clients'
+  // "first move" listeners are already registered by this point (module
+  // scope, attached at page load), so the second call needs no reply.
   socket.on("start game", (data) => {
     const roomId = getRoomId(socket);
-
-    // the first "start game" emit for this room already decided who goes
-    // first - reply to this late socket directly instead of re-deciding,
-    // since it registered its "first move" listener after that broadcast
-    // already went out and would otherwise never see it. data.p1 is always
-    // this socket's own identity, so the other socket already decided -
-    // that decision can only be the opponent, i.e. data.p2
-    if (firstPlayerByRoom[roomId]) {
-      socket.emit("first move", data.p2);
-      return;
+    if (firstPlayerByRoom[roomId] === undefined) {
+      firstPlayerByRoom[roomId] = data.p1.name;
+      io.to(roomId).emit("first move", data.p1);
     }
+  });
 
-    firstPlayerByRoom[roomId] = data.p1.name;
-    io.to(roomId).emit("first move", data.p1);
+  // round 2+ - both clients call this at the start of every rematch round.
+  // The alternation already happened above in "request decision", so this
+  // is a plain read: no deciding, safe to call any number of times.
+  socket.on("get first move", (data) => {
+    const roomId = getRoomId(socket);
+    const firstMoverName = firstPlayerByRoom[roomId];
+    const firstMover = data.p1.name === firstMoverName ? data.p1 : data.p2;
+    socket.emit("first move", firstMover);
   });
 
   socket.on("move", (data) => {

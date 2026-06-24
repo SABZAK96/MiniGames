@@ -597,15 +597,20 @@ function checkWin() {
   return false;
 }
 
-let isFirstRound = true;
+// round 1 only emits "start game" (the server races both clients' calls to
+// decide who goes first); every round after that emits "get first move"
+// instead, since by then the server already decided via the rematch
+// accept/decision flow and this is just a read
+let firstRound = true;
 function startGameOnline() {
   let p1 = { name: p1Name, marker: playerOneMarker };
   let p2 = { name: p2Name, marker: playerTwoMarker };
-  if (isFirstRound) {
-    firstRound(p1, p2);
-    isFirstRound = false;
+  if (firstRound) {
+    socket.emit("start game", { p1, p2 });
+    firstRound = false;
+  } else {
+    socket.emit("get first move", { p1, p2 });
   }
-
   const allCells = document.querySelectorAll("[data-row][data-col]");
   allCells.forEach((cell) => {
     cell.innerHTML = "";
@@ -630,7 +635,10 @@ function startGameOnline() {
     });
   });
 }
-
+socket.on("first move", (data) => {
+  playerPlaying = { marker: data.marker, name: data.name };
+  document.getElementById("currentTurn").innerHTML = playerPlaying.name;
+});
 // registered once at load - startGameOnline() runs again on every rematch
 // round, so an "announce move" listener attached inside it would stack: by
 // round N there'd be N copies all reacting to the same move, each re-running
@@ -668,6 +676,7 @@ function resetToModeSelect() {
   playerTwoMarker = undefined;
   p1Name = undefined;
   p2Name = undefined;
+  firstRound = true;
   pokeTaken = undefined;
   selectedMode = undefined;
   p1Wins = 0;
@@ -782,11 +791,3 @@ document.getElementById("findMatch").addEventListener("click", () => {
 document.getElementById("my_modal_win").addEventListener("close", () => {
   document.getElementById("findMatch").classList.add("hidden");
 });
-
-function firstRound(p1, p2) {
-  socket.emit("start game", { p1, p2 });
-  socket.on("first move", (data) => {
-    playerPlaying = { marker: data.marker, name: data.name };
-    document.getElementById("currentTurn").innerHTML = playerPlaying.name;
-  });
-}

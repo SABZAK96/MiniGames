@@ -244,7 +244,7 @@
       </dialog>
 
       <!-- controls above grid: same width as grid -->
-      <div class="w-96 md:w-200 flex flex-col gap-3">
+      <div class="w-full max-w-96 md:w-200 flex flex-col gap-3">
         <!-- turn indicator -->
         <div class="bg-base-200 rounded-xl p-4 w-full text-center">
           <p class="text-sm text-base-content/60 mb-1">Current Turn</p>
@@ -281,7 +281,7 @@
       <!-- tictactoe grid -->
       <div
         id="gameGrid"
-        class="w-96 h-96 md:w-200 md:h-200 flex flex-row hover:cursor-pointer"
+        class="w-full max-w-96 aspect-square md:w-200 md:h-200 flex flex-row hover:cursor-pointer md:pt-10"
       >
         <!-- first col -->
         <div class="flex flex-col w-1/3 h-full">
