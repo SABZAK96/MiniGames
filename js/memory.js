@@ -45,8 +45,9 @@ function showMessage(message) {
 function showPowerUp() {
   const powerUpModal = document.getElementById("powerUpModal");
   powerUpModal.showModal();
-  setTimeout(() => powerUpModal.close(), 1000);
+  setTimeout(() => powerUpModal.close(), 2000);
 }
+
 
 // easy mode button
 const easyMode = document.getElementById("easy");
