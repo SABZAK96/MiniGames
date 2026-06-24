@@ -1,150 +1,346 @@
 <!doctype html>
-<html id="page" lang="en" data-theme="light">
+<html lang="en" id="page" data-theme="light" >
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Poke Game</title>
-
+    <title>Poké Games</title>
     <link
       href="https://cdn.jsdelivr.net/npm/daisyui@5"
       rel="stylesheet"
       type="text/css"
     />
-    <link href="theme.css" rel="stylesheet" type="text/css" />
+    <link href="css/theme.css" rel="stylesheet" type="text/css" />
+    <link href="css/home-blank.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
-    <style>
-      .card {
-        transition-property: transform;
-        transition-duration: 0.5s;
-        transform-style: preserve-3d;
-        perspective: 1000px;
-      }
-      .flip {
-        /* flips the whole card containing front and back */
-        transform: rotateY(180deg);
-      }
-      .back {
-        /* when card is flipped, this should be rotated as well to come into front and be visible */
-        transform: rotateY(180deg);
-        /* backface should be hidden because we dont wanna see it behing the logo */
-        backface-visibility: hidden;
-      }
-      .front {
-        /* visible unti flipped by rotation */
-        backface-visibility: hidden;
-      }
-    </style>
   </head>
   <body>
     <!-- navbar -->
     <div class="navbar bg-base-200 px-4 shadow-sm">
       <div class="navbar-start">
-        <a href="home.html"
+        <a href="index.html"
           ><img class="w-30" src="./images/logo.png" alt=""
         /></a>
       </div>
       <div class="navbar-center">
-        <span class="text-xl font-bold">Poké Memory</span>
+        <span class="text-xl font-bold"></span>
       </div>
-      <div class="navbar-end">
-        <label class="flex cursor-pointer gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <circle cx="12" cy="12" r="5" />
-            <path
-              d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"
-            />
-          </svg>
-          <input type="checkbox" class="toggle theme-controller" />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
-        </label>
-      </div>
+      <div class="navbar-end"></div>
     </div>
-    <!-- main content: difficulty picker, controls, live stats, and poke cards -->
-    <div class="flex flex-col items-center gap-4 px-6 py-8">
-      <div class="w-96 md:w-200 flex flex-col gap-3">
-        <!-- container of difficulties -->
-        <div class="bg-base-200 rounded-xl p-4 w-full text-center">
-          <p class="text-sm text-base-content/60 mb-2">Choose a Difficulty</p>
-          <div class="flex flex-row gap-2 justify-center">
-            <button id="easy" class="btn btn-info flex-1">Easy</button>
-            <button id="medium" class="btn btn-info flex-1">Medium</button>
-            <button id="hard" class="btn btn-info flex-1">Hard</button>
+    <div
+      class="hero min-h-screen"
+      style="background-image: url(images/hero.png)"
+    >
+      <div class="hero-content text-neutral-content text-center">
+        <div id="heroImage" class="md:w-full">
+          <h1 class="mb-5 text-5xl font-bold">Welcome to Poké Games</h1>
+          <p class="mb-10">
+            A collection of Pokémon-themed mini games. Pick your favourite and
+            start playing!
+          </p>
+
+          <!-- container of all games -->
+          <div
+            class="flex lg:flex-row flex-col gap-5 justify-center items-stretch"
+          >
+            <!-- first game container- tic-tac-toe -->
+            <a
+              href="tictactoe.html"
+              class="card bg-[color:var(--color-base-100)]/10 backdrop-blur-sm text-base-content shadow-sm p-4 flex flex-col items-center gap-3 w-full min-h-[22rem]  transition-transform hover:scale-105"
+            >
+              <h2
+                class="card-title font-bold text-lg md:text-2xl tracking-wide mb-1 text-[color:var(--color-base-200)]"
+              >
+                Poké TicTacToe
+              </h2>
+              <!-- container of grids -->
+              <div id="ticGrid" class="flex flex-col gap-2">
+                <div class="flex flex-row gap-2">
+                  <div
+                    class="w-15 h-15 lg:w-20 lg:h-20 md:w-15 md:h-15 rounded-md border-2 border-[color:var(--color-base-200)] pikachu pop-cell step-1"
+                  ></div>
+                  <div
+                    class="w-15 h-15 lg:w-20 lg:h-20 md:w-15 md:h-15 rounded-md border-2 border-[color:var(--color-base-200)]"
+                  ></div>
+                  <div
+                    class="w-15 h-15 lg:w-20 lg:h-20 md:w-15 md:h-15 rounded-md border-2 border-[color:var(--color-base-200)] ditto pop-cell step-2"
+                  ></div>
+                </div>
+
+                <div class="flex flex-row gap-3">
+                  <div
+                    class="w-15 h-15 lg:w-20 lg:h-20 md:w-15 md:h-15 rounded-md border-2 border-[color:var(--color-base-200)]"
+                  ></div>
+                  <div
+                    class="w-15 h-15 lg:w-20 lg:h-20 md:w-15 md:h-15 rounded-md border-2 border-[color:var(--color-base-200)] pikachu pop-cell step-3"
+                  ></div>
+                  <div
+                    class="w-15 h-15 lg:w-20 lg:h-20 md:w-15 md:h-15 rounded-md border-2 border-[color:var(--color-base-200)]"
+                  ></div>
+                </div>
+
+                <div class="flex flex-row gap-2">
+                  <div
+                    class="w-15 h-15 lg:w-20 lg:h-20 md:w-15 md:h-15 rounded-md border-2 border-[color:var(--color-base-200)] ditto pop-cell step-4"
+                  ></div>
+                  <div
+                    class="w-15 h-15 lg:w-20 lg:h-20 md:w-15 md:h-15 rounded-md border-2 border-[color:var(--color-base-200)]"
+                  ></div>
+                  <div
+                    class="w-15 h-15 lg:w-20 lg:h-20 md:w-15 md:h-15 rounded-md border-2 border-[color:var(--color-base-200)] pikachu pop-cell step-5"
+                  ></div>
+                </div>
+              </div>
+              <!-- explanations -->
+              <div
+                class="text-sm md:text-base text-[color:var(--color-base-200)]/80 max-w-xs mt-2"
+              >
+                Pick your favourite Pokémon as your marker and go head to head
+                against a friend, a random player or the AI.
+              </div>
+            </a>
+
+            <!-- second game - memory game -->
+            <a
+              href="memory.html"
+              class="card bg-[color:var(--color-base-100)]/10 backdrop-blur-sm text-base-content shadow-sm p-4 flex flex-col items-center gap-3 w-full min-w-[21rem] min-h-[22rem] transition-transform hover:scale-105"
+            >
+              <h2
+                class="card-title font-bold text-lg md:text-2xl tracking-wide mb-1 text-[color:var(--color-base-200)]"
+              >
+                Poké Memory Game
+              </h2>
+              <!-- grid + explanation share the remaining height -->
+              <div
+                class="flex flex-col items-center justify-center gap-3 flex-1"
+              >
+              <!-- container of pokes -->
+              <div
+                id="pokeContainer"
+                class="grid grid-cols-3 gap-2 mx-auto justify-items-center md:h-64"
+              >
+                <div
+                  class="flip-card relative md:w-25 md:h-25 w-20 h-20 pikachu memory-step-1 flip"
+                >
+                  <img
+                    src="images/pokeball-seeklogo.png"
+                    class="front object-cover absolute inset-0"
+                    alt=""
+                  />
+                </div>
+                <div class="flip-card relative md:w-25 md:h-25 w-20 h-20">
+                  <img
+                    src="images/pokeball-seeklogo.png"
+                    class="front object-cover absolute inset-0"
+                    alt=""
+                  />
+                </div>
+                <div
+                  class="flip-card relative md:w-25 md:h-25 w-20 h-20 ditto memory-step-4 flip"
+                >
+                  <img
+                    src="images/pokeball-seeklogo.png"
+                    class="front object-cover absolute inset-0"
+                    alt=""
+                  />
+                </div>
+                <div
+                  class="flip-card relative md:w-25 md:h-25 w-20 h-20 pikachu memory-step-2 flip"
+                >
+                  <img
+                    src="images/pokeball-seeklogo.png"
+                    class="front object-cover absolute inset-0"
+                    alt=""
+                  />
+                </div>
+                <div
+                  class="flip-card relative md:w-25 md:h-25 w-20 h-20 ditto memory-step-3 flip"
+                >
+                  <img
+                    src="images/pokeball-seeklogo.png"
+                    class="front object-cover absolute inset-0"
+                    alt=""
+                  />
+                </div>
+                <div class="flip-card relative md:w-25 md:h-25 w-20 h-20">
+                  <img
+                    src="images/pokeball-seeklogo.png"
+                    class="front object-cover absolute inset-0"
+                    alt=""
+                  />
+                </div>
+              </div>
+              <!-- explanations -->
+              <div
+                class="text-sm md:text-base text-[color:var(--color-base-200)]/80 max-w-xs mt-2"
+              >
+                Flip and match pairs of Pokémon cards before the time runs out.
+                Three difficulty levels to test you.
+              </div>
+              </div>
+            </a>
+
+            <!-- third game - wordle -->
+            <a
+              href="pokewordle.html"
+              class="card bg-[color:var(--color-base-100)]/10 backdrop-blur-sm text-base-content shadow-sm p-4 flex flex-col items-center gap-3 w-full min-h-[22rem] transition-transform hover:scale-105"
+            >
+              <h2
+                class="card-title font-bold text-lg md:text-2xl tracking-wide mb-1 text-[color:var(--color-base-200)] md:mb-8 mb-0"
+              >
+                Poké wordle
+              </h2>
+              <!-- letter boxes + explanation share the remaining height -->
+              <div
+                class="flex flex-col items-center  gap-6 flex-1"
+              >
+              <!-- container of letter boxes - first guess  -->
+              <div class="flex flex-row gap-1 md:gap-2">
+                <div
+                  class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-md border-2 border-[color:var(--color-base-200)] step-1-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-200)] md:text-2xl text-center step-1-letter"
+                  >
+                    P
+                  </p>
+                </div>
+                <div
+                  class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-md border-2 border-[color:var(--color-base-200)] step-2-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-200)] md:text-2xl text-center step-2-letter"
+                  >
+                    S
+                  </p>
+                </div>
+                <div
+                  class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-md border-2 border-[color:var(--color-base-200)] step-3-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-200)] md:text-2xl text-center step-3-letter"
+                  >
+                    Y
+                  </p>
+                </div>
+                <div
+                  class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-md border-2 border-[color:var(--color-base-200)] step-4-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-200)] md:text-2xl text-center step-4-letter"
+                  >
+                    D
+                  </p>
+                </div>
+                <div
+                  class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-md border-2 border-[color:var(--color-base-200)] step-5-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-200)] md:text-2xl text-center step-5-letter"
+                  >
+                    U
+                  </p>
+                </div>
+                <div
+                  class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-md border-2 border-[color:var(--color-base-200)] step-6-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-200)] md:text-2xl text-center step-6-letter"
+                  >
+                    C
+                  </p>
+                </div>
+                <div
+                  class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-md border-2 border-[color:var(--color-base-200)] step-7-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-200)] md:text-2xl text-center step-7-letter"
+                  >
+                    K
+                  </p>
+                </div>
+              </div>
+              <!-- container of letter boxes - second guess correct -->
+              <div class="flex flex-row gap-1 md:gap-2">
+                <div
+                  class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-md border-2 border-[color:var(--color-base-200)] step-8-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-200)] md:text-2xl text-center step-8-letter"
+                  >
+                    P
+                  </p>
+                </div>
+                <div
+                  class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-md border-2 border-[color:var(--color-base-200)] step-9-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-200)] md:text-2xl text-center step-9-letter"
+                  >
+                    I
+                  </p>
+                </div>
+                <div
+                  class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-md border-2 border-[color:var(--color-base-200)] step-10-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-200)] md:text-2xl text-center step-10-letter"
+                  >
+                    K
+                  </p>
+                </div>
+                <div
+                  class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-md border-2 border-[color:var(--color-base-200)] step-11-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-200)] md:text-2xl text-center step-11-letter"
+                  >
+                    A
+                  </p>
+                </div>
+                <div
+                  class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-md border-2 border-[color:var(--color-base-200)] step-12-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-200)] md:text-2xl text-center step-12-letter"
+                  >
+                    C
+                  </p>
+                </div>
+                <div
+                  class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-md border-2 border-[color:var(--color-base-200)] step-13-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-200)] md:text-2xl text-center step-13-letter"
+                  >
+                    H
+                  </p>
+                </div>
+                <div
+                  class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-md border-2 border-[color:var(--color-base-200)] step-14-bg"
+                >
+                  <p
+                    class="font-bold text-[color:var(--color-base-200)] md:text-2xl text-center step-14-letter"
+                  >
+                    U
+                  </p>
+                </div>
+              </div>
+
+              <!-- explanations -->
+              <div
+                class="text-sm md:text-base text-[color:var(--color-base-200)]/80 max-w-xs md:mt-28 mt-1"
+              >
+                Guess the hidden Pokémon name letter by letter, use the
+                silhouette and hints if you get stuck. A new challenge every
+                time.
+              </div>
+              </div>
+            </a>
           </div>
         </div>
-
-        <!-- container of start and reset -->
-        <div
-          id="options"
-          class="flex flex-row gap-2 items-center justify-center w-full hidden"
-        ></div>
-
-        <!-- container of info -->
-        <div
-          id="info"
-          class="stats stats-vertical md:stats-horizontal shadow w-full hidden"
-        >
-          <div class="stat place-items-center">
-            <div class="stat-title">Pairs to Win</div>
-            <div class="stat-value text-xl"><span id="total"></span></div>
-          </div>
-          <div class="stat place-items-center">
-            <div class="stat-title">Matched</div>
-            <div class="stat-value text-xl"><span id="matched"></span></div>
-          </div>
-          <div class="stat place-items-center">
-            <div class="stat-title">Pairs Left</div>
-            <div class="stat-value text-xl"><span id="unmatched"></span></div>
-          </div>
-          <div class="stat place-items-center">
-            <div class="stat-title">Clicks</div>
-            <div class="stat-value text-xl"><span id="clicks"></span></div>
-          </div>
-          <div class="stat place-items-center">
-            <div class="stat-title">Time Left / Limit</div>
-            <div class="stat-value text-xl">
-              <span id="easyTime"></span>/<span id="timeLimit"></span>s
-            </div>
-          </div>
-        </div>
       </div>
-
-      <!-- container of pokes -->
-      <div id="pokeContainer"></div>
     </div>
-
-    <!-- message modal -->
-    <dialog id="my_modal" class="modal">
-      <div class="modal-box flex flex-col justify-center items-center">
-        <h3 id="messageTitle" class="text-lg font-bold"></h3>
-      </div>
-      <form method="dialog" class="modal-backdrop">
-        <button>close</button>
-      </form>
-    </dialog>
-
-    <script src="code.js"></script>
+    <script src="js/code.js"></script>
   </body>
 </html>
