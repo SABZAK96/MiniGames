@@ -345,7 +345,7 @@ let winner = false;
 let draw = false;
 let locked = false;
 let firstPlayer = undefined;
-function startGame() {
+async function startGame() {
   document.getElementById("currentTurn").innerHTML =
     firstPlayer === playerOneMarker ? p1Name : p2Name;
 
@@ -361,20 +361,23 @@ function startGame() {
       if (cell.innerHTML !== "") return;
       if (!playerPlaying || playerPlaying === playerOneMarker) {
         cell.innerHTML = playerOneMarker;
+        syncBoard();
+        if (checkWin()) return;
         playerPlaying = playerTwoMarker;
-        if (selectedMode === "ai") {
-          locked = true;
-          syncBoard();
-          if (checkWin()) return;
-          document.getElementById("currentTurn").innerHTML = "AI thinking...";
-          await AiPlay();
-          document.getElementById("currentTurn").innerHTML = p1Name;
+        if (selectedMode === "ai" && playerPlaying === playerTwoMarker) {
+          // rounds that AI wouldnt go first
+          await aiMove();
         } else {
           document.getElementById("currentTurn").innerHTML = p2Name;
         }
-      } else if (playerPlaying === playerTwoMarker) {
+      } else if (
+        selectedMode === "local" &&
+        playerPlaying === playerTwoMarker
+      ) {
         document.getElementById("currentTurn").innerHTML = p1Name;
         cell.innerHTML = playerTwoMarker;
+        syncBoard();
+        if (checkWin()) return;
         playerPlaying = playerOneMarker;
       }
 
@@ -382,6 +385,25 @@ function startGame() {
       checkWin();
     });
   });
+
+  // "New Round" can alternate who goes first, so a round can start with
+  // playerPlaying already set to playerTwoMarker before anyone has clicked -
+  // neither branch above runs in that case, since both only fire in
+  // response to a click. Kicked the AI off directly here instead.
+  if (selectedMode === "ai" && playerPlaying === playerTwoMarker) {
+    await aiMove();
+  }
+}
+
+async function aiMove() {
+  locked = true;
+  syncBoard();
+  if (checkWin()) return;
+  document.getElementById("currentTurn").innerHTML = "AI thinking...";
+  await AiPlay();
+  syncBoard();
+  if (checkWin()) return;
+  document.getElementById("currentTurn").innerHTML = p1Name;
 }
 
 function celebrate(name) {
