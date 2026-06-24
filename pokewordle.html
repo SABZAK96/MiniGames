@@ -255,6 +255,20 @@
             <div class="flex gap-2 guess w-full justify-center" data-row="5"></div>
           </div>
 
+          <!-- invisible input - gives mobile a real text field to attach
+               its on-screen keyboard to, so typed letters/backspace arrive
+               as reliable "input" events instead of unreliable keydowns -->
+          <input
+            id="guessInput"
+            type="text"
+            autocomplete="off"
+            autocapitalize="off"
+            autocorrect="off"
+            spellcheck="false"
+            enterkeyhint="done"
+            class="sr-only"
+          />
+
           <!-- message area -->
           <div class="text-center font-semibold text-base hidden"></div>
 

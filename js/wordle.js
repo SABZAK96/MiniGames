@@ -244,13 +244,31 @@ function submitGuess() {
       setTimeout(() => document.getElementById("my_modal_2").showModal(), 0);
     }
   }
+  // clicking the submit button moves focus there - bring it back so typing
+  // the next guess doesn't require tapping the grid again first
+  document.getElementById("guessInput").focus();
 }
 
-document.addEventListener("keydown", (e) => {
+// real text input instead of a bare keydown listener, so mobile's on-screen
+// keyboard has something to actually attach to (see guessInput in the HTML)
+const guessInput = document.getElementById("guessInput");
+
+// auto-focus on load/new round for desktop (typing works immediately, same
+// as before), and re-focus on tap for mobile (some mobile browsers refuse
+// to open the keyboard without a user gesture, and focus can get lost
+// after submitting a guess or tapping elsewhere on the page)
+guessInput.focus();
+document.getElementById("grid").addEventListener("touchend", () => {
+  guessInput.focus();
+});
+
+// letters + backspace: driven by the "input" event (reliable on every
+// platform, since it fires off the actual text-content change) rather than
+// keydown, which some mobile keyboards skip entirely for backspace when
+// going through predictive-text/IME composition
+guessInput.addEventListener("input", (e) => {
   if (gameOver) return;
-  if (e.key === "Enter") {
-    submitGuess();
-  } else if (e.key === "Backspace") {
+  if (e.inputType === "deleteContentBackward") {
     if (currentCol > 0) {
       currentCol--;
       document.querySelector(
@@ -258,14 +276,27 @@ document.addEventListener("keydown", (e) => {
       ).textContent = "";
       answer.pop();
     }
-  } else if (e.key.length === 1) {
+    // e.data is the actual character got inserted
+  } else if (e.inputType === "insertText" && e.data) {
     document.querySelector(
       `[data-col="${currentCol}"][data-row="${currentRow}"]`,
-    ).textContent = e.key;
-    answer.push(e.key);
+    ).textContent = e.data;
+    answer.push(e.data);
     if (currentCol < pokeName.length) {
       currentCol++;
     }
+  }
+  // keep the input empty - it's just a relay for keyboard events, the
+  // actual guess lives in the grid cells/answer array
+  guessInput.value = "";
+});
+
+// Enter doesn't change the input's text content, so it never fires
+// "input" at all - keydown is the only event that sees it
+guessInput.addEventListener("keydown", (e) => {
+  if (gameOver) return;
+  if (e.key === "Enter") {
+    submitGuess();
   }
 });
 
@@ -285,6 +316,7 @@ async function resetToDefault() {
   // pokeName while it's still being fetched
   await init();
   gameOver = false;
+  document.getElementById("guessInput").focus();
 }
 
 document.getElementById("retryGame").addEventListener("click", resetToDefault);
