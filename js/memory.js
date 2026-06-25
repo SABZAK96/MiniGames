@@ -1,3 +1,7 @@
+let firstCard = undefined;
+let secondCard = undefined;
+let matchedCards = [];
+
 //js confetti
 const jsConfetti = new JSConfetti();
 
@@ -31,7 +35,6 @@ theme.addEventListener("change", () => {
 
 // define all timers here so that they wont stack up when changib difficulties
 let timer = undefined;
-let popup = undefined;
 
 // show a message using the same modal style as tictactoe instead of window.alert
 function showMessage(message) {
@@ -39,21 +42,12 @@ function showMessage(message) {
   document.getElementById("my_modal").showModal();
 }
 
-// separate from showMessage/my_modal on purpose - modal-top keeps it from
-// covering the cards. Auto-closes after 1s, but the player can also click
-// the backdrop to dismiss it sooner if they don't want to wait
-function showPowerUp() {
-  const powerUpModal = document.getElementById("powerUpModal");
-  powerUpModal.showModal();
-  setTimeout(() => powerUpModal.close(), 2000);
-}
-
-
 // easy mode button
 const easyMode = document.getElementById("easy");
 easyMode.addEventListener("click", () => {
   clearInterval(timer); //clear timers
-  clearInterval(popup);
+  firstCard = undefined;
+  secondCard = undefined;
 
   const container = document.getElementById("pokeContainer");
   container.innerHTML = "";
@@ -67,11 +61,17 @@ easyMode.addEventListener("click", () => {
   document.getElementById("options").classList.remove("hidden");
 
   document.getElementById("start").addEventListener("click", async () => {
+    firstCard = undefined;
+    secondCard = undefined;
     document.getElementById("start").classList.add("hidden");
     document.getElementById("info").classList.remove("hidden");
+    document.getElementById("pop").classList.remove("hidden");
+    document.getElementById("powerUpBtn").disabled = false;
+    popCounter = 3;
+    document.getElementById("remainingPower").innerHTML = popCounter;
 
     let win = false;
-    let matchedCards = [];
+    matchedCards = [];
     let gameTime = 45;
     document.getElementById("timeLimit").innerHTML = gameTime;
     document.getElementById("easyTime").innerHTML = gameTime;
@@ -81,8 +81,7 @@ easyMode.addEventListener("click", () => {
       document.getElementById("easyTime").innerHTML = gameTime;
       if (gameTime == 0 && win === false) {
         clearInterval(timer);
-        clearInterval(popup);
-        showMessage("you lost! Maybe next time?");
+              showMessage("you lost! Maybe next time?");
       }
     }, 1000);
 
@@ -92,9 +91,12 @@ easyMode.addEventListener("click", () => {
         document.getElementById("start").classList.remove("hidden");
         document.getElementById("info").classList.add("hidden");
         document.getElementById("pokeContainer").classList.add("hidden");
+        document.getElementById("pop").classList.add("hidden");
+        firstCard = undefined;
+        secondCard = undefined;
+        popCounter = 3;
         clearInterval(timer);
-        clearInterval(popup);
-      },
+            },
       { once: true },
     ); // avoid stacking listeners
 
@@ -127,25 +129,7 @@ easyMode.addEventListener("click", () => {
       container.appendChild(element);
     });
 
-    let firstCard = undefined;
-    let secondCard = undefined;
     let matched = 0;
-
-    popup = setInterval(() => {
-      showPowerUp();
-      document.querySelectorAll(".card").forEach((element) => {
-        if (
-          !matchedCards.includes(element.dataset.id) &&
-          element !== firstCard &&
-          element !== secondCard
-        ) {
-          element.classList.add("flip");
-          setTimeout(() => {
-            element.classList.remove("flip");
-          }, 1000);
-        }
-      });
-    }, 20000);
 
     document.getElementById("matched").innerHTML = matched;
 
@@ -190,8 +174,7 @@ easyMode.addEventListener("click", () => {
             if (matched === 3) {
               win = true;
               clearInterval(timer);
-              clearInterval(popup);
-              setTimeout(() => {
+                          setTimeout(() => {
                 jsConfetti.addConfetti({
                   emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
                   confettiNumber: 50,
@@ -230,8 +213,8 @@ easyMode.addEventListener("click", () => {
 const mediumMode = document.getElementById("medium");
 mediumMode.addEventListener("click", () => {
   clearInterval(timer);
-  clearInterval(popup);
-
+  firstCard = undefined;
+  secondCard = undefined;
   const container = document.getElementById("pokeContainer");
   container.innerHTML = "";
   document.getElementById("info").classList.add("hidden");
@@ -244,11 +227,17 @@ mediumMode.addEventListener("click", () => {
   document.getElementById("options").classList.remove("hidden");
 
   document.getElementById("start").addEventListener("click", async () => {
+    firstCard = undefined;
+    secondCard = undefined;
     document.getElementById("start").classList.add("hidden");
     document.getElementById("info").classList.remove("hidden");
+    document.getElementById("pop").classList.remove("hidden");
+    document.getElementById("powerUpBtn").disabled = false;
+    popCounter = 3;
+    document.getElementById("remainingPower").innerHTML = popCounter;
 
     let win = false;
-    let matchedCards = [];
+    matchedCards = [];
     let mediumTime = 100;
     document.getElementById("timeLimit").innerHTML = mediumTime;
     document.getElementById("easyTime").innerHTML = mediumTime;
@@ -258,8 +247,7 @@ mediumMode.addEventListener("click", () => {
       document.getElementById("easyTime").innerHTML = mediumTime;
       if (mediumTime == 0 && win === false) {
         clearInterval(timer);
-        clearInterval(popup);
-        showMessage("you lost!");
+              showMessage("you lost!");
       }
     }, 1000);
 
@@ -269,9 +257,12 @@ mediumMode.addEventListener("click", () => {
         document.getElementById("start").classList.remove("hidden");
         document.getElementById("info").classList.add("hidden");
         document.getElementById("pokeContainer").classList.add("hidden");
+        document.getElementById("pop").classList.add("hidden");
+        firstCard = undefined;
+        secondCard = undefined;
+        popCounter = 3;
         clearInterval(timer);
-        clearInterval(popup);
-      },
+            },
       { once: true },
     ); // avoid stacking listeners
 
@@ -303,25 +294,7 @@ mediumMode.addEventListener("click", () => {
       container.appendChild(element);
     });
 
-    let firstCard = undefined;
-    let secondCard = undefined;
     let matched = 0;
-
-    popup = setInterval(() => {
-      showPowerUp();
-      document.querySelectorAll(".card").forEach((element) => {
-        if (
-          !matchedCards.includes(element.dataset.id) &&
-          element !== firstCard &&
-          element !== secondCard
-        ) {
-          element.classList.add("flip");
-          setTimeout(() => {
-            element.classList.remove("flip");
-          }, 1000);
-        }
-      });
-    }, 15000);
 
     document.getElementById("matched").innerHTML = matched;
 
@@ -362,8 +335,7 @@ mediumMode.addEventListener("click", () => {
             if (matched === 6) {
               win = true;
               clearInterval(timer);
-              clearInterval(popup);
-              setTimeout(() => {
+                          setTimeout(() => {
                 jsConfetti.addConfetti({
                   emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
                   confettiNumber: 50,
@@ -400,7 +372,8 @@ mediumMode.addEventListener("click", () => {
 const hardMode = document.getElementById("hard");
 hardMode.addEventListener("click", () => {
   clearInterval(timer);
-  clearInterval(popup);
+  firstCard = undefined;
+  secondCard = undefined;
 
   const container = document.getElementById("pokeContainer");
   container.innerHTML = "";
@@ -414,11 +387,17 @@ hardMode.addEventListener("click", () => {
   document.getElementById("options").classList.remove("hidden");
 
   document.getElementById("start").addEventListener("click", async () => {
+    firstCard = undefined;
+    secondCard = undefined;
     document.getElementById("start").classList.add("hidden");
     document.getElementById("info").classList.remove("hidden");
+    document.getElementById("pop").classList.remove("hidden");
+    document.getElementById("powerUpBtn").disabled = false;
+    popCounter = 3;
+    document.getElementById("remainingPower").innerHTML = popCounter;
 
     let win = false;
-    let matchedCards = [];
+    matchedCards = [];
     let hardTime = 200;
     document.getElementById("timeLimit").innerHTML = hardTime;
 
@@ -429,8 +408,7 @@ hardMode.addEventListener("click", () => {
       document.getElementById("easyTime").innerHTML = hardTime;
       if (hardTime == 0 && win === false) {
         clearInterval(timer);
-        clearInterval(popup);
-        showMessage("you lost!");
+              showMessage("you lost!");
       }
     }, 1000);
 
@@ -440,31 +418,16 @@ hardMode.addEventListener("click", () => {
         document.getElementById("start").classList.remove("hidden");
         document.getElementById("info").classList.add("hidden");
         document.getElementById("pokeContainer").classList.add("hidden");
+        document.getElementById("pop").classList.add("hidden");
+        firstCard = undefined;
+        secondCard = undefined;
+        popCounter = 3;
         clearInterval(timer);
-        clearInterval(popup);
-      },
+            },
       { once: true },
     ); // avoid stacking listeners
 
-    let firstCard = undefined;
-    let secondCard = undefined;
     let matched = 0;
-
-    popup = setInterval(() => {
-      showPowerUp();
-      document.querySelectorAll(".card").forEach((element) => {
-        if (
-          !matchedCards.includes(element.dataset.id) &&
-          element !== firstCard &&
-          element !== secondCard
-        ) {
-          element.classList.add("flip");
-          setTimeout(() => {
-            element.classList.remove("flip");
-          }, 1000);
-        }
-      });
-    }, 15000);
 
     const Response = await (await fetch("/hard")).json();
 
@@ -533,8 +496,7 @@ hardMode.addEventListener("click", () => {
             if (matched === 8) {
               win = true;
               clearInterval(timer);
-              clearInterval(popup);
-              setTimeout(() => {
+                          setTimeout(() => {
                 jsConfetti.addConfetti({
                   emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
                   confettiNumber: 50,
@@ -565,4 +527,32 @@ hardMode.addEventListener("click", () => {
       });
     });
   });
+});
+
+let popCounter = 3;
+document.getElementById("remainingPower").innerHTML = popCounter;
+document.getElementById("powerUpBtn").addEventListener("click", () => {
+  if (popCounter === 0) return;
+  popCounter--;
+  document.getElementById("remainingPower").innerHTML = popCounter;
+
+  // flip the cards right now, once - no setInterval/setTimeout wrapper
+  // needed here, only the per-card 1s "flip back" timeout below
+  document.querySelectorAll(".card").forEach((element) => {
+    if (
+      !matchedCards.includes(element.dataset.id) &&
+      element !== firstCard &&
+      element !== secondCard
+    ) {
+      element.classList.add("flip");
+      setTimeout(() => {
+        element.classList.remove("flip");
+      }, 1500);
+    }
+  });
+
+  if (popCounter === 0) {
+    document.getElementById("powerUpBtn").disabled = true;
+   
+  }
 });
