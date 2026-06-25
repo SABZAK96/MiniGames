@@ -323,11 +323,13 @@
     <!-- message modal -->
     <dialog id="my_modal" class="modal">
       <div class="modal-box flex flex-col justify-center items-center">
+        <form method="dialog">
+          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+            ✕
+          </button>
+        </form>
         <h3 id="messageTitle" class="text-lg font-bold"></h3>
       </div>
-      <form method="dialog" class="modal-backdrop">
-        <button>close</button>
-      </form>
     </dialog>
 
     <script src="js/memory.js"></script>
