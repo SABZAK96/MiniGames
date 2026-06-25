@@ -90,6 +90,13 @@ io.on("connection", (socket) => {
 
       // with this way we can created a room with specific id as well - along with joining an exiting one
       socket.join(data.roomId);
+      // confirm to this socket specifically (not the whole room) which
+      // room they just joined, same as the "waiting" branch below does for
+      // the player who created the room
+      socket.emit("roomID", {
+        roomID: data.roomId,
+        message: "Joined room!",
+      });
       emitJoinRoomIfFull(data.roomId);
     } else if (!waitingRoom) {
       setPlayer(socket, data);
@@ -97,7 +104,7 @@ io.on("connection", (socket) => {
       roomNumber = Math.floor((Math.random() + 1) * 1000);
       socket.join(roomNumber);
 
-      io.to(roomNumber).emit("roomID", {
+      socket.emit("roomID", {
         roomID: roomNumber,
         message: "Waiting for opponent...",
       });
@@ -116,6 +123,12 @@ io.on("connection", (socket) => {
 
       setPlayer(socket, data);
       socket.join(roomNumber);
+      // confirm to this socket specifically which room they just got
+      // matched into, same as the other two branches
+      socket.emit("roomID", {
+        roomID: roomNumber,
+        message: "Joined room!",
+      });
       // don't assume waitingRoom meant "exactly one other real player is
       // here" - verify it, same as the id-room branch does. Without this,
       // any stale/duplicate membership in this room would get silently
