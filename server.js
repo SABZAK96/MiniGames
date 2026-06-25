@@ -22,6 +22,7 @@ let roomNumber = undefined;
 // per rematch by "request decision" (no race there - only the accepting
 // player emits it). "get first move" just reads this value, never writes it.
 const firstPlayerByRoom = {};
+const readyToGoPerRoom = {};
 
 // socket.rooms always contains this socket's own default room (named after
 // its id) plus whatever room it joined - filter the default one out to get
@@ -137,6 +138,20 @@ io.on("connection", (socket) => {
       waitingRoom = null;
     }
   });
+
+  socket.on("player ready", () => {
+    const roomId = getRoomId(socket);
+    if (!readyToGoPerRoom[roomId] || readyToGoPerRoom[roomId] === 0) {
+      readyToGoPerRoom[roomId] = 1;
+    } else {
+      readyToGoPerRoom[roomId] = 2;
+    }
+    if (readyToGoPerRoom[roomId] === 2) {
+      io.to(roomId).emit("start permitted", "start");
+      readyToGoPerRoom[roomId] = 0;
+    }
+  });
+  
   socket.on("request a rematch", (data) => {
     const roomId = getRoomId(socket);
     const room = io.sockets.adapter.rooms.get(roomId);

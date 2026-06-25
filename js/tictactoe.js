@@ -274,9 +274,10 @@ document.getElementById("my_modal_6").addEventListener("close", () => {
   if (p1Name && p2Name) {
     document.getElementById("p1Name").textContent = p1Name;
     document.getElementById("p2Name").textContent = p2Name;
-    startGameOnline();
+    socket.emit("player ready", "ready");
   }
 });
+socket.on("start permitted",startGameOnline) 
 
 const searchInput = document.getElementById("search");
 searchInput.addEventListener("input", () => {
@@ -768,10 +769,12 @@ socket.on("rematch request", (data) => {
   document.getElementById("requester").innerHTML =
     data + " wants to do another round with you! What are you going to do?";
 });
+
 socket.on("wait for response", (data) => {
   document.getElementById("my_modal_waiting").showModal();
   document.getElementById("waitMessage").innerHTML = data;
 });
+
 let accept = null;
 document.getElementById("accept").addEventListener("click", () => {
   accept = true;
@@ -779,8 +782,10 @@ document.getElementById("accept").addEventListener("click", () => {
   accept = null;
   document.getElementById("my_modal_rematch").close();
   resetToNewRound();
-  startGameOnline();
+  socket.emit("player ready", "ready");
+
 });
+
 document.getElementById("reject").addEventListener("click", () => {
   accept = false;
   socket.emit("request decision", accept);
@@ -796,7 +801,7 @@ socket.on("request result", (data) => {
       document.getElementById("my_modal_waiting").close();
     }, 2000);
     resetToNewRound();
-    startGameOnline();
+    socket.emit("player ready", "ready");
   } else {
     document.getElementById("waitMessage").innerHTML =
       "Your request has been rejected!";
@@ -812,6 +817,7 @@ document.getElementById("findMatch").addEventListener("click", () => {
   document.getElementById("my_modal_win").close();
   resetToModeSelect();
 });
+
 document.getElementById("my_modal_win").addEventListener("close", () => {
   document.getElementById("findMatch").classList.add("hidden");
 });
