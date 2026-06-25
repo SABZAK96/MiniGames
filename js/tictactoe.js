@@ -159,10 +159,21 @@ document.getElementById("select").addEventListener("click", async () => {
       .classList.add("border-1", "border-red-500");
     return;
   }
-  if (!playerName.value.trim()) {
-    document.getElementById("name").classList.add("border-1", "border-red-500");
+
+  const query = document.getElementById("search").value.trim().toLowerCase();
+  const found = document.getElementById("pokePreview").querySelector(`#${query}`);
+  if (!found) {
+    document
+      .getElementById("search")
+      .classList.add("border-1", "border-red-500");
     return;
   }
+    if (!playerName.value.trim()) {
+      document
+        .getElementById("name")
+        .classList.add("border-1", "border-red-500");
+      return;
+    }
 
   document.getElementById("pokeName").innerHTML = `${selectedPoke.name}!`;
   document.getElementById("pokePic").src = selectedPoke.image;
@@ -274,10 +285,14 @@ document.getElementById("my_modal_6").addEventListener("close", () => {
   if (p1Name && p2Name) {
     document.getElementById("p1Name").textContent = p1Name;
     document.getElementById("p2Name").textContent = p2Name;
+    if (document.getElementById("currentTurn").textContent === "") {
+      document.getElementById("currentTurn").textContent =
+        "Opponent hasn't joined yet...";
+    }
     socket.emit("player ready", "ready");
   }
 });
-socket.on("start permitted",startGameOnline) 
+socket.on("start permitted", startGameOnline);
 
 const searchInput = document.getElementById("search");
 searchInput.addEventListener("input", () => {
@@ -783,7 +798,6 @@ document.getElementById("accept").addEventListener("click", () => {
   document.getElementById("my_modal_rematch").close();
   resetToNewRound();
   socket.emit("player ready", "ready");
-
 });
 
 document.getElementById("reject").addEventListener("click", () => {
