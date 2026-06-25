@@ -45,6 +45,8 @@ function showMessage(message) {
 // easy mode button
 const easyMode = document.getElementById("easy");
 easyMode.addEventListener("click", () => {
+  !document.getElementById("pop").classList.contains("hidden") &&
+    document.getElementById("pop").classList.add("hidden");
   clearInterval(timer); //clear timers
   firstCard = undefined;
   secondCard = undefined;
@@ -82,8 +84,8 @@ easyMode.addEventListener("click", () => {
       document.getElementById("easyTime").innerHTML = gameTime;
       if (gameTime == 0 && win === false) {
         clearInterval(timer);
-              showMessage("you lost! Maybe next time?");
-              lost = true;
+        showMessage("you lost! Maybe next time?");
+        lost = true;
       }
     }, 1000);
 
@@ -98,7 +100,7 @@ easyMode.addEventListener("click", () => {
         secondCard = undefined;
         popCounter = 3;
         clearInterval(timer);
-            },
+      },
       { once: true },
     ); // avoid stacking listeners
 
@@ -150,7 +152,7 @@ easyMode.addEventListener("click", () => {
     cards.forEach((card) => {
       card.addEventListener("click", function (e) {
         //exiting the game if time is finished and they lost
-        if(lost) return;
+        if (lost) return;
         if (win) return;
         document.getElementById("clicks").innerHTML = clicks;
 
@@ -180,7 +182,7 @@ easyMode.addEventListener("click", () => {
               win = true;
               lost = false;
               clearInterval(timer);
-                          setTimeout(() => {
+              setTimeout(() => {
                 jsConfetti.addConfetti({
                   emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
                   confettiNumber: 50,
@@ -218,6 +220,8 @@ easyMode.addEventListener("click", () => {
 // medium mode button
 const mediumMode = document.getElementById("medium");
 mediumMode.addEventListener("click", () => {
+  !document.getElementById("pop").classList.contains("hidden") &&
+    document.getElementById("pop").classList.add("hidden");
   clearInterval(timer);
   firstCard = undefined;
   secondCard = undefined;
@@ -254,8 +258,8 @@ mediumMode.addEventListener("click", () => {
       document.getElementById("easyTime").innerHTML = mediumTime;
       if (mediumTime == 0 && win === false) {
         clearInterval(timer);
-              showMessage("you lost!");
-              lost = true;
+        showMessage("you lost!");
+        lost = true;
       }
     }, 1000);
 
@@ -270,7 +274,7 @@ mediumMode.addEventListener("click", () => {
         secondCard = undefined;
         popCounter = 3;
         clearInterval(timer);
-            },
+      },
       { once: true },
     ); // avoid stacking listeners
 
@@ -280,7 +284,7 @@ mediumMode.addEventListener("click", () => {
     const newResponse = Response.concat(Response);
 
     container.className =
-      "grid md:grid-cols-4 grid-cols-3  gap-2 mx-auto justify-items-center md:max-w-4xl max-w-3xl mb-20 ";
+      "grid md:grid-cols-4 grid-cols-3  gap-2 mx-auto justify-items-center md:max-w-4xl max-w-3xl mb-4 ";
     container.innerHTML = "";
 
     // Shuffle the array randomly before rendering so cards appear in a different order each game.
@@ -346,7 +350,7 @@ mediumMode.addEventListener("click", () => {
               win = true;
               lost = false;
               clearInterval(timer);
-                          setTimeout(() => {
+              setTimeout(() => {
                 jsConfetti.addConfetti({
                   emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
                   confettiNumber: 50,
@@ -382,6 +386,8 @@ mediumMode.addEventListener("click", () => {
 // hard mode button
 const hardMode = document.getElementById("hard");
 hardMode.addEventListener("click", () => {
+  !document.getElementById("pop").classList.contains("hidden") &&
+    document.getElementById("pop").classList.add("hidden");
   clearInterval(timer);
   firstCard = undefined;
   secondCard = undefined;
@@ -421,7 +427,7 @@ hardMode.addEventListener("click", () => {
       if (hardTime == 0 && win === false) {
         lost = true;
         clearInterval(timer);
-              showMessage("you lost!");
+        showMessage("you lost!");
       }
     }, 1000);
 
@@ -436,7 +442,7 @@ hardMode.addEventListener("click", () => {
         secondCard = undefined;
         popCounter = 3;
         clearInterval(timer);
-            },
+      },
       { once: true },
     ); // avoid stacking listeners
 
@@ -448,7 +454,7 @@ hardMode.addEventListener("click", () => {
     const newResponse = Response.concat(Response);
 
     container.className =
-      "grid md:grid-cols-6 grid-cols-4 gap-2 mx-auto justify-items-center max-w-6xl mb-20";
+      "grid md:grid-cols-6 grid-cols-4 gap-2 mx-auto justify-items-center max-w-6xl mb-4";
     container.innerHTML = "";
 
     // Shuffle the array randomly before rendering so cards appear in a different order each game.
@@ -512,7 +518,7 @@ hardMode.addEventListener("click", () => {
               win = true;
               lost = false;
               clearInterval(timer);
-                          setTimeout(() => {
+              setTimeout(() => {
                 jsConfetti.addConfetti({
                   emojis: ["🌈", "🎉", "💥", "✨", "🎊"],
                   confettiNumber: 50,
@@ -569,6 +575,5 @@ document.getElementById("powerUpBtn").addEventListener("click", () => {
 
   if (popCounter === 0) {
     document.getElementById("powerUpBtn").disabled = true;
-   
   }
 });
