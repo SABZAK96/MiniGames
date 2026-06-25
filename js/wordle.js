@@ -197,7 +197,9 @@ function submitGuess() {
       //win condition
       if (remainingTarget.length === 0) {
         gameOver = true;
-        document.getElementById("pokeSilhouette").classList.remove("silhouette");
+        document
+          .getElementById("pokeSilhouette")
+          .classList.remove("silhouette");
         document.getElementById("pokeReveal").src =
           poke.sprites.other["official-artwork"].front_default;
         jsConfetti.addConfetti();
@@ -308,19 +310,34 @@ guessInput.addEventListener("input", (e) => {
       ).textContent = "";
       answer.pop();
     }
-    // e.data is the actual character got inserted
   } else if (e.inputType === "insertText" && e.data) {
-    document.querySelector(
-      `[data-col="${currentCol}"][data-row="${currentRow}"]`,
-    ).textContent = e.data;
-    answer.push(e.data);
-    if (currentCol < pokeName.length) {
-      currentCol++;
+    if (e.data.trim() !== "") {
+      document.querySelector(
+        `[data-col="${currentCol}"][data-row="${currentRow}"]`,
+      ).textContent = e.data;
+      answer.push(e.data);
+      if (currentCol < pokeName.length) {
+        currentCol++;
+      }
+    } else {
+      document
+        .querySelector(`[data-col="${currentCol}"][data-row="${currentRow}"]`)
+        .classList.add("shakeDiv");
+
+      // remove the class from the div after the animation is finished for the next tries
+      setTimeout(
+        () =>
+          document
+            .querySelector(
+              `[data-col="${currentCol}"][data-row="${currentRow}"]`,
+            )
+            .classList.remove("shakeDiv"),
+        500,
+      );
     }
   }
-  // keep the input empty - it's just a relay for keyboard events, the
-  // actual guess lives in the grid cells/answer array
-  guessInput.value = "";
+  // keep a space so backspace always has content to delete and fires the input event
+  guessInput.value = " ";
 });
 
 // Enter doesn't change the input's text content, so it never fires
