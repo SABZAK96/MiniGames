@@ -153,27 +153,27 @@ document.getElementById("select").addEventListener("click", async () => {
     document.getElementById("chooseMode").classList.add("text-red-500");
     return;
   }
+  const query = document.getElementById("search").value.trim().toLowerCase();
+  const found = document
+    .getElementById("pokePreview")
+    .querySelector(`#${query}`);
+  if (found && !selectedPoke.name) {
+    selectedPoke.name = query;
+    selectedPoke.image = found.querySelector("img").src;
+  }
+
   if (!selectedPoke.name) {
     document
       .getElementById("search")
       .classList.add("border-1", "border-red-500");
+    if (!found) document.getElementById("search").value = "";
     return;
   }
-
-  const query = document.getElementById("search").value.trim().toLowerCase();
-  const found = document.getElementById("pokePreview").querySelector(`#${query}`);
-  if (!found) {
-    document
-      .getElementById("search")
-      .classList.add("border-1", "border-red-500");
+  
+  if (!playerName.value.trim()) {
+    document.getElementById("name").classList.add("border-1", "border-red-500");
     return;
   }
-    if (!playerName.value.trim()) {
-      document
-        .getElementById("name")
-        .classList.add("border-1", "border-red-500");
-      return;
-    }
 
   document.getElementById("pokeName").innerHTML = `${selectedPoke.name}!`;
   document.getElementById("pokePic").src = selectedPoke.image;
@@ -296,6 +296,10 @@ socket.on("start permitted", startGameOnline);
 
 const searchInput = document.getElementById("search");
 searchInput.addEventListener("input", () => {
+  const isInvalid = searchInput.classList.contains("border-red-500");
+  if (isInvalid) {
+    searchInput.classList.remove("border-red-500");
+  }
   const query = searchInput.value.trim().toLowerCase();
   const suggestionConatiner = document.getElementById("pokePreview");
   suggestionConatiner.innerHTML = "";
@@ -338,6 +342,7 @@ searchInput.addEventListener("input", () => {
             document
               .getElementById(`${match.name}`)
               .classList.add("bg-primary", "rounded-xl", "text-white");
+            searchInput.value = `${match.name}`;
             selectedPoke = {
               id: match.name,
               name: match.name,
