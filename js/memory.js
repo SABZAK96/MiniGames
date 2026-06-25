@@ -108,7 +108,7 @@ easyMode.addEventListener("click", () => {
     const newResponse = Response.concat(Response);
 
     container.className =
-      "grid grid-cols-3 gap-2 mx-auto justify-items-center max-w-3xl mb-20";
+      "grid grid-cols-3 gap-2 mx-auto justify-items-center max-w-3xl mb-4";
     container.innerHTML = "";
 
     // Fisher-Yates shuffle for shuffling the array
