@@ -71,6 +71,7 @@ easyMode.addEventListener("click", () => {
     document.getElementById("remainingPower").innerHTML = popCounter;
 
     let win = false;
+    let lost = false;
     matchedCards = [];
     let gameTime = 45;
     document.getElementById("timeLimit").innerHTML = gameTime;
@@ -82,6 +83,7 @@ easyMode.addEventListener("click", () => {
       if (gameTime == 0 && win === false) {
         clearInterval(timer);
               showMessage("you lost! Maybe next time?");
+              lost = true;
       }
     }, 1000);
 
@@ -147,6 +149,9 @@ easyMode.addEventListener("click", () => {
     const cards = document.querySelectorAll(".card");
     cards.forEach((card) => {
       card.addEventListener("click", function (e) {
+        //exiting the game if time is finished and they lost
+        if(lost) return;
+        if (win) return;
         document.getElementById("clicks").innerHTML = clicks;
 
         // ignore same card clicked twice
@@ -173,6 +178,7 @@ easyMode.addEventListener("click", () => {
 
             if (matched === 3) {
               win = true;
+              lost = false;
               clearInterval(timer);
                           setTimeout(() => {
                 jsConfetti.addConfetti({
@@ -237,6 +243,7 @@ mediumMode.addEventListener("click", () => {
     document.getElementById("remainingPower").innerHTML = popCounter;
 
     let win = false;
+    let lost = false;
     matchedCards = [];
     let mediumTime = 100;
     document.getElementById("timeLimit").innerHTML = mediumTime;
@@ -248,6 +255,7 @@ mediumMode.addEventListener("click", () => {
       if (mediumTime == 0 && win === false) {
         clearInterval(timer);
               showMessage("you lost!");
+              lost = true;
       }
     }, 1000);
 
@@ -311,6 +319,8 @@ mediumMode.addEventListener("click", () => {
     const cards = document.querySelectorAll(".card");
     cards.forEach((card) => {
       card.addEventListener("click", function (e) {
+        if (lost) return;
+        if (win) return;
         document.getElementById("clicks").innerHTML = clicks;
 
         if (card === firstCard) return;
@@ -334,6 +344,7 @@ mediumMode.addEventListener("click", () => {
 
             if (matched === 6) {
               win = true;
+              lost = false;
               clearInterval(timer);
                           setTimeout(() => {
                 jsConfetti.addConfetti({
@@ -397,6 +408,7 @@ hardMode.addEventListener("click", () => {
     document.getElementById("remainingPower").innerHTML = popCounter;
 
     let win = false;
+    let lost = false;
     matchedCards = [];
     let hardTime = 200;
     document.getElementById("timeLimit").innerHTML = hardTime;
@@ -407,6 +419,7 @@ hardMode.addEventListener("click", () => {
       hardTime--;
       document.getElementById("easyTime").innerHTML = hardTime;
       if (hardTime == 0 && win === false) {
+        lost = true;
         clearInterval(timer);
               showMessage("you lost!");
       }
@@ -459,7 +472,7 @@ hardMode.addEventListener("click", () => {
 
     document.getElementById("matched").innerHTML = matched;
 
-    let unmatched = 8;
+    let unmatched = 12;
     document.getElementById("unmatched").innerHTML = unmatched;
     document.getElementById("total").innerHTML = unmatched;
 
@@ -472,6 +485,8 @@ hardMode.addEventListener("click", () => {
     const cards = document.querySelectorAll(".card");
     cards.forEach((card) => {
       card.addEventListener("click", function (e) {
+        if (lost) return;
+        if (win) return;
         document.getElementById("clicks").innerHTML = clicks;
 
         if (card === firstCard) return;
@@ -493,8 +508,9 @@ hardMode.addEventListener("click", () => {
             matched++;
             document.getElementById("matched").innerHTML = matched;
 
-            if (matched === 8) {
+            if (matched === 12) {
               win = true;
+              lost = false;
               clearInterval(timer);
                           setTimeout(() => {
                 jsConfetti.addConfetti({
