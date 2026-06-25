@@ -232,7 +232,7 @@ document.getElementById("select").addEventListener("click", async () => {
 
     socket.once("playerSelected", (data) => {
       document.getElementById("my_modal_6").showModal();
-      document.getElementById("pokeNameSelf").innerHTML = data.pokeName;
+      document.getElementById("pokeNameSelf").innerHTML = data.pokeName + "!";
       document.getElementById("pokePicSelf").src = data.pokeImage;
     });
   }
@@ -263,7 +263,7 @@ socket.on("joinRoom", (data) => {
     p1Name = data.playerOne.name;
     p2Name = data.playerTwo.name;
     playerOneMarker = `<img id="${p1Name}Marker" src="${data.playerOne.pokeImage}" class="w-full h-full object-contain">`;
-    document.getElementById("OpponentName").textContent = data.playerTwo.name;
+    document.getElementById("OpponentName").textContent = data.playerTwo.name + "!";
     document.getElementById("pokePicOpponent").src = data.playerTwo.pokeImage;
     playerTwoMarker = `<img id="${p2Name}Marker" src="${data.playerTwo.pokeImage}" class="w-full h-full object-contain">`;
   } else {

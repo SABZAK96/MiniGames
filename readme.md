@@ -1,6 +1,8 @@
-# Pokémon Games
+# Pokémon Mini Games
 
 A collection of three Pokémon-themed browser games: a memory card game, a Tic-Tac-Toe game with an AI opponent powered by Google Gemini, and a Wordle-style guessing game.
+
+🔗 **Live demo:** https://pokemon-mini-games.onrender.com
 
 ---
 
@@ -13,9 +15,10 @@ A collection of three Pokémon-themed browser games: a memory card game, a Tic-T
    npm install
    ```
 
-2. Create a `.env` file in the project root and add your Gemini API key:
+2. Create a `.env` file in the project root:
    ```
    GEMINI_API_KEY=your_api_key_here
+   PORT=3000
    ```
 
 3. Start the server:
@@ -23,7 +26,7 @@ A collection of three Pokémon-themed browser games: a memory card game, a Tic-T
    npm start
    ```
 
-4. Open your browser and go to `http://localhost:5000` — this loads `index.html`, the homepage with a card linking to each game.
+4. Open your browser and go to `http://localhost:3000`
 
 ---
 
@@ -31,21 +34,19 @@ A collection of three Pokémon-themed browser games: a memory card game, a Tic-T
 
 ### Homepage (`index.html`)
 
-The landing page — a card per game, each with a looping CSS-animation
-preview that demonstrates how that game actually plays, before you even
-click in.
+The landing page — a card per game, each with a looping CSS animation preview that demonstrates how that game actually plays before you click in.
 
 **Features:**
 - TicTacToe card: pieces pop into place on the board one at a time, on a loop
 - Memory game card: cards flip in sequence to preview the matching gameplay
-- Wordle card: letters pop in and color in (green/yellow/gray) to preview a sample guess, finishing with the correct answer revealed
-- All animations are pure CSS `@keyframes`, synced to a shared timeline so each card's reveal/color/fade-out stays in step
+- Wordle card: letters pop in and colour in (green/yellow/grey) to preview a sample guess, finishing with the correct answer revealed
+- All animations are pure CSS `@keyframes`, synced to a shared timeline
 - Each card is a clickable link straight into that game
 - Responsive layout — cards stack on small/medium screens, sit side-by-side on large screens
 
 | Desktop | Mobile |
 |---|---|
-| ![Homepage - desktop](images/screenshots/home-desktop.png) | ![Homepage - mobile](images/screenshots/home-mobile.png) |
+| ![Homepage - desktop](images/screenshots/home-desktop.jpg) | ![Homepage - mobile](images/screenshots/home.jpg) |
 
 ---
 
@@ -57,38 +58,41 @@ A classic flip-and-match memory game using Pokémon artwork fetched from the Pok
 - Three difficulty levels: Easy (3 pairs), Medium (6 pairs), Hard (12 pairs)
 - Pokémon images are fetched randomly and uniquely from the PokéAPI using `axios`
 - Flip animation with 3D card effect
-- Power-up: reveals all cards for a short time
+- Power-up: briefly reveals all cards
 - Timer that counts down — game ends if time runs out
 - Tracks clicks, pairs matched, and pairs remaining in real time
-- Dark/light theme toggle that persists via `localStorage`
-- Responsive layout
+- Dark/light theme toggle
 
 | Desktop | Mobile |
 |---|---|
-| ![Memory game - desktop](images/screenshots/memory-desktop.png) | ![Memory game - mobile](images/screenshots/memory-mobile.png) |
+| ![Memory game - desktop](images/screenshots/desktop-memory-hard-mid.jpg) | ![Memory game - mobile](images/screenshots/memory-hard-midgame.jpg) |
 
 ---
 
 ### Pokémon TicTacToe (`tictactoe.html`)
 
-A two-player Tic-Tac-Toe game where each player picks a Pokémon as their marker.
+A Tic-Tac-Toe game where each player picks a Pokémon as their marker, with three play modes.
 
 **Features:**
 - **Local mode** — two players take turns on the same device
-- **AI mode** — play against Google Gemini, which picks a random Pokémon as its marker
+- **AI mode** — play against Google Gemini, which picks its own Pokémon marker and plays strategically
 - **Online mode** — real-time multiplayer via Socket.IO; join a random opponent or a specific room by ID, with duplicate-marker prevention and disconnect handling
-- Rematch flow for online mode — request, accept, or decline another round with your opponent, with turn order alternating fairly each round
+- Rematch flow for online mode — request, accept, or decline another round, with turn order alternating fairly each round
 - Players pick their name and search for any Pokémon as their marker
-- Winning cells are highlighted when a player wins
+- Winning cells are highlighted on win
 - Confetti celebration on win
-- **New Round** — clears the board and keeps scores and player selections
-- **New Game** — resets everything and goes back to player selection
+- **New Round** — clears the board, keeps scores and player selections
+- **New Game** — resets everything back to player selection
 - Win counter tracks scores across rounds
-- Dark/light theme toggle that persists via `localStorage`
+- Dark/light theme toggle
 
-| Desktop | Mobile |
+| Player Selection | VS AI (mobile) |
 |---|---|
-| ![TicTacToe - desktop](images/screenshots/tictactoe-desktop.png) | ![TicTacToe - mobile](images/screenshots/tictactoe-mobile.png) |
+| ![TicTacToe - player selection](images/screenshots/tictactoe-player-selection.jpg) | ![TicTacToe - vs AI](images/screenshots/tictactoe-vs-ai.jpg) |
+
+| Online mid-game (mobile) | Online win (desktop) |
+|---|---|
+| ![TicTacToe - online mid-game](images/screenshots/tictactoe-online-midgame.jpg) | ![TicTacToe - online win](images/screenshots/desktop-online-tictac-full.jpg) |
 
 ---
 
@@ -97,24 +101,30 @@ A two-player Tic-Tac-Toe game where each player picks a Pokémon as their marker
 A Wordle-style game where the hidden word is always a Pokémon name.
 
 **Features:**
-- Random Pokémon fetched from the PokéAPI — word length matches the Pokémon's name
+- Random Pokémon fetched from the PokéAPI — grid width matches the Pokémon's name length
 - 6 attempts to guess the name, with colour-coded feedback per letter (green = correct position, yellow = wrong position, grey = not in name)
 - 3 progressive hints: Pokémon type → colour → abilities
 - Pokémon silhouette shown as a shadow, revealed on win or loss
-- Shake animation on invalid (incomplete) guess submission
+- Shake animation on invalid guess submission
 - Confetti celebration on win
-- Keyboard input + Submit button support
-- Dark/light theme toggle that persists via `localStorage`
+- Works on both desktop (keyboard) and mobile (on-screen input)
+- Dark/light theme toggle
 
-| Desktop | Mobile |
+| Mid-game (desktop) | Hints revealed (mobile) |
 |---|---|
-| ![Wordle - desktop](images/screenshots/wordle-desktop.png) | ![Wordle - mobile](images/screenshots/wordle-mobile.png) |
+| ![Wordle - desktop](images/screenshots/desktop-wordle-mid.jpg) | ![Wordle - hints](images/screenshots/wordle-hints.jpg) |
+
+| Win state (desktop) | Win state (mobile) |
+|---|---|
+| ![Wordle - win desktop](images/screenshots/desktop-wordle-win.jpg) | ![Wordle - win mobile](images/screenshots/wordle-completed.jpg) |
 
 ---
 
 ## Tech Stack
 
-- **Frontend:** HTML, Tailwind CSS v4, DaisyUI v5, CSS `@keyframes` animations
-- **Backend:** Node.js, Express, Socket.IO (real-time online TicTacToe)
-- **APIs:** PokéAPI (Pokémon data), Google Gemini (`gemini-3.1-flash-lite`) for AI opponent
-- **Libraries:** axios, dotenv, js-confetti, cors, `@google/genai`
+| Layer | Technologies |
+|---|---|
+| Frontend | HTML, Tailwind CSS v4, DaisyUI v5, CSS `@keyframes` animations |
+| Backend | Node.js, Express, Socket.IO |
+| APIs | PokéAPI (Pokémon data), Google Gemini (`gemini-2.0-flash-lite`) for AI opponent |
+| Libraries | axios, dotenv, js-confetti, cors, `@google/genai` |
